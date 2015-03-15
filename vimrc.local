@@ -1,0 +1,42 @@
+
+" settings {
+
+    set sessionoptions=blank,buffers,curdir,folds,tabpages,winsize,globals,help,localoptions,options,resize,winpos
+    set fileencodings=ucs-bom,utf8,gb18030,default,latin1
+    set rnu
+
+" }
+
+" key bindings {
+
+    nnoremap <Leader>w <C-W>
+
+    nnoremap <silent> <Leader>tn :tabnew<CR>
+    nnoremap <silent> <Leader>tc :tabclose<CR>
+    nnoremap <silent> <Leader>to :tabonly<CR>
+    nnoremap <silent> <Leader>tj :tabprevious<CR>
+    nnoremap <silent> <Leader>tk :tabonext<CR>
+    nnoremap <silent> <Leader>th :tabofirst<CR>
+    nnoremap <silent> <Leader>tl :tabolast<CR>
+
+    nnoremap <silent> <Leader>so :source %<CR>
+
+" }
+
+" plugins {
+
+    " haskell_doc {
+        let g:haddock_browser="open"
+    " }
+
+    " indent guides {
+        let g:indent_guides_auto_colors=1
+    " }
+
+    " NERDComment {
+        let NERDSpaceDelims=1
+    " }
+
+" }
+
+

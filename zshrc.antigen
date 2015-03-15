@@ -1,0 +1,31 @@
+
+source $DOTFILES/antigen/antigen.zsh
+
+antigen-use oh-my-zsh
+
+antigen theme bira
+
+antigen bundle autopep8
+antigen bundle atom
+antigen bundle common-aliases
+antigen bundle colorize
+antigen bundle colored-man
+antigen bundle cp
+antigen bundle dircycle
+antigen bundle django
+antigen bundle fastfile
+antigen bundle git
+antigen bundle git-extras
+antigen bundle github
+antigen bundle go
+antigen bundle gradle
+antigen bundle jsontools
+antigen bundle jump
+antigen bundle pep8
+antigen bundle python
+antigen bundle sublime
+antigen bundle sudo
+antigen bundle themes
+
+antigen-apply
+

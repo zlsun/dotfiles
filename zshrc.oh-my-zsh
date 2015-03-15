@@ -1,0 +1,285 @@
+# Path to your oh-my-zsh installation.
+export ZSH=$DOTFILES/oh-my-zsh
+
+# Set name of the theme to load.
+# Look in ~/.oh-my-zsh/themes/
+# Optionally, if you set this to "random", it'll load a random theme each
+# time that oh-my-zsh is loaded.
+ZSH_THEME="bira"
+
+# Uncomment the following line to use case-sensitive completion.
+# CASE_SENSITIVE="true"
+
+# Uncomment the following line to disable bi-weekly auto-update checks.
+# DISABLE_AUTO_UPDATE="true"
+
+# Uncomment the following line to change how often to auto-update (in days).
+# export UPDATE_ZSH_DAYS=13
+
+# Uncomment the following line to disable colors in ls.
+# DISABLE_LS_COLORS="true"
+
+# Uncomment the following line to disable auto-setting terminal title.
+# DISABLE_AUTO_TITLE="true"
+
+# Uncomment the following line to enable command auto-correction.
+ENABLE_CORRECTION="true"
+
+# Uncomment the following line to display red dots whilst waiting for completion.
+# COMPLETION_WAITING_DOTS="true"
+
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
+DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+# HIST_STAMPS="mm/dd/yyyy"
+
+# Would you like to use another custom folder than $ZSH/custom?
+ZSH_CUSTOM=$DOTFILES/zsh-custom
+
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
+# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(
+
+# Productivity
+
+# autoenv                  # automatically execs script on changing dir (.env file)
+# colemak                  # colemak layout support + vi-mode fixes for colemak http://en.wikipedia.org/wiki/Keyboard_layout                                     # Colemak
+colored-man              # adds colors to manpages
+colorize                 # cat with syntax highlight support
+command-not-found        # suggests package name with relevant command
+# compleat                 # reformats completion http://github.com/mbrubeck/compleat
+copydir                  # copies current dir full path to clipboard
+copyfile                 # copies selected file content to clipboard
+cp                       # cp with progress bar (rsync)
+dircycle                 # hotkeys for cycling directories
+# dirpersist               # saves and restores your directory stack across shell invocations
+# encode64                 # e64 & d64 aliases
+extract                  # 'x' alias - swiss knife for archive extracting
+# fbterm                   # enhanced VESA terminal https://code.google.com/p/fbterm/
+# gpg-agent                # gpg-agent start/stop funcs
+history                  # aliases: h for history, hsi for grepping history
+# history-substring-search # implementation of fish history substring search (To make it work on Ubuntu do echo DEBIAN_PREVENT_KEYBOARD_CHANGES=yes>>~/.zshenv).
+# kate                     # Kate text editor alias http://kate-editor.org/
+# last-working-dir         # same as dirpresist
+# mosh                     # mobile shell with roaming (wifi, mobile networks) and local echo http://mosh.mit.edu/
+# pass                     # pass utility autocompletion
+# per-directory-history    # self-descriptive
+# profiles                 # different zsh profiles per hostname
+# rsync                    # aliases
+# safe-paste               # extended copy/paste in terminal
+# screen                   # GNU screen enhances (titles etc)
+# sprunge                  # CLI pastbin service sprunge.us uploader (http://www.shellperson.net/sprunge-pastebin-script/)
+# ssh-agent                # ssh-agent start script
+atom                     # aliases for Atom Editor
+sublime                  # aliases for SublimeText Editor
+# supervisor               # autocompletion for http://supervisord.org
+# taskwarrior              # autocompletion for http://taskwarrior.org
+# terminitor               # [RENAMED to consular] Consular automates your development workflow setup https://github.com/achiu/consular
+# tmux                     # enhanced Tmux support
+# tmuxinator               # enhanced Tmux support
+# torrent                  # magnet2torrent converter function
+# urltools                 # urlencode/urldecode etc
+# vi-mode                  # self descriptive
+# vundle                   # Vim plugin manager http://github.com/gmarik/vundle
+# wakeonlan                # funcs for wakeonlan tool
+web-search               # google from CLI
+
+# FS Jumping
+
+# autojump # shell extension to jump to frequently used directories
+# fasd     # quick access to files and dirs https://github.com/clvv/fasd
+# jump     # allows to mark dirs and jump to marks
+# pj       # aliases for quick access to projects dir
+wd       # yet another autojump tool github.com/mfaerevaag/wd
+z        # yet another autojump
+
+# Build tools
+
+# ant           # Java build tool http://ant.apache.org/
+# bower         # Front-end package manager https://github.com/bower/bower
+cabal         # Haskell package manager http://www.haskell.org/cabal/
+# cake          # CoffeeScript build tool
+# coffee        # CoffeeScript completion
+# cpanm         # cpanminus get, unpack, build, install Perl modules https://github.com/miyagawa/cpanminus/
+# docker        # application shipment tool https://github.com/dotbutt/docker
+# gas           # small utility used to manage Git authors. https://github.com/walle/gas
+git           # extras: git-extras gitfast git-flow git-flow-avh git-hubflow git-remote-branch
+github        # cli access, url shortener
+gitignore     # gi alias to fetch default .gitignore files from http://gitignore.io/
+# gnu-utils     # GNU coreutils wrappers to override shell builtins
+# go            # Go build tool http://golang.org/cmd/go/
+# golang        # [DUPLICATE] identical to 'go'. Should be removed?
+gradle        # build automation tool http://www.gradle.org/
+# grails        # funcs for grails script management http://grails.org/
+# heroku        # cli access https://www.heroku.com/
+# jira          # JIRA cli access
+# knife         # knife autocompletion http://docs.opscode.com/knife.html
+# knife_ssh     # knife autocompletion http://docs.opscode.com/knife.html
+# lein          # leiningen autocompletion http://leiningen.org
+# lighthouse    # CLI access to issue tracker Lighthouse, http://lighthouseapp.com/
+# mercurial     # hg autocompletion
+# mix           # Elixir build tool autocompletion http://elixir-lang.org/docs/stable/mix
+# mvn           # maven completion
+# nanoc         # static website generator http://nanoc.ws/
+# postgres      # aliases for Postgres managing
+# perl          # aliases for Perl
+# rebar         # Erlang build tool autocompletion
+# redis-cli     # Redis autocompletion
+# repo          # git repo management tool autocompletion https://code.google.com/p/git-repo/
+# sbt           # autocomplete for ScalaBuildTool http://www.scala-sbt.org/
+# scala         # autocomplete
+# sfffe         # aliases for ack (JS & CSS grepping) http://beyondgrep.com/
+# svn           # subversion autocompletion
+# svn-fast-info # faster subversion autocompletion (especially interesting on big project)
+# vagrant       # quick development env deployment http://www.vagrantup.com/
+
+# Node JS
+
+# jake-node # NodeJS build tool Jake https://github.com/mde/jake
+# node      # NodeJS docs easy access via CLI
+# npm       # package manager for NodeJS
+# nvm       # NodeJS version manager
+
+# PHP
+
+# composer # PHP dependency manager http://getcomposer.org
+# laravel  # PHP deployment tool artisan completion http://laravel.com/docs/4.2/artisan
+# phing    # Ant-like build system for PHP http://phing.info
+# symfony  # PHP webframework http://symfony.com
+# symfony2 # PHP webframework http://symfony.com
+# yii      # PHP webframework http://yiiframework.com
+# yii2     # PHP webframework http://yiiframework.com
+
+# Ruby
+
+# bundler    # package manager http://bundler.io/
+# capistrano # remote deployment tool
+# gem        # http://rubygems.org/
+# jruby      # JRuby aliases
+# pow        # rack apps restarter http://pow.cx/
+# powder     # powder gem autocompletion https://github.com/Rodreegez/powder
+# powify     # another pow manager https://github.com/sethvargo/powify
+# rails      # rails aliases for rails 2, rails 3, and rails 4 all in one clean plugin
+# rake       # Ruby build tool
+# rbenv      # Ruby version switcher
+# rbfu       # [OBSOLETE] anther Ruby version manager https://github.com/hmans/rbfu
+# ruby       # aliases
+# rvm        # another RubyVersionManager
+# thor       # Ruby doc tool https://github.com/erikhuda/thor
+# zeus       # funcs for Zeus (Rails env preloader) https://github.com/burke/zeus
+
+# Python
+
+# celery            # Python distributed task queue
+django            # https://www.djangoproject.com/
+# fabric            # remote deployment tool http://docs.fabfile.org/en/1.8/
+pip               # Python package manager http://www.pip-installer.org/en/latest/
+python            # python aliases (pyfind, pyclean, pygrep)
+# virtualenv        # https://pypi.python.org/pypi/virtualenv isolated Python envs
+# virtualenvwrapper # https://pypi.python.org/pypi/virtualenv isolated Python envs
+
+# Distro-related
+
+# archlinux # aliases for yaourt and pacman
+debian    # aliases for apt* utils
+# suse      # aliases for SUSE Linux (zypper aliases)
+# systemd   # aliases
+# yum       # aliases
+
+# MacOS
+
+# apache2-macports # apache management functions
+# brew             # package manger http://brew.sh/
+# bwana            # allows to open manpages in browser http://www.bruji.com/bwana/
+# buttapp          # completion for buttapp http://getbuttapp.com/
+# forklift         # MacOS file browser
+# macports         # macport autocompletion
+# mysql-macports   # same as apache-macport for MySQL
+# osx              # MacOS completions
+# pod              # http://cocoapods.org library dependency manager for Xcode
+# terminalapp      # Apple Terminal enhancer
+# textmate         # aliases
+
+# Misc
+
+# battery     # allows see battery status in PS
+# emoji-clock # fancy shell clocks
+# lol         # dowant
+# nyan        # Nyan Cat in terminal
+# rand-quote  # quote function for random quotes from http://www.quotationspage.com/random.php3
+themes      # ZSH theme switcher
+
+# Others
+
+autopep8
+common-aliases
+jsontools
+pep8
+sudo
+
+)
+
+# custom plugins
+plugins+=(
+)
+
+source $ZSH/oh-my-zsh.sh
+
+# User configuration
+
+# Set personal aliases, overriding those provided by oh-my-zsh libs,
+# plugins, and themes. Aliases can be placed here, though oh-my-zsh
+# users are encouraged to define aliases within the ZSH_CUSTOM folder.
+# For a full list of active aliases, run `alias`.
+#
+# Example aliases
+# alias zshconfig="mate ~/.zshrc"
+# alias ohmyzsh="mate ~/.oh-my-zsh"
+
+# alias sgi="sudo apt-get install"
+# alias sgr="sudo apt-get remove"
+# alias sgar="sudo apt-get autoremove"
+# alias sgu="sudo apt-get update"
+# alias sgg="sudo apt-get upgrade"
+# alias sgdg="sudo apt-get dist-upgrade"
+
+
+# enable 256 color terminal
+# if [ "$TERM" = "xterm" ] ; then
+# if [ -z "$COLORTERM" ] ; then
+    # if [ -z "$XTERM_VERSION" ] ; then
+        # echo "Warning: Terminal wrongly calling itself 'xterm'."
+    # else
+        # case "$XTERM_VERSION" in
+        # "XTerm(256)") TERM="xterm-256color" ;;
+        # "XTerm(88)") TERM="xterm-88color" ;;
+        # "XTerm") ;;
+        # *)
+            # echo "Warning: Unrecognized XTERM_VERSION: $XTERM_VERSION"
+        # ;;
+        # esac
+    # fi
+# else
+    # case "$COLORTERM" in
+    # gnome-terminal)
+        # # Those crafty Gnome folks require you to check COLORTERM,
+        # # but don't allow you to just *favor the setting over TERM.
+        # # Instead you need to compare it and perform some guesses
+        # # based upon the value. This is, perhaps, too simplistic.
+        # #TERM="gnome-256color"
+        # TERM="xterm-256color"
+    # ;;
+    # *)
+        # echo "Warning: Unrecognized COLORTERM: $COLORTERM"
+    # ;;
+    # esac
+# fi
+# fi
+
