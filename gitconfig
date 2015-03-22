@@ -4,3 +4,7 @@
 [gui]
     spellingdictionary = none
 
+[alias]
+	st = status
+	co = checkout
+	cm = commit
