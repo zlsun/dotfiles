@@ -12,10 +12,12 @@ ln -s -i $DOTFILES/bash_logout     ~/.bash_logout
 ln -s -i $DOTFILES/profile         ~/.profile
 
 # vim
-ln -s -i $DOTFILES/vimrc.local         ~/.vimrc.local
-ln -s -i $DOTFILES/vimrc.before.local  ~/.vimrc.before.local
-ln -s -i $DOTFILES/vimrc.bundles.local ~/.vimrc.bundles.local
-ln -s -i $DOTFILES/gvimrc.local        ~/.gvimrc.local
+ln -s -i $DOTFILES/vim                  ~/.vim
+ln -s -i $DOTFILES/vimrc                ~/.vimrc
+# ln -s -i $DOTFILES/vimrc.local         ~/.vimrc.local
+# ln -s -i $DOTFILES/vimrc.before.local  ~/.vimrc.before.local
+# ln -s -i $DOTFILES/vimrc.bundles.local ~/.vimrc.bundles.local
+# ln -s -i $DOTFILES/gvimrc.local        ~/.gvimrc.local
 ln -s -i $DOTFILES/NERDTreeBookmarks   ~/.NERDTreeBookmarks
 
 # zsh
