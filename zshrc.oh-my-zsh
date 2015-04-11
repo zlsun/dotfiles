@@ -188,7 +188,7 @@ python            # python aliases (pyfind, pyclean, pygrep)
 # Distro-related
 
 # archlinux # aliases for yaourt and pacman
-debian    # aliases for apt* utils
+# debian    # aliases for apt* utils
 # suse      # aliases for SUSE Linux (zypper aliases)
 # systemd   # aliases
 # yum       # aliases
@@ -243,12 +243,12 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-# alias sgi="sudo apt-get install"
-# alias sgr="sudo apt-get remove"
-# alias sgar="sudo apt-get autoremove"
-# alias sgu="sudo apt-get update"
-# alias sgg="sudo apt-get upgrade"
-# alias sgdg="sudo apt-get dist-upgrade"
+alias sgi="sudo apt-get install"
+alias sgr="sudo apt-get remove"
+alias sga="sudo apt-get autoremove"
+alias sgu="sudo apt-get update"
+alias sgg="sudo apt-get upgrade"
+alias sgd="sudo apt-get dist-upgrade"
 
 
 # enable 256 color terminal
