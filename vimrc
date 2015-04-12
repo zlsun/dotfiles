@@ -1,6 +1,27 @@
 
 " ==============================================================================
-" Environment
+" Setup Vundle
+" ==============================================================================
+
+set nocompatible        " Must be first line
+
+filetype off
+set rtp+=~/.vim/bundle/vundle
+call vundle#begin()
+source ~/.vimrc.bundles
+call vundle#end()
+
+" Add an UnBundle command
+function! UnBundle(arg, ...)
+    let bundle = vundle#config#init_bundle(a:arg, a:000)
+    call fiiter(g:vundle#bundles, 'v:val["name_spec"] != "' . a:arg . '"')
+endfunction
+
+com! -nargs=+ UnBundle call UnBundle(<args>)
+
+
+" ==============================================================================
+" Settings
 " ==============================================================================
 
 silent function! OSX()
@@ -13,8 +34,6 @@ silent function! WINDOWS()
     return  (has('win16') || has('win32') || has('win64'))
 endfunction
 
-set nocompatible        " Must be first line
-
 if !WINDOWS()
     set shell=/bin/sh
 endif
@@ -23,7 +42,6 @@ endif
 " across (heterogeneous) systems easier.
 if WINDOWS()
   set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
-
   " Be nice and check for multi_byte even if the config requires
   " multi_byte support most of the time
   if has("multi_byte")
@@ -33,89 +51,11 @@ if WINDOWS()
     " Let Vim use utf-8 internally, because many scripts require this
     set encoding=utf-8
     setglobal fileencoding=utf-8
-    " Windows has traditionally used cp1252, so it's probably wise to
-    " fallback into cp1252 instead of eg. iso-8859-15.
-    " Newer Windows files might contain utf-8 or utf-16 LE so we might
-    " want to try them first.
-    set fileencodings=ucs-bom,utf-8,utf-16le,cp1252,iso-8859-15
   endif
 endif
 
-" The next three lines ensure that the ~/.vim/bundle/ system works
-filetype off
-set rtp+=~/.vim/bundle/vundle
-call vundle#rc()
-
-" Add an UnBundle command
-function! UnBundle(arg, ...)
-  let bundle = vundle#config#init_bundle(a:arg, a:000)
-  call filter(g:vundle#bundles, 'v:val["name_spec"] != "' . a:arg . '"')
-endfunction
-
-com! -nargs=+ UnBundle call UnBundle(<args>)
-
-
-" ==============================================================================
-" UI
-" ==============================================================================
-
-set background=dark         " Assume a dark background
-set mouse=a                 " Automatically enable mouse usage
-set mousehide               " Hide the mouse cursor while typing
-set tabpagemax=15           " Only show 15 tabs
-set showmode                " Display the current mode
-set cursorline              " Highlight current line
-set rnu                     " Enable relative line number
-
-highlight clear SignColumn      " SignColumn should match background
-highlight clear LineNr          " Current line number row will have same background color in relative mode
-"highlight clear CursorLineNr    " Remove highlight color from current line number
-
-if has('cmdline_info')
-    set ruler                   " Show the ruler
-    set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%) " A ruler on steroids
-    set showcmd                 " Show partial commands in status line and
-                                " Selected characters/lines in visual mode
-endif
-
-if has('statusline')
-    set laststatus=2
-    " Broken down into easily includeable segments
-    set statusline=%<%f\                     " Filename
-    set statusline+=%w%h%m%r                 " Options
-    set statusline+=%{fugitive#statusline()} " Git Hotness
-    set statusline+=\ [%{&ff}/%Y]            " Filetype
-    set statusline+=\ [%{getcwd()}]          " Current dir
-    set statusline+=%=%-14.(%l,%c%V%)\ %p%%  " Right aligned file nav info
-endif
-
-" GVIM- (here instead of .gvimrc)
-if has('gui_running')
-    set lines=40                " 40 lines of text instead of 24
-    set guioptions=agimt
-    set linespace=-2
-    set guifont=Ubuntu\ Mono\ derivative\ Powerline\ 12
-    if LINUX()
-        set guifont=Andale\ Mono\ Regular\ 12,Menlo\ Regular\ 11,Consolas\ Regular\ 12,Courier\ New\ Regular\ 14
-    elseif OSX()
-        set guifont=Andale\ Mono\ Regular:h12,Menlo\ Regular:h11,Consolas\ Regular:h12,Courier\ New\ Regular:h14
-    elseif WINDOWS()
-        set guifont=Andale_Mono:h10,Menlo:h10,Consolas:h10,Courier_New:h10
-    endif
-else
-    if &term == 'xterm' || &term == 'screen'
-        set t_Co=256             " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
-    endif
-    "set term=builtin_ansi       " Make arrow and other keys work
-endif
-
-
-" ==============================================================================
-" Settings
-" ==============================================================================
-
 set sessionoptions=blank,buffers,curdir,folds,tabpages,winsize,globals,help,localoptions,options,resize,winpos
-set fileencodings=ucs-bom,utf8,utf16-le,cp1252,default,latin1
+set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
 filetype plugin indent on   " Automatically detect file types.
 syntax on                   " Syntax highlighting
 scriptencoding utf-8
@@ -128,7 +68,8 @@ if has('clipboard')
     endif
 endif
 
-"set autowrite                       " Automatically write a file when leaving a modified buffer
+set timeoutlen=1000 ttimeoutlen=0
+" set autowrite                       " Automatically write a file when leaving a modified buffer
 set shortmess+=filmnrxoOtT          " Abbrev. of messages (avoids 'hit enter')
 set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatibility
 set virtualedit=onemore             " Allow for cursor beyond last character
@@ -177,13 +118,68 @@ if has('persistent_undo')
     set undolevels=1000         " Maximum number of changes that can be undone
     set undoreload=10000        " Maximum number lines to save for undo on a buffer reload
 endif
+" }
 
 " Add exclusions to mkview and loadview
 " eg: *.*, svn-commit.tmp
 let g:skipview_files = [
     \ '\[example pattern\]'
     \ ]
-" }
+
+let g:netrw_browsex_viewer= "x-www-browser"
+
+" ==============================================================================
+" UI
+" ==============================================================================
+
+set background=dark         " Assume a dark background
+set mouse=a                 " Automatically enable mouse usage
+set mousehide               " Hide the mouse cursor while typing
+set tabpagemax=15           " Only show 15 tabs
+set showmode                " Display the current mode
+set cursorline              " Highlight current line
+set rnu                     " Enable relative line number
+
+highlight clear SignColumn      " SignColumn should match background
+highlight clear LineNr          " Current line number row will have same background color in relative mode
+"highlight clear CursorLineNr    " Remove highlight color from current line number
+
+if has('cmdline_info')
+    set ruler                   " Show the ruler
+    set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%) " A ruler on steroids
+    set showcmd                 " Show partial commands in status line and
+                                " Selected characters/lines in visual mode
+endif
+
+if has('statusline')
+    set laststatus=2
+    " Broken down into easily includeable segments
+    set statusline=%<%f\                     " Filename
+    set statusline+=%w%h%m%r                 " Options
+    set statusline+=%{fugitive#statusline()} " Git Hotness
+    set statusline+=\ [%{&ff}/%Y]            " Filetype
+    set statusline+=\ [%{getcwd()}]          " Current dir
+    set statusline+=%=%-14.(%l,%c%V%)\ %p%%  " Right aligned file nav info
+endif
+
+" GVIM- (here instead of .gvimrc)
+if has('gui_running')
+    set lines=40                " 40 lines of text instead of 24
+    set guioptions=agimt
+    set linespace=-2
+    if LINUX()
+        set guifont=Ubuntu\ Mono\ derivative\ Powerline\ 12
+    elseif OSX()
+        set guifont=Andale\ Mono\ Regular:h12,Menlo\ Regular:h11,Consolas\ Regular:h12,Courier\ New\ Regular:h14
+    elseif WINDOWS()
+        set guifont=Andale_Mono:h10,Menlo:h10,Consolas:h10,Courier_New:h10
+    endif
+else
+    if &term == 'xterm' || &term == 'screen'
+        set t_Co=256             " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
+    endif
+    "set term=builtin_ansi       " Make arrow and other keys work
+endif
 
 
 " ==============================================================================
@@ -213,7 +209,8 @@ augroup resCur
 augroup END
 
 " Remove trailing whitespaces and ^M chars
-autocmd FileType c,cpp,java,go,php,javascript,puppet,python,rust,twig,xml,yml,perl,sql autocmd BufWritePre <buffer>
+autocmd FileType c,cpp,java,go,php,javascript,puppet,python,rust,twig,xml,yml,perl,sql
+    \ autocmd BufWritePre <buffer> call StripTrailingWhitespace()
 "autocmd FileType go autocmd BufWritePre <buffer> Fmt
 autocmd BufNewFile,BufRead *.html.twig set filetype=html.twig
 autocmd FileType haskell,puppet,ruby,yml setlocal expandtab shiftwidth=2 softtabstop=2
@@ -235,6 +232,50 @@ autocmd FileType haskell,rust setlocal nospell
 " location.
 let mapleader = ','
 let maplocalleader = '_'
+
+" Map space as leader.
+" see: http://redd.it/1vdrxg
+map <Space> <Leader>
+map <Space><Space> <Leader><Leader>
+
+" map ; to :
+" see: http://vim.wikia.com/wiki/Map_semicolon_to_colon
+map ; :
+noremap ;; ;
+
+" Map S to write current file because S is the same as cc
+nmap S :%s///g<Left><Left><Left>
+
+" If the current buffer has never been saved, it will have no name,
+" call the file browser to save it, otherwise just save it.
+" see: http://vim.wikia.com/wiki/Map_Ctrl-S_to_save_current_or_new_files
+command! -nargs=0 -bar Update if &modified
+                           \|    if empty(bufname('%'))
+                           \|        browse confirm write
+                           \|    else
+                           \|        confirm write
+                           \|    endif
+                           \|endif
+nnoremap <silent> <C-S> :<C-u>Update<CR>
+inoremap <c-s> <Esc>:Update<CR>
+
+" Spell Check
+" see: http://vim.wikia.com/wiki/Toggle_spellcheck_with_function_keys
+let b:spell_lang_index=0
+let g:spell_lang_list=["nospell","en"]
+function! ToggleSpell()
+    let b:spell_lang_index=b:spell_lang_index+1
+    if b:spell_lang_index>=len(g:spell_lang_list)
+        let b:spell_lang_index=0
+    endif
+    if b:spell_lang_index==0
+        setlocal nospell
+    else
+        execute "setlocal spell spelllang=".get(g:spell_lang_list, b:spell_lang_index)
+    endif
+    echo "spell checking language:" g:spell_lang_list[b:spell_lang_index]
+endfunction
+nmap <silent> <F7> :call ToggleSpell()<CR>
 
 " Easier moving in tabs and windows
 " The lines conflict with the default digraph mapping of <C-K>
@@ -380,183 +421,6 @@ nnoremap <silent> <Leader>so :source %<CR>
 
 
 " ==============================================================================
-" Bundles
-" ==============================================================================
-
-let g:bundle_groups=['general', 'writing', 'neocomplcache',
-            \'programming', 'haskell', 'python', 'javascript', 'html', 'misc',]
-
-Bundle 'gmarik/vundle'
-Bundle 'MarcWeber/vim-addon-mw-utils'
-Bundle 'tomtom/tlib_vim'
-if executable('ag')
-    Bundle 'mileszs/ack.vim'
-    let g:ackprg = 'ag --nogroup --nocolor --column --smart-case'
-elseif executable('ack-grep')
-    let g:ackprg="ack-grep -H --nocolor --nogroup --column"
-    Bundle 'mileszs/ack.vim'
-elseif executable('ack')
-    Bundle 'mileszs/ack.vim'
-endif
-
-if count(g:bundle_groups, 'general')
-    Bundle 'scrooloose/nerdtree'
-    Bundle 'altercation/vim-colors-solarized'
-    Bundle 'spf13/vim-colors'
-    Bundle 'tpope/vim-surround'
-    Bundle 'tpope/vim-repeat'
-    Bundle 'spf13/vim-autoclose'
-    Bundle 'ctrlpvim/ctrlp.vim'
-    Bundle 'tacahiroy/ctrlp-funky'
-    Bundle 'kristijanhusak/vim-multiple-cursors'
-    Bundle 'vim-scripts/sessionman.vim'
-    Bundle 'matchit.zip'
-    Bundle 'bling/vim-airline'
-    Bundle 'bling/vim-bufferline'
-    Bundle 'Lokaltog/vim-easymotion'
-    Bundle 'jistr/vim-nerdtree-tabs'
-    Bundle 'flazz/vim-colorschemes'
-    Bundle 'mbbill/undotree'
-    Bundle 'nathanaelkane/vim-indent-guides'
-    Bundle 'vim-scripts/restore_view.vim'
-    Bundle 'mhinz/vim-signify'
-    Bundle 'tpope/vim-abolish.git'
-    Bundle 'osyo-manga/vim-over'
-    Bundle 'kana/vim-textobj-user'
-    Bundle 'kana/vim-textobj-indent'
-    Bundle 'gcmt/wildfire.vim'
-endif
-
-if count(g:bundle_groups, 'writing')
-    Bundle 'reedes/vim-litecorrect'
-    Bundle 'reedes/vim-textobj-sentence'
-    Bundle 'reedes/vim-textobj-quote'
-    Bundle 'reedes/vim-wordy'
-endif
-
-if count(g:bundle_groups, 'programming')
-    " Pick one of the checksyntax, jslint, or syntastic
-    Bundle 'scrooloose/syntastic'
-    Bundle 'tpope/vim-fugitive'
-    Bundle 'mattn/webapi-vim'
-    Bundle 'mattn/gist-vim'
-    Bundle 'scrooloose/nerdcommenter'
-    Bundle 'tpope/vim-commentary'
-    Bundle 'godlygeek/tabular'
-    if executable('ctags')
-        Bundle 'majutsushi/tagbar'
-    endif
-endif
-
-if count(g:bundle_groups, 'snipmate')
-    Bundle 'garbas/vim-snipmate'
-    Bundle 'honza/vim-snippets'
-    " Source support_function.vim to support vim-snippets.
-    if filereadable(expand("~/.vim/bundle/vim-snippets/snippets/support_functions.vim"))
-        source ~/.vim/bundle/vim-snippets/snippets/support_functions.vim
-    endif
-elseif count(g:bundle_groups, 'youcompleteme')
-    Bundle 'Valloric/YouCompleteMe'
-    Bundle 'SirVer/ultisnips'
-    Bundle 'honza/vim-snippets'
-elseif count(g:bundle_groups, 'neocomplcache')
-    Bundle 'Shougo/neocomplcache'
-    Bundle 'Shougo/neosnippet'
-    Bundle 'Shougo/neosnippet-snippets'
-    Bundle 'honza/vim-snippets'
-elseif count(g:bundle_groups, 'neocomplete')
-    Bundle 'Shougo/neocomplete.vim.git'
-    Bundle 'Shougo/neosnippet'
-    Bundle 'Shougo/neosnippet-snippets'
-    Bundle 'honza/vim-snippets'
-endif
-
-if count(g:bundle_groups, 'php')
-    Bundle 'spf13/PIV'
-    Bundle 'arnaud-lb/vim-php-namespace'
-    Bundle 'beyondwords/vim-twig'
-endif
-
-if count(g:bundle_groups, 'python')
-    " Pick either python-mode or pyflakes & pydoc
-    Bundle 'klen/python-mode'
-    Bundle 'yssource/python.vim'
-    Bundle 'python_match.vim'
-    Bundle 'pythoncomplete'
-endif
-
-if count(g:bundle_groups, 'javascript')
-    Bundle 'elzr/vim-json'
-    Bundle 'groenewege/vim-less'
-    Bundle 'pangloss/vim-javascript'
-    Bundle 'briancollins/vim-jst'
-    Bundle 'kchmck/vim-coffee-script'
-endif
-
-if count(g:bundle_groups, 'scala')
-    Bundle 'derekwyatt/vim-scala'
-    Bundle 'derekwyatt/vim-sbt'
-    Bundle 'xptemplate'
-endif
-
-if count(g:bundle_groups, 'haskell')
-    Bundle 'travitch/hasksyn'
-    Bundle 'dag/vim2hs'
-    Bundle 'Twinside/vim-haskellConceal'
-    Bundle 'Twinside/vim-haskellFold'
-    Bundle 'lukerandall/haskellmode-vim'
-    Bundle 'eagletmt/neco-ghc'
-    Bundle 'eagletmt/ghcmod-vim'
-    Bundle 'Shougo/vimproc'
-    Bundle 'adinapoli/cumino'
-    Bundle 'bitc/vim-hdevtools'
-endif
-
-if count(g:bundle_groups, 'html')
-    Bundle 'amirh/HTML-AutoCloseTag'
-    Bundle 'hail2u/vim-css3-syntax'
-    Bundle 'gorodinskiy/vim-coloresque'
-    Bundle 'tpope/vim-haml'
-endif
-
-if count(g:bundle_groups, 'ruby')
-    Bundle 'tpope/vim-rails'
-    let g:rubycomplete_buffer_loading = 1
-    "let g:rubycomplete_classes_in_global = 1
-    "let g:rubycomplete_rails = 1
-endif
-
-if count(g:bundle_groups, 'puppet')
-    Bundle 'rodjek/vim-puppet'
-endif
-
-if count(g:bundle_groups, 'go')
-    "Bundle 'Blackrush/vim-gocode'
-    Bundle 'fatih/vim-go'
-endif
-
-if count(g:bundle_groups, 'elixir')
-    Bundle 'elixir-lang/vim-elixir'
-    Bundle 'carlosgaldino/elixir-snippets'
-    Bundle 'mattreduce/vim-mix'
-endif
-
-if count(g:bundle_groups, 'misc')
-    Bundle 'rust-lang/rust.vim'
-    Bundle 'tpope/vim-markdown'
-    Bundle 'spf13/vim-preview'
-    Bundle 'tpope/vim-cucumber'
-    Bundle 'cespare/vim-toml'
-    Bundle 'quentindecock/vim-cucumber-align-pipes'
-    Bundle 'saltstack/salt-vim'
-endif
-
-Bundle 'DrawIt'
-Bundle 'xolox/vim-misc'
-Bundle 'xolox/vim-session'
-
-
-" ==============================================================================
 " Plugins
 " ==============================================================================
 
@@ -696,7 +560,6 @@ Bundle 'xolox/vim-session'
 " }
 
 " Session List {
-    set sessionoptions=blank,buffers,curdir,folds,tabpages,winsize
     if isdirectory(expand("~/.vim/bundle/sessionman.vim/"))
         nmap <leader>sl :SessionList<CR>
         nmap <leader>ss :SessionSave<CR>
@@ -1158,6 +1021,9 @@ endif
     let NERDSpaceDelims=1
 " }
 
+" Syntastic {
+    let g:syntastic_cpp_compiler_options = ' -std=c++11'
+" }
 
 " ==============================================================================
 " Functions
