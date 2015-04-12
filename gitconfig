@@ -1,10 +1,26 @@
 [user]
-	email = zlsun1995@gmail.com
-	name = zlsun
+    email = zlsun1995@gmail.com
+    name = zlsun
 [gui]
     spellingdictionary = none
 
 [alias]
-	st = status
-	co = checkout
-	cm = commit
+    aa = add --all
+    bd = branch -d
+    br = branch
+    ca = commit -v -a
+    cm = commit -v
+    co = checkout
+    df = diff
+    g = gui
+    ls = log -1 HEAD
+    lp = log --graph
+    lg = log
+    rm = remote
+    st = status
+    un = reset HEAD --
+
+[color]
+    diff = auto
+    status = auto
+    branch = auto
