@@ -1,33 +1,38 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 SCRIPT=$(readlink -f "$0")
 DOTFILES=$(dirname "$SCRIPT")
 
+link-dotfile() {
+    ln -s -i $DOTFILES/$@ ~/.$@
+}
+
 # bash
-ln -s -i $DOTFILES/bashrc          ~/.bashrc
-ln -s -i $DOTFILES/bash_aliases    ~/.bash_aliases
-ln -s -i $DOTFILES/bash_completion ~/.bash_completion
-ln -s -i $DOTFILES/bash_funcs      ~/.bash_funcs
-ln -s -i $DOTFILES/bash_logout     ~/.bash_logout
-ln -s -i $DOTFILES/profile         ~/.profile
+link-dotfile bashrc
+link-dotfile bash_aliases
+link-dotfile bash_completion
+link-dotfile bash_funcs
+link-dotfile bash_logout
+link-dotfile profile
 
 # vim
-ln -s -i $DOTFILES/vim                  ~/.vim
-ln -s -i $DOTFILES/vimrc                ~/.vimrc
-# ln -s -i $DOTFILES/vimrc.local         ~/.vimrc.local
-# ln -s -i $DOTFILES/vimrc.before.local  ~/.vimrc.before.local
-# ln -s -i $DOTFILES/vimrc.bundles.local ~/.vimrc.bundles.local
-# ln -s -i $DOTFILES/gvimrc.local        ~/.gvimrc.local
-ln -s -i $DOTFILES/NERDTreeBookmarks   ~/.NERDTreeBookmarks
+link-dotfile vim
+link-dotfile vimrc
+link-dotfile vimrc.bundles
+# link-dotfile vimrc.local
+# link-dotfile vimrc.before.local
+# link-dotfile vimrc.bundles.local
+# link-dotfile gvimrc.local
+link-dotfile NERDTreeBookmarks
 
 # zsh
-ln -s -i $DOTFILES/zshrc  ~/.zshrc
-ln -s -i $DOTFILES/zshenv ~/.zshenv
-ln -s -i $DOTFILES/warprc ~/.warprc
+link-dotfile zshrc
+link-dotfile zshenv
+link-dotfile warprc
 
 # others
-ln -s -i $DOTFILES/gtkrc-2.0        ~/.gtkrc-2.0
-ln -s -i $DOTFILES/gitconfig        ~/.gitconfig
-ln -s -i $DOTFILES/pydistutils.cfg  ~/.pydistutils.cfg
-ln -s -i $DOTFILES/pip              ~/.pip
+link-dotfile gtkrc-2.0
+link-dotfile gitconfig
+link-dotfile pydistutils.cfg
+link-dotfile pip
 

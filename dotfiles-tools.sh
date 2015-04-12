@@ -1,5 +1,6 @@
+#!/usr/bin/env bash
 
-move-to-mydotfiles () {
+move-to-dotfiles () {
     for dotfile in "$@"; do
         target="$DOTFILES/${dotfile:1}"
         mv ${dotfile} ${target}
@@ -8,7 +9,7 @@ move-to-mydotfiles () {
     done
 }
 
-link-to-mydotfiles () {
+link-to-dotfiles () {
     for dotfile in "$@"; do
         target="$DOTFILES/${dotfile:1}"
         ln -s ${target} ${dotfile}
