@@ -1,38 +1,56 @@
 #!/usr/bin/env bash
 
-SCRIPT=$(readlink -f "$0")
-DOTFILES=$(dirname "$SCRIPT")
+CURRENT_FILE=$(readlink -f "$0")
+SCRIPT_DIR=$(dirname "$CURRENT_FILE")
+DOTFILES=$(dirname "$SCRIPT_DIR")
 
-link-dotfile() {
-    ln -s -i $DOTFILES/$@ ~/.$@
+link() {
+    # link dot -> file, if dot exists, backup it to bak
+    file=$DOTFILES/$1
+    dot=~/.$1
+    bak=~/.$1.bak
+    printf "[linking] %-30s -> %s\n" $dot $file
+    if [ -h $dot ]; then
+        if [ "$(readlink $dot)" != "$file" ]; then
+            printf "Different symlink, backup\n"
+            mv $dot $bak
+        else
+            printf "Already linked!\n"
+            return 0
+        fi
+    elif [ -e $dot ]; then
+        printf "Already exist, backup\n"
+        mv $dot $bak
+    fi
+    ln -s $file $dot
 }
 
 # bash
-link-dotfile bashrc
-link-dotfile bash_aliases
-link-dotfile bash_completion
-link-dotfile bash_funcs
-link-dotfile bash_logout
-link-dotfile profile
+link bashrc
+link bash_aliases
+link bash_completion
+link bash_funcs
+link bash_logout
+link profile
 
 # vim
-link-dotfile vim
-link-dotfile vimrc
-link-dotfile vimrc.bundles
-# link-dotfile vimrc.local
-# link-dotfile vimrc.before.local
-# link-dotfile vimrc.bundles.local
-# link-dotfile gvimrc.local
-link-dotfile NERDTreeBookmarks
+link vim
+link vimrc
+link vimrc.bundles
+# link vimrc.local
+# link vimrc.before.local
+# link vimrc.bundles.local
+# link gvimrc.local
+link NERDTreeBookmarks
 
 # zsh
-link-dotfile zshrc
-link-dotfile zshenv
-link-dotfile warprc
+link zshrc
+link zshenv
+link warprc
 
 # others
-link-dotfile gtkrc-2.0
-link-dotfile gitconfig
-link-dotfile pydistutils.cfg
-link-dotfile pip
+link gtkrc-2.0
+link gitconfig
+link pydistutils.cfg
+link pip
 
