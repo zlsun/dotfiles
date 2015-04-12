@@ -5,18 +5,23 @@
     spellingdictionary = none
 
 [alias]
+    c = clone
+    g = gui
+    i = init
     aa = add --all
+    ad = add
     bd = branch -d
     br = branch
-    ca = commit -verbose --all
-    cv = commit -verbose
-    cm = commit
+    cg = config --global
+    cf = config
+    ca = commit -v -a
+    cm = commit -v
     co = checkout
     dc = diff --cached
     dh = diff HEAD
     ds = diff --stat
     df = diff
-    g = gui
+    fc = fetch -v
     ls = log -1 HEAD
     ln = log            --numstat --decorate --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]"
     lp = log --graph --date=short --decorate --pretty=format:"%C(yellow)%h\\ %C(green)%ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]"
