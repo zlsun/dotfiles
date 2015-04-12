@@ -8,15 +8,32 @@
     aa = add --all
     bd = branch -d
     br = branch
-    ca = commit -v -a
-    cm = commit -v
+    ca = commit -verbose --all
+    cv = commit -verbose
+    cm = commit
     co = checkout
+    dc = diff --cached
+    dh = diff HEAD
+    ds = diff --stat
     df = diff
     g = gui
     ls = log -1 HEAD
-    lp = log --graph
+    ln = log            --numstat --decorate --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]"
+    lp = log --graph --date=short --decorate --pretty=format:"%C(yellow)%h\\ %C(green)%ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]"
+    lr = log      --date=relative --decorate --pretty=format:"%C(green)%h\\ %C(yellow)[%ad]%Cred%d\\ %Creset%s%Cblue\\ [%cn]"
     lg = log
+    mg = merge
+    pl = pull -v
+    ps = push
     rm = remote
+    rf = reset --soft
+    rh = reset --hard
+    rs = reset
+    sl = stash list
+    sp = stash apply
+    sd = stash drop
+    sa = stash
+    ss = status --short
     st = status
     un = reset HEAD --
 
