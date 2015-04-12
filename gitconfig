@@ -24,7 +24,7 @@
     lg = log
     mg = merge
     pl = pull -v
-    ps = push
+    ps = push -v
     rm = remote
     rf = reset --soft
     rh = reset --hard
@@ -41,3 +41,5 @@
     diff = auto
     status = auto
     branch = auto
+[push]
+	default = simple
