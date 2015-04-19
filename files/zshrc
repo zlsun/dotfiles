@@ -39,7 +39,7 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 # HIST_STAMPS="mm/dd/yyyy"
 
 # Would you like to use another custom folder than $ZSH/custom?
-ZSH_CUSTOM=$DOTFILES/zsh-custom
+ZSH_CUSTOM=~/.zsh-custom
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
@@ -243,11 +243,13 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-alias sgi="sudo apt-get install"
-alias sgr="sudo apt-get remove"
 alias sga="sudo apt-get autoremove"
-alias sgu="sudo apt-get update"
-alias sgg="sudo apt-get upgrade"
 alias sgd="sudo apt-get dist-upgrade"
+alias sgg="sudo apt-get upgrade"
+alias sgi="sudo apt-get install"
+alias sgp="sudo apt-get remove --purge"
+alias sgr="sudo apt-get remove"
+alias sgf="apt-file search"
+alias sgu="sudo apt-get update"
 
 
