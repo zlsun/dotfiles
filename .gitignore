@@ -1,0 +1,4 @@
+
+files/pip/*
+!files/pip/pip.conf
+
