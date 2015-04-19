@@ -8,17 +8,17 @@ link() {
     file=$DOTFILES/files/$1
     dot=~/.$1
     bak=~/.$1.bak
-    printf "[linking] %-30s -> %s\n" $dot $file
+    echo "[Linking] $1"
     if [ -h $dot ]; then
         if [ "$(readlink $dot)" != "$file" ]; then
-            printf "Different symlink, backup\n"
+            echo "Different symlink, backup"
             mv $dot $bak
         else
-            printf "Already linked!\n"
+            echo "Already linked!"
             return 0
         fi
     elif [ -e $dot ]; then
-        printf "Already exist, backup\n"
+        echo "Already exist, backup"
         mv $dot $bak
     fi
     ln -s $file $dot
@@ -27,22 +27,20 @@ link() {
 link_all() {
     for each in $DOTFILES/files/*; do
         if [ -e $each ]; then
-            link `basename $each` 
+            link `basename $each`
         fi
     done
-    echo "dotfiles linked"
-    return 0
+    echo "[All linked]"
 }
 
 git_clone() {
     if ! [[ -d ~/.oh-my-zsh ]]; then
-	git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+        git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
     fi
     if ! [[ -d ~/.vim/bundle/vundle ]]; then
         git clone http://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
     fi
     vi +BundleInstall +qall
-    return 0
 }
 
 link_all
