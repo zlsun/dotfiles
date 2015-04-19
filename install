@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 
 CURRENT_FILE=$(readlink -f "$0")
-SCRIPT_DIR=$(dirname "$CURRENT_FILE")
-DOTFILES=$(dirname "$SCRIPT_DIR")
+DOTFILES=$(dirname "$CURRENT_FILE")
 
 link() {
     # link dot -> file, if dot exists, backup it to bak
-    file=$DOTFILES/$1
+    file=$DOTFILES/files/$1
     dot=~/.$1
     bak=~/.$1.bak
     printf "[linking] %-30s -> %s\n" $dot $file
@@ -25,34 +24,15 @@ link() {
     ln -s $file $dot
 }
 
-# bash
-link bashrc
-link bash_aliases
-link bash_completion
-link bash_funcs
-link bash_logout
-link profile
-
-# vim
-link vim
-link vimrc
-link vimrc.bundles
-# link vimrc.local
-# link vimrc.before.local
-# link vimrc.bundles.local
-# link gvimrc.local
-link NERDTreeBookmarks
-
-# zsh
-link zshrc
-link zshenv
-link warprc
-
-# others
-link gtkrc-2.0
-link gitconfig
-link pydistutils.cfg
-link pip
+link_all() {
+    for each in $DOTFILES/files/*; do
+        if [ -e $each ]; then
+            link `basename $each` 
+        fi
+    done
+    echo "dotfiles linked"
+    return 0
+}
 
 git_clone() {
     if ! [[ -d ~/.oh-my-zsh ]]; then
@@ -65,5 +45,6 @@ git_clone() {
     return 0
 }
 
+link_all
 git_clone
 
