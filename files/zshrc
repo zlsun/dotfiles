@@ -252,4 +252,7 @@ alias sgr="sudo apt-get remove"
 alias sgf="apt-file search"
 alias sgu="sudo apt-get update"
 
+alias la='ls -laFh'
+
+alias v=vim
 
