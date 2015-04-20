@@ -35,7 +35,7 @@ silent function! WINDOWS()
 endfunction
 
 if !WINDOWS()
-    set shell=/bin/sh
+    set shell=/bin/zsh
 endif
 
 " On Windows, also use '.vim' instead of 'vimfiles'; this makes synchronization
