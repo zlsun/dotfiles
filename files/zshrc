@@ -256,3 +256,5 @@ alias la='ls -laFh'
 
 alias v=vim
 
+eval `dircolors ~/.dircolors`
+
