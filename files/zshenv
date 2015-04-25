@@ -46,3 +46,6 @@ export MANPATH="/usr/local/man:$MANPATH"
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
 
+# inlude paths
+export CPLUS_INCLUDE_PATH="/home/zlsun/Desktop/working/sunlib/include/"
+
