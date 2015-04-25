@@ -161,7 +161,7 @@ gradle        # build automation tool http://www.gradle.org/
 
 # bundler    # package manager http://bundler.io/
 # capistrano # remote deployment tool
-# gem        # http://rubygems.org/
+gem        # http://rubygems.org/
 # jruby      # JRuby aliases
 # pow        # rack apps restarter http://pow.cx/
 # powder     # powder gem autocompletion https://github.com/Rodreegez/powder
