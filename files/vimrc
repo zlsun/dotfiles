@@ -1,27 +1,8 @@
 
-" ==============================================================================
-" Setup Vundle
-" ==============================================================================
-
 set nocompatible        " Must be first line
 
-filetype off
-set rtp+=~/.vim/bundle/vundle
-call vundle#begin()
-source ~/.vimrc.bundles
-call vundle#end()
-
-" Add an UnBundle command
-function! UnBundle(arg, ...)
-    let bundle = vundle#config#init_bundle(a:arg, a:000)
-    call fiiter(g:vundle#bundles, 'v:val["name_spec"] != "' . a:arg . '"')
-endfunction
-
-com! -nargs=+ UnBundle call UnBundle(<args>)
-
-
 " ==============================================================================
-" Settings
+" Platform settings
 " ==============================================================================
 
 silent function! OSX()
@@ -53,6 +34,28 @@ if WINDOWS()
     setglobal fileencoding=utf-8
   endif
 endif
+
+" ==============================================================================
+" Setup Vundle
+" ==============================================================================
+
+filetype off
+set rtp+=~/.vim/bundle/vundle
+call vundle#begin()
+source ~/.vimrc.bundles
+call vundle#end()
+
+" Add an UnBundle command
+function! UnBundle(arg, ...)
+    let bundle = vundle#config#init_bundle(a:arg, a:000)
+    call fiiter(g:vundle#bundles, 'v:val["name_spec"] != "' . a:arg . '"')
+endfunction
+
+com! -nargs=+ UnBundle call UnBundle(<args>)
+
+" ==============================================================================
+" Settings
+" ==============================================================================
 
 set sessionoptions=blank,buffers,curdir,folds,tabpages,winsize,globals,help,localoptions,options,resize,winpos
 set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
@@ -139,6 +142,7 @@ set tabpagemax=15           " Only show 15 tabs
 set showmode                " Display the current mode
 set cursorline              " Highlight current line
 set rnu                     " Enable relative line number
+set noeb vb t_vb=           " Disable beeping
 
 highlight clear SignColumn      " SignColumn should match background
 highlight clear LineNr          " Current line number row will have same background color in relative mode
@@ -172,7 +176,7 @@ if has('gui_running')
     elseif OSX()
         set guifont=Andale\ Mono\ Regular:h12,Menlo\ Regular:h11,Consolas\ Regular:h12,Courier\ New\ Regular:h14
     elseif WINDOWS()
-        set guifont=Andale_Mono:h10,Menlo:h10,Consolas:h10,Courier_New:h10
+        set guifont=Andale_Mono:h10,Menlo:h10,Consolas:h11,Courier_New:h10
     endif
 else
     if &term == 'xterm' || &term == 'screen'
@@ -261,19 +265,19 @@ inoremap <c-s> <Esc>:Update<CR>
 
 " Spell Check
 " see: http://vim.wikia.com/wiki/Toggle_spellcheck_with_function_keys
-let b:spell_lang_index=0
+let g:spell_lang_index=0
 let g:spell_lang_list=["nospell","en"]
 function! ToggleSpell()
-    let b:spell_lang_index=b:spell_lang_index+1
-    if b:spell_lang_index>=len(g:spell_lang_list)
-        let b:spell_lang_index=0
+    let g:spell_lang_index=g:spell_lang_index+1
+    if g:spell_lang_index>=len(g:spell_lang_list)
+        let g:spell_lang_index=0
     endif
-    if b:spell_lang_index==0
+    if g:spell_lang_index==0
         setlocal nospell
     else
-        execute "setlocal spell spelllang=".get(g:spell_lang_list, b:spell_lang_index)
+        execute "setlocal spell spelllang=".get(g:spell_lang_list, g:spell_lang_index)
     endif
-    echo "spell checking language:" g:spell_lang_list[b:spell_lang_index]
+    echo "spell checking language:" g:spell_lang_list[g:spell_lang_index]
 endfunction
 nmap <silent> <F7> :call ToggleSpell()<CR>
 
@@ -728,57 +732,43 @@ nnoremap <silent> <Leader>so :source %<CR>
 
         " Plugin key-mappings {
             " These two lines conflict with the default digraph mapping of <C-K>
-            if !exists('g:spf13_no_neosnippet_expand')
-                imap <C-k> <Plug>(neosnippet_expand_or_jump)
-                smap <C-k> <Plug>(neosnippet_expand_or_jump)
-            endif
-            if exists('g:spf13_noninvasive_completion')
-                inoremap <CR> <CR>
-                " <ESC> takes you out of insert mode
-                inoremap <expr> <Esc>   pumvisible() ? "\<C-y>\<Esc>" : "\<Esc>"
-                " <CR> accepts first, then sends the <CR>
-                inoremap <expr> <CR>    pumvisible() ? "\<C-y>\<CR>" : "\<CR>"
-                " <Down> and <Up> cycle like <Tab> and <S-Tab>
-                inoremap <expr> <Down>  pumvisible() ? "\<C-n>" : "\<Down>"
-                inoremap <expr> <Up>    pumvisible() ? "\<C-p>" : "\<Up>"
-                " Jump up and down the list
-                inoremap <expr> <C-d>   pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<C-d>"
-                inoremap <expr> <C-u>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<C-u>"
-            else
-                " <C-k> Complete Snippet
-                " <C-k> Jump to next snippet point
-                imap <silent><expr><C-k> neosnippet#expandable() ?
-                            \ "\<Plug>(neosnippet_expand_or_jump)" : (pumvisible() ?
-                            \ "\<C-e>" : "\<Plug>(neosnippet_expand_or_jump)")
-                smap <TAB> <Right><Plug>(neosnippet_jump_or_expand)
+            imap <C-k> <Plug>(neosnippet_expand_or_jump)
+            smap <C-k> <Plug>(neosnippet_expand_or_jump)
 
-                inoremap <expr><C-g> neocomplete#undo_completion()
-                inoremap <expr><C-l> neocomplete#complete_common_string()
-                "inoremap <expr><CR> neocomplete#complete_common_string()
+            " <C-k> Complete Snippet
+            " <C-k> Jump to next snippet point
+            imap <silent><expr><C-k> neosnippet#expandable() ?
+                        \ "\<Plug>(neosnippet_expand_or_jump)" : (pumvisible() ?
+                        \ "\<C-e>" : "\<Plug>(neosnippet_expand_or_jump)")
+            smap <TAB> <Right><Plug>(neosnippet_jump_or_expand)
 
-                " <CR>: close popup
-                " <s-CR>: close popup and save indent.
-                inoremap <expr><s-CR> pumvisible() ? neocomplete#smart_close_popup()"\<CR>" : "\<CR>"
+            inoremap <expr><C-g> neocomplete#undo_completion()
+            inoremap <expr><C-l> neocomplete#complete_common_string()
+            "inoremap <expr><CR> neocomplete#complete_common_string()
 
-                function! CleverCr()
-                    if pumvisible()
-                        if neosnippet#expandable()
-                            let exp = "\<Plug>(neosnippet_expand)"
-                            return exp . neocomplete#smart_close_popup()
-                        else
-                            return neocomplete#smart_close_popup()
-                        endif
+            " <CR>: close popup
+            " <s-CR>: close popup and save indent.
+            inoremap <expr><s-CR> pumvisible() ? neocomplete#smart_close_popup()"\<CR>" : "\<CR>"
+
+            function! CleverCr()
+                if pumvisible()
+                    if neosnippet#expandable()
+                        let exp = "\<Plug>(neosnippet_expand)"
+                        return exp . neocomplete#smart_close_popup()
                     else
-                        return "\<CR>"
+                        return neocomplete#smart_close_popup()
                     endif
-                endfunction
+                else
+                    return "\<CR>"
+                endif
+            endfunction
 
-                " <CR> close popup and save indent or expand snippet
-                imap <expr> <CR> CleverCr()
-                " <C-h>, <BS>: close popup and delete backword char.
-                inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-                inoremap <expr><C-y> neocomplete#smart_close_popup()
-            endif
+            " <CR> close popup and save indent or expand snippet
+            imap <expr> <CR> CleverCr()
+            " <C-h>, <BS>: close popup and delete backword char.
+            inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+            inoremap <expr><C-y> neocomplete#smart_close_popup()
+
             " <TAB>: completion.
             inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
             inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<TAB>"
@@ -846,53 +836,40 @@ nnoremap <silent> <Leader>so :source %<CR>
             " These two lines conflict with the default digraph mapping of <C-K>
             imap <C-k> <Plug>(neosnippet_expand_or_jump)
             smap <C-k> <Plug>(neosnippet_expand_or_jump)
-            if exists('g:spf13_noninvasive_completion')
-                inoremap <CR> <CR>
-                " <ESC> takes you out of insert mode
-                inoremap <expr> <Esc>   pumvisible() ? "\<C-y>\<Esc>" : "\<Esc>"
-                " <CR> accepts first, then sends the <CR>
-                inoremap <expr> <CR>    pumvisible() ? "\<C-y>\<CR>" : "\<CR>"
-                " <Down> and <Up> cycle like <Tab> and <S-Tab>
-                inoremap <expr> <Down>  pumvisible() ? "\<C-n>" : "\<Down>"
-                inoremap <expr> <Up>    pumvisible() ? "\<C-p>" : "\<Up>"
-                " Jump up and down the list
-                inoremap <expr> <C-d>   pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<C-d>"
-                inoremap <expr> <C-u>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<C-u>"
-            else
-                imap <silent><expr><C-k> neosnippet#expandable() ?
-                            \ "\<Plug>(neosnippet_expand_or_jump)" : (pumvisible() ?
-                            \ "\<C-e>" : "\<Plug>(neosnippet_expand_or_jump)")
-                smap <TAB> <Right><Plug>(neosnippet_jump_or_expand)
+            imap <silent><expr><C-k> neosnippet#expandable() ?
+                        \ "\<Plug>(neosnippet_expand_or_jump)" : (pumvisible() ?
+                        \ "\<C-e>" : "\<Plug>(neosnippet_expand_or_jump)")
+            smap <TAB> <Right><Plug>(neosnippet_jump_or_expand)
 
-                inoremap <expr><C-g> neocomplcache#undo_completion()
-                inoremap <expr><C-l> neocomplcache#complete_common_string()
-                "inoremap <expr><CR> neocomplcache#complete_common_string()
+            inoremap <expr><C-g> neocomplcache#undo_completion()
+            inoremap <expr><C-l> neocomplcache#complete_common_string()
+            "inoremap <expr><CR> neocomplcache#complete_common_string()
 
-                function! CleverCr()
-                    if pumvisible()
-                        if neosnippet#expandable()
-                            let exp = "\<Plug>(neosnippet_expand)"
-                            return exp . neocomplcache#close_popup()
-                        else
-                            return neocomplcache#close_popup()
-                        endif
+            function! CleverCr()
+                if pumvisible()
+                    if neosnippet#expandable()
+                        let exp = "\<Plug>(neosnippet_expand)"
+                        return exp . neocomplcache#close_popup()
                     else
-                        return "\<CR>"
+                        return neocomplcache#close_popup()
                     endif
-                endfunction
+                else
+                    return "\<CR>"
+                endif
+            endfunction
 
-                " <CR> close popup and save indent or expand snippet
-                imap <expr> <CR> CleverCr()
+            " <CR> close popup and save indent or expand snippet
+            imap <expr> <CR> CleverCr()
 
-                " <CR>: close popup
-                " <s-CR>: close popup and save indent.
-                inoremap <expr><s-CR> pumvisible() ? neocomplcache#close_popup()"\<CR>" : "\<CR>"
-                "inoremap <expr><CR> pumvisible() ? neocomplcache#close_popup() : "\<CR>"
+            " <CR>: close popup
+            " <s-CR>: close popup and save indent.
+            inoremap <expr><s-CR> pumvisible() ? neocomplcache#close_popup()"\<CR>" : "\<CR>"
+            "inoremap <expr><CR> pumvisible() ? neocomplcache#close_popup() : "\<CR>"
 
-                " <C-h>, <BS>: close popup and delete backword char.
-                inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-                inoremap <expr><C-y> neocomplcache#close_popup()
-            endif
+            " <C-h>, <BS>: close popup and delete backword char.
+            inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+            inoremap <expr><C-y> neocomplcache#close_popup()
+
             " <TAB>: completion.
             inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
             inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<TAB>"
@@ -942,10 +919,8 @@ nnoremap <silent> <Leader>so :source %<CR>
         let g:neosnippet#enable_snipmate_compatibility = 1
 
         " For snippet_complete marker.
-        if !exists("g:spf13_no_conceal")
-            if has('conceal')
-                set conceallevel=2 concealcursor=i
-            endif
+        if has('conceal')
+            set conceallevel=2 concealcursor=i
         endif
 
         " Enable neosnippets when using go
