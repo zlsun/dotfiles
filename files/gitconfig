@@ -30,7 +30,7 @@
     mg = merge
     pl = pull -v
     ps = push -v
-    rm = remote
+    re = remote
     rf = reset --soft
     rh = reset --hard
     rs = reset
