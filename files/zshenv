@@ -18,9 +18,10 @@ export GOPATH=~/golang
 export GOBIN=$GOROOT/bin
 export PATH=$GOBIN:$PATH
 
+export PATH=~/.local/bin:$PATH
+
 # include paths
-export C_INCLUDE_PATH=$C_INLUDE_PATH:~/Desktop/working/sunlib/include/
-export CPLUS_INCLUDE_PATH=$CPLUS_INLUDE_PATH:~/Desktop/working/sunlib/include/
+export CPLUS_INCLUDE_PATH=~/Desktop/working/sunlib/include/
 
 # cabal
 export PATH=$HOME/.cabal/bin:$PATH
@@ -45,7 +46,4 @@ export MANPATH="/usr/local/man:$MANPATH"
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
-
-# inlude paths
-export CPLUS_INCLUDE_PATH="/home/zlsun/Desktop/working/sunlib/include/"
 
