@@ -87,7 +87,7 @@ sublime                  # aliases for SublimeText Editor
 # torrent                  # magnet2torrent converter function
 # urltools                 # urlencode/urldecode etc
 # vi-mode                  # self descriptive
-# vundle                   # Vim plugin manager http://github.com/gmarik/vundle
+vundle                   # Vim plugin manager http://github.com/gmarik/vundle
 # wakeonlan                # funcs for wakeonlan tool
 web-search               # google from CLI
 
@@ -143,8 +143,8 @@ gradle        # build automation tool http://www.gradle.org/
 # Node JS
 
 # jake-node # NodeJS build tool Jake https://github.com/mde/jake
-# node      # NodeJS docs easy access via CLI
-# npm       # package manager for NodeJS
+node      # NodeJS docs easy access via CLI
+npm       # package manager for NodeJS
 # nvm       # NodeJS version manager
 
 # PHP
@@ -170,7 +170,7 @@ gem        # http://rubygems.org/
 # rake       # Ruby build tool
 # rbenv      # Ruby version switcher
 # rbfu       # [OBSOLETE] anther Ruby version manager https://github.com/hmans/rbfu
-# ruby       # aliases
+ruby       # aliases
 # rvm        # another RubyVersionManager
 # thor       # Ruby doc tool https://github.com/erikhuda/thor
 # zeus       # funcs for Zeus (Rails env preloader) https://github.com/burke/zeus
@@ -251,8 +251,12 @@ alias sgp="sudo apt-get remove --purge"
 alias sgr="sudo apt-get remove"
 alias sgf="apt-file search"
 alias sgu="sudo apt-get update"
+
 alias v=vim
 alias vimrc='vim ~/.vimrc'
+
+alias fuck='eval $(thefuck $(fc -ln -1))'
+alias f=fuck
 
 eval `dircolors ~/.dircolors`
 
