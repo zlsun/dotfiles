@@ -71,21 +71,19 @@ if has('clipboard')
     endif
 endif
 
-set timeoutlen=1000 ttimeoutlen=0
+set timeoutlen=500 ttimeoutlen=0
 " set autowrite                       " Automatically write a file when leaving a modified buffer
 set shortmess+=filmnrxoOtT          " Abbrev. of messages (avoids 'hit enter')
 set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatibility
 set virtualedit=onemore             " Allow for cursor beyond last character
 set history=1000                    " Store a ton of history (default is 20)
-set spell                           " Spell checking on
+set nospell                         " Spell checking off
 set hidden                          " Allow buffer switching without saving
 set iskeyword-=.                    " '.' is an end of word designator
 set iskeyword-=#                    " '#' is an end of word designator
 set iskeyword-=-                    " '-' is an end of word designator
 
 set backspace=indent,eol,start  " Backspace for dummies
-set linespace=0                 " No extra spaces between rows
-set number                      " Line numbers on
 set showmatch                   " Show matching brackets/parenthesis
 set incsearch                   " Find as you type search
 set hlsearch                    " Highlight search terms
@@ -98,8 +96,6 @@ set whichwrap=b,s,h,l,<,>,[,]   " Backspace and cursor keys wrap too
 set scrolljump=5                " Lines to scroll when cursor leaves screen
 set scrolloff=3                 " Minimum lines to keep above and below cursor
 set foldenable                  " Auto fold code
-set list
-set listchars=tab:›\ ,trail:•,extends:#,nbsp:. " Highlight problematic whitespace
 
 set nowrap                      " Do not wrap long lines
 set autoindent                  " Indent at the same level of the previous line
@@ -139,10 +135,17 @@ set background=dark         " Assume a dark background
 set mouse=a                 " Automatically enable mouse usage
 set mousehide               " Hide the mouse cursor while typing
 set tabpagemax=15           " Only show 15 tabs
+set linespace=0             " No extra spaces between rows
 set showmode                " Display the current mode
 set cursorline              " Highlight current line
-set rnu                     " Enable relative line number
+set number                  " Line numbers on
+set relativenumber          " Enable relative line number
 set noeb novb t_vb=         " Disable beeping
+
+" Custom invisibles
+set list
+set listchars=tab:›\ ,trail:•,extends:❯,precedes:❮,nbsp:.
+set showbreak=↪
 
 highlight clear SignColumn      " SignColumn should match background
 highlight clear LineNr          " Current line number row will have same background color in relative mode
@@ -151,8 +154,7 @@ highlight clear LineNr          " Current line number row will have same backgro
 if has('cmdline_info')
     set ruler                   " Show the ruler
     set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%) " A ruler on steroids
-    set showcmd                 " Show partial commands in status line and
-                                " Selected characters/lines in visual mode
+    set showcmd                 " Show partial commands in status line and selected characters/lines in visual mode
 endif
 
 if has('statusline')
@@ -182,7 +184,6 @@ else
     if &term == 'xterm' || &term == 'screen'
         set t_Co=256             " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
     endif
-    "set term=builtin_ansi       " Make arrow and other keys work
 endif
 
 
@@ -213,7 +214,7 @@ augroup resCur
 augroup END
 
 " Remove trailing whitespaces and ^M chars
-autocmd FileType c,cpp,java,go,php,javascript,puppet,python,rust,twig,xml,yml,perl,sql
+autocmd FileType c,cpp,java,go,php,javascript,puppet,python,rust,twig,xml,yml,perl,sql,nasm
     \ autocmd BufWritePre <buffer> call StripTrailingWhitespace()
 "autocmd FileType go autocmd BufWritePre <buffer> Fmt
 autocmd BufNewFile,BufRead *.html.twig set filetype=html.twig
@@ -226,7 +227,6 @@ autocmd BufNewFile,BufRead *.coffee set filetype=coffee
 autocmd FileType haskell setlocal commentstring=--\ %s
 " Workaround broken colour highlighting in Haskell
 autocmd FileType haskell,rust setlocal nospell
-
 
 " ==============================================================================
 " Key mappings
@@ -247,7 +247,7 @@ map <Space><Space> <Leader><Leader>
 map ; :
 noremap ;; ;
 
-" Map S to write current file because S is the same as cc
+" Map S to replace is the same as cc
 nmap S :%s///g<Left><Left><Left>
 
 " If the current buffer has never been saved, it will have no name,
@@ -265,8 +265,10 @@ inoremap <c-s> <Esc>:Update<CR>
 
 " Spell Check
 " see: http://vim.wikia.com/wiki/Toggle_spellcheck_with_function_keys
-let g:spell_lang_index=0
+
+let g:spell_lang_index=1
 let g:spell_lang_list=["nospell","en"]
+
 function! ToggleSpell()
     let g:spell_lang_index=g:spell_lang_index+1
     if g:spell_lang_index>=len(g:spell_lang_list)
@@ -279,7 +281,9 @@ function! ToggleSpell()
     endif
     echo "spell checking language:" g:spell_lang_list[g:spell_lang_index]
 endfunction
+
 nmap <silent> <F7> :call ToggleSpell()<CR>
+imap <silent> <F7> <C-O>: call ToggleSpell()<CR>
 
 " Easier moving in tabs and windows
 " The lines conflict with the default digraph mapping of <C-K>
@@ -407,22 +411,23 @@ map zh zH
 " Easier formatting
 nnoremap <silent> <leader>q gwip
 
-" FIXME: Revert this f70be548
-" fullscreen mode for GVIM and Terminal, need 'wmctrl' in you PATH
+" Fullscreen mode for GVIM and Terminal, need 'wmctrl' in you PATH
 map <silent> <F11> :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
 
-nnoremap <Leader>w <C-W>
+map <Leader>w <C-W>
 
-nnoremap <silent> <Leader>tn :tabnew<CR>
-nnoremap <silent> <Leader>tc :tabclose<CR>
-nnoremap <silent> <Leader>to :tabonly<CR>
-nnoremap <silent> <Leader>tj :tabprevious<CR>
-nnoremap <silent> <Leader>tk :tabnext<CR>
-nnoremap <silent> <Leader>th :tabfirst<CR>
-nnoremap <silent> <Leader>tl :tablast<CR>
+map <silent> <Leader>tn :tabnew<CR>
+map <silent> <Leader>tc :tabclose<CR>
+map <silent> <Leader>to :tabonly<CR>
+map <silent> <Leader>tj :tabprevious<CR>
+map <silent> <Leader>tk :tabnext<CR>
+map <silent> <Leader>th :tabfirst<CR>
+map <silent> <Leader>tl :tablast<CR>
 
-nnoremap <silent> <Leader>so :source %<CR>
+map <silent> <Leader>so :source %<CR>
 
+inoremap jk <Esc>
+inoremap kj <Esc>
 
 " ==============================================================================
 " Plugins
@@ -937,9 +942,9 @@ nnoremap <silent> <Leader>so :source %<CR>
 " Haskell post write lint and check with ghcmod
 " $ `cabal install ghcmod` if missing and ensure
 " ~/.cabal/bin is in your $PATH.
-if !executable("ghcmod")
-    autocmd BufWritePost *.hs GhcModCheckAndLintAsync
-endif
+" if !executable("ghcmod")
+    " autocmd BufWritePost *.hs GhcModCheckAndLintAsync
+" endif
 
 " UndoTree {
     if isdirectory(expand("~/.vim/bundle/undotree/"))
