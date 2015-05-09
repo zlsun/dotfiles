@@ -9,6 +9,7 @@ let g:bundle_groups=['general', 'writing', 'neocomplcache',
 Plugin 'gmarik/vundle'
 Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'tomtom/tlib_vim'
+
 if executable('ag')
     Plugin 'mileszs/ack.vim'
     let g:ackprg = 'ag --nogroup --nocolor --column --smart-case'
@@ -162,7 +163,6 @@ if count(g:bundle_groups, 'elixir')
 endif
 
 if count(g:bundle_groups, 'misc')
-    Plugin 'rust-lang/rust.vim'
     Plugin 'tpope/vim-markdown'
     Plugin 'spf13/vim-preview'
     Plugin 'tpope/vim-cucumber'
