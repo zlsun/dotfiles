@@ -228,6 +228,7 @@ sudo
 
 # custom plugins
 plugins+=(
+umake
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -254,6 +255,8 @@ alias sgu="sudo apt-get update"
 
 alias v=vim
 alias vimrc='vim ~/.vimrc'
+
+alias -g X='| xargs'
 
 alias fuck='eval $(thefuck $(fc -ln -1))'
 alias f=fuck
