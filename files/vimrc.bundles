@@ -3,8 +3,8 @@
 " Plugins
 " ==============================================================================
 
-let g:bundle_groups=['general', 'writing', 'neocomplcache',
-            \'programming', 'haskell', 'python', 'javascript', 'html', 'misc',]
+let g:bundle_groups=['general', 'writing', 'neocomplcache', 'programming',
+    \'haskell', 'python', 'javascript', 'html', 'misc',]
 
 Plugin 'gmarik/vundle'
 Plugin 'MarcWeber/vim-addon-mw-utils'
