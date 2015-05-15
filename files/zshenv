@@ -1,5 +1,7 @@
 # User environment variables
 
+unset JAVA_TOOL_OPTIONS
+
 # JDK
 export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
 export JRE_HOME=${JAVA_HOME}/jre
