@@ -109,14 +109,13 @@ set splitbelow                  " Puts new split windows to the bottom of the cu
 set pastetoggle=<F12>           " pastetoggle (sane indentation on pastes)
 "set comments=sl:/*,mb:*,elx:*/  " auto format comment blocks
 
-" Setting up the directories {
-set backup                  " Backups are nice ...
+" Setting up the directories
+set backup                      " Backups are nice ...
 if has('persistent_undo')
     set undofile                " So is persistent undo ...
     set undolevels=1000         " Maximum number of changes that can be undone
     set undoreload=10000        " Maximum number lines to save for undo on a buffer reload
 endif
-" }
 
 " Add exclusions to mkview and loadview
 " eg: *.*, svn-commit.tmp
@@ -144,7 +143,7 @@ set noeb novb t_vb=         " Disable beeping
 " Custom invisibles
 set list
 set listchars=tab:›\ ,trail:•,extends:❯,precedes:❮,nbsp:.
-set showbreak=↪
+set showbreak=↪\ \ 
 
 highlight clear SignColumn      " SignColumn should match background
 highlight clear LineNr          " Current line number row will have same background color in relative mode
@@ -317,6 +316,11 @@ map <C-K> <C-W>k
 map <C-L> <C-W>l
 map <C-H> <C-W>h
 
+" For some reason, vim registers <C-/> as <C-_>
+nmap <C-_> <Leader>c<Space>
+vmap <C-_> <Leader>c<Space>gv
+map <C-?> <Leader>cm
+
 " Easier formatting
 nnoremap <silent> <leader>q gwip
 
@@ -479,10 +483,7 @@ vnoremap <silent> ^ :<C-U>call WrapRelativeMotion("^", 1)<CR>
     endif
 " }
 
-" Misc {
-    if isdirectory(expand("~/.vim/bundle/nerdtree"))
-        let g:NERDShutUp=1
-    endif
+" matchit {
     if isdirectory(expand("~/.vim/bundle/matchit.zip"))
         let b:match_ignorecase = 1
     endif
@@ -550,6 +551,7 @@ vnoremap <silent> ^ :<C-U>call WrapRelativeMotion("^", 1)<CR>
         let NERDTreeMouseMode=2
         let NERDTreeShowHidden=1
         let NERDTreeKeepTreeInNewTab=1
+        let g:NERDShutUp=1
         let g:nerdtree_tabs_open_on_gui_startup=0
     endif
 " }
@@ -962,7 +964,7 @@ vnoremap <silent> ^ :<C-U>call WrapRelativeMotion("^", 1)<CR>
     endif
 " }
 
-" indent_guides {
+" Indent guides {
     if isdirectory(expand("~/.vim/bundle/vim-indent-guides/"))
         let g:indent_guides_auto_colors=1
         let g:indent_guides_start_level = 2
@@ -1013,6 +1015,11 @@ vnoremap <silent> ^ :<C-U>call WrapRelativeMotion("^", 1)<CR>
     let g:syntastic_cpp_compiler_options = ' -std=c++11'
 " }
 
+" ack.vim {
+    cmap ack Ack
+    let g:ackhighlight = 1
+" }
+
 " ==============================================================================
 " Functions
 " ==============================================================================
@@ -1033,10 +1040,10 @@ vnoremap <silent> ^ :<C-U>call WrapRelativeMotion("^", 1)<CR>
         " To specify a different directory in which to place the vimbackup,
         " vimviews, vimundo, and vimswap files/directories, add the following to
         " your .vimrc.before.local file:
-        "   let g:spf13_consolidated_directory = <full path to desired directory>
-        "   eg: let g:spf13_consolidated_directory = $HOME . '/.vim/'
-        if exists('g:spf13_consolidated_directory')
-            let common_dir = g:spf13_consolidated_directory . prefix
+        "   let g:consolidated_directory = <full path to desired directory>
+        "   eg: let g:consolidated_directory = $HOME . '/.vim/'
+        if exists('g:consolidated_directory')
+            let common_dir = g:consolidated_directory . prefix
         else
             let common_dir = parent . '/.' . prefix
         endif
@@ -1057,7 +1064,10 @@ vnoremap <silent> ^ :<C-U>call WrapRelativeMotion("^", 1)<CR>
             endif
         endfor
     endfunction
+
+    let g:consolidated_directory = $HOME . '/.vim/'
     call InitializeDirectories()
+
 " }
 
 " Initialize NERDTree as needed {
