@@ -73,7 +73,7 @@ history                  # aliases: h for history, hsi for grepping history
 # per-directory-history    # self-descriptive
 # profiles                 # different zsh profiles per hostname
 # rsync                    # aliases
-safe-paste               # extended copy/paste in terminal
+# safe-paste               # extended copy/paste in terminal
 # screen                   # GNU screen enhances (titles etc)
 # sprunge                  # CLI pastbin service sprunge.us uploader (http://www.shellperson.net/sprunge-pastebin-script/)
 # ssh-agent                # ssh-agent start script
