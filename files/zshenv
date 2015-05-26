@@ -2,36 +2,57 @@
 
 unset JAVA_TOOL_OPTIONS
 
+export DEV_HOME=~/dev
+
 # JDK
 export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
 export JRE_HOME=${JAVA_HOME}/jre
 export CLASSPATH=$CLASSPATH:.:${JAVA_HOME}/lib:${JRE_HOME}/lib
-export PATH=$PATH:${JAVA_HOME}:${JAVA_HOME}/bin:${JAVA_HOME}/lib:${JRE_HOME}/bin
+export PATH=${JAVA_HOME}:${JAVA_HOME}/bin:${JAVA_HOME}/lib:${JRE_HOME}/bin:$PATH
 
-# Android-SDK
-export ANDROID_SDK=~/Android/android-sdk-linux
-export PATH=$ANDROID_SDK/platform-tools:$ANDROID_SDK/tools:$PATH
+# Android SDK
+export ANDROID_SDK_ROOT=$DEV_HOME/android/sdk
+export PATH=$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/tools:$PATH
+
+# Android NDK
+export ANDROID_NDK_ROOT=$DEV_HOME/android/ndk
+export PATH=$ANDROID_NDK_ROOT/platform-tools:$ANDROID_NDK_ROOT/tools:$PATH
+
+# ANT
+export ANT_ROOT=/usr/share/ant/bin
+export PATH=$ANT_ROOT:$PATH
+
+# cocos2d-x
+export COCOS2DX=$DEV_HOME/cocos/cocos2d-x
+
+## COCOS_CONSOLE_ROOT
+export COCOS_CONSOLE_ROOT=$COCOS2DX/tools/cocos2d-console/bin
+export PATH=$COCOS_CONSOLE_ROOT:$PATH
+
+## COCOS_TEMPLATES_ROOT
+export COCOS_TEMPLATES_ROOT=$COCOS2DX/templates
+export PATH=$COCOS_TEMPLATES_ROOT:$PATH
 
 # Go
 export GOROOT=/usr/lib/go
 export GOARCH=amd64
 export GOOS=linux
-export GOPATH=~/golang
+export GOPATH=$DEV_HOME/golang
 export GOBIN=$GOROOT/bin
 export PATH=$GOBIN:$PATH
 
 export PATH=~/.local/bin:$PATH
 
-# include paths
-export CPLUS_INCLUDE_PATH=~/Desktop/working/sunlib/include/
-
 # cabal
 export PATH=$HOME/.cabal/bin:$PATH
+
+# include paths
+export CPLUS_INCLUDE_PATH=~/Desktop/working/sunlib/include/
 
 # dotfiles
 export DOTFILES=$HOME/dotfiles
 
-export MANPATH="/usr/local/man:$MANPATH"
+export MANPATH=/usr/local/man:$MANPATH
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
