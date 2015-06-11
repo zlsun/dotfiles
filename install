@@ -34,8 +34,8 @@ link_all() {
 }
 
 git_clone() {
-    if ! [[ -d ~/.antigen ]]; then
-        git clone https://github.com/zsh-users/antigen.git ~/.antigen
+    if ! [[ -d ~/.zgen ]]; then
+        git clone https://github.com/zlsun/zgen.git ~/.zgen
     fi
     if ! [[ -d ~/.vim/bundle/vundle ]]; then
         git clone http://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
