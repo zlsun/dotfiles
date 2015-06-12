@@ -136,5 +136,7 @@ alias -g X='| xargs'
 alias fuck='eval $(thefuck $(fc -ln -1))'
 alias f=fuck
 
+alias ka="k -a"
+
 eval `dircolors ~/.dircolors`
 
