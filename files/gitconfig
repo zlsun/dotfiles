@@ -7,6 +7,7 @@
     c = clone
     g = gui
     i = init
+    s = submodule
     ad = add
     aa = add --all
     br = branch
