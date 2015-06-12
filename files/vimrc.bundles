@@ -1,8 +1,4 @@
 
-" ==============================================================================
-" Plugins
-" ==============================================================================
-
 let g:bundle_groups=['general', 'writing', 'neocomplcache', 'programming',
     \'haskell', 'python', 'javascript', 'html', 'misc',]
 
@@ -23,26 +19,35 @@ endif
 if count(g:bundle_groups, 'general')
     Plugin 'altercation/vim-colors-solarized'
     Plugin 'flazz/vim-colorschemes'
+
     Plugin 'bling/vim-airline'
     Plugin 'bling/vim-bufferline'
-    Plugin 'nathanaelkane/vim-indent-guides'
-    Plugin 'tpope/vim-surround'
-    Plugin 'tpope/vim-repeat'
-    Plugin 'spf13/vim-autoclose'
-    Plugin 'matchit.zip'
+    Plugin 'Yggdroot/indentLine'
+    Plugin 'mhinz/vim-signify'
+
     Plugin 'ctrlpvim/ctrlp.vim'
     Plugin 'tacahiroy/ctrlp-funky'
-    Plugin 'kristijanhusak/vim-multiple-cursors'
+
     Plugin 'vim-scripts/sessionman.vim'
     Plugin 'vim-scripts/restore_view.vim'
+
     Plugin 'scrooloose/nerdtree'
     Plugin 'Xuyuanp/nerdtree-git-plugin'
     Plugin 'jistr/vim-nerdtree-tabs'
+
     Plugin 'mbbill/undotree'
+
     Plugin 'Lokaltog/vim-easymotion'
-    Plugin 'mhinz/vim-signify'
-    Plugin 'tpope/vim-abolish.git'
+    Plugin 'kristijanhusak/vim-multiple-cursors'
+
+    Plugin 'tpope/vim-surround'
+    Plugin 'tpope/vim-repeat'
+    Plugin 'spf13/vim-autoclose'
+    Plugin 'Firef0x/matchit.zip'
+
+    Plugin 'tpope/vim-abolish'
     Plugin 'osyo-manga/vim-over'
+
     Plugin 'kana/vim-textobj-user'
     Plugin 'kana/vim-textobj-indent'
     Plugin 'gcmt/wildfire.vim'
@@ -92,12 +97,6 @@ elseif count(g:bundle_groups, 'neocomplete')
     Plugin 'honza/vim-snippets'
 endif
 
-if count(g:bundle_groups, 'php')
-    Plugin 'spf13/PIV'
-    Plugin 'arnaud-lb/vim-php-namespace'
-    Plugin 'beyondwords/vim-twig'
-endif
-
 if count(g:bundle_groups, 'python')
     " Pick either python-mode or pyflakes & pydoc
     Plugin 'klen/python-mode'
@@ -106,18 +105,19 @@ if count(g:bundle_groups, 'python')
     Plugin 'pythoncomplete'
 endif
 
+if count(g:bundle_groups, 'html')
+    Plugin 'amirh/HTML-AutoCloseTag'
+    Plugin 'hail2u/vim-css3-syntax'
+    " Plugin 'gorodinskiy/vim-coloresque'
+    Plugin 'tpope/vim-haml'
+endif
+
 if count(g:bundle_groups, 'javascript')
     Plugin 'elzr/vim-json'
     Plugin 'groenewege/vim-less'
     Plugin 'pangloss/vim-javascript'
     Plugin 'briancollins/vim-jst'
     Plugin 'kchmck/vim-coffee-script'
-endif
-
-if count(g:bundle_groups, 'scala')
-    Plugin 'derekwyatt/vim-scala'
-    Plugin 'derekwyatt/vim-sbt'
-    Plugin 'xptemplate'
 endif
 
 if count(g:bundle_groups, 'haskell')
@@ -133,11 +133,10 @@ if count(g:bundle_groups, 'haskell')
     Plugin 'bitc/vim-hdevtools'
 endif
 
-if count(g:bundle_groups, 'html')
-    Plugin 'amirh/HTML-AutoCloseTag'
-    Plugin 'hail2u/vim-css3-syntax'
-    " Plugin 'gorodinskiy/vim-coloresque'
-    Plugin 'tpope/vim-haml'
+if count(g:bundle_groups, 'scala')
+    Plugin 'derekwyatt/vim-scala'
+    Plugin 'derekwyatt/vim-sbt'
+    Plugin 'xptemplate'
 endif
 
 if count(g:bundle_groups, 'ruby')
@@ -147,13 +146,13 @@ if count(g:bundle_groups, 'ruby')
     "let g:rubycomplete_rails = 1
 endif
 
-if count(g:bundle_groups, 'puppet')
-    Plugin 'rodjek/vim-puppet'
-endif
-
 if count(g:bundle_groups, 'go')
     "Plugin 'Blackrush/vim-gocode'
     Plugin 'fatih/vim-go'
+endif
+
+if count(g:bundle_groups, 'puppet')
+    Plugin 'rodjek/vim-puppet'
 endif
 
 if count(g:bundle_groups, 'elixir')
@@ -165,9 +164,10 @@ endif
 if count(g:bundle_groups, 'misc')
     Plugin 'tpope/vim-markdown'
     Plugin 'spf13/vim-preview'
-    Plugin 'DrawIt'
     Plugin 'xolox/vim-misc'
     Plugin 'xolox/vim-session'
+    Plugin 'lilydjwg/fcitx.vim'
     Plugin 'szw/vim-g'
+    Plugin 'DrawIt'
 endif
 
