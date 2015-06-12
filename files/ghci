@@ -1,0 +1,5 @@
+:def hoogle \x -> return $ ":!hoogle -c -n 10 \"" ++ x ++ "\""
+:def doc \x -> return $ ":!hoogle --info \"" ++ x ++ "\""
+
+:set prompt "ghci> "
+
