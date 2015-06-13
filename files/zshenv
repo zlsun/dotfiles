@@ -46,6 +46,9 @@ export PATH=~/.local/bin:$PATH
 # cabal
 export PATH=$HOME/.cabal/bin:$PATH
 
+# RVM
+export PATH=~/.rvm/bin:$PATH
+
 # include paths
 export CPLUS_INCLUDE_PATH=~/Desktop/working/sunlib/include/
 
