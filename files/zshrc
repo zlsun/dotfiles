@@ -122,26 +122,37 @@ find_duplicate() {
     find $dir -type f -print0 | xargs -0 -n1 md5sum | sort -k 1,32 | uniq -w 32 -d --all-repeated=separate | sed -e 's/^[0-9a-f]*\ *//;'
 }
 
+fawk() {
+    local first="awk '{print "
+    local last="}'"
+    local cmd="${first}\$${1}${last}"
+    eval $cmd
+}
+
 alias mmv='noglob zmv -W'
 
-alias sga="sudo apt-get autoremove"
-alias sgd="sudo apt-get dist-upgrade"
-alias sgg="sudo apt-get upgrade"
-alias sgi="sudo apt-get install"
-alias sgp="sudo apt-get remove --purge"
-alias sgr="sudo apt-get remove"
-alias sgf="apt-file search"
-alias sgu="sudo apt-get update"
+alias sga='sudo apt-get autoremove'
+alias sgd='sudo apt-get dist-upgrade'
+alias sgg='sudo apt-get upgrade'
+alias sgi='sudo apt-get install'
+alias sgp='sudo apt-get remove --purge'
+alias sgr='sudo apt-get remove'
+alias sgu='sudo apt-get update'
+alias sgs='apt-cache search'
+alias sgf='apt-file search'
 
-alias v=vim
+alias v='vim'
+alias svi='sudo vim'
 alias vimrc='vim ~/.vimrc'
 
 alias -g X='| xargs'
 
 alias fuck='eval $(thefuck $(fc -ln -1))'
-alias f=fuck
+alias f='fuck'
 
-alias ka="k -a"
+alias ka='k -a'
+
+alias gg='git gui'
 
 eval `dircolors ~/.dircolors`
 
