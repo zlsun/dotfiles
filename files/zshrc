@@ -86,7 +86,7 @@ if ! zgen saved; then
 
 EOBUNDLES
 
-    zgen oh-my-zsh themes/bira
+    zgen load zlsun/avit-mod avit-mod
 
     zgen save
 fi
