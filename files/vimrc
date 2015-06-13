@@ -12,23 +12,23 @@ silent function! LINUX()
     return has('unix') && !has('macunix') && !has('win32unix')
 endfunction
 silent function! WINDOWS()
-    return  (has('win16') || has('win32') || has('win64'))
+    return has('win16') || has('win32') || has('win64')
 endfunction
 
 " On Windows, also use '.vim' instead of 'vimfiles'; this makes synchronization
 " across (heterogeneous) systems easier.
 if WINDOWS()
-  set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
-  " Be nice and check for multi_byte even if the config requires
-  " multi_byte support most of the time
-  if has("multi_byte")
-    " Windows cmd.exe still uses cp850. If Windows ever moved to
-    " Powershell as the primary terminal, this would be utf-8
-    set termencoding=cp850
-    " Let Vim use utf-8 internally, because many scripts require this
-    set encoding=utf-8
-    setglobal fileencoding=utf-8
-  endif
+    set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
+    " Be nice and check for multi_byte even if the config requires
+    " multi_byte support most of the time
+    if has("multi_byte")
+        " Windows cmd.exe still uses cp850. If Windows ever moved to
+        " Powershell as the primary terminal, this would be utf-8
+        set termencoding=cp850
+        " Let Vim use utf-8 internally, because many scripts require this
+        set encoding=utf-8
+        setglobal fileencoding=utf-8
+    endif
 endif
 
 " ==============================================================================
@@ -141,10 +141,6 @@ set list
 set listchars=tab:›\ ,trail:•,extends:❯,precedes:❮,nbsp:.
 set showbreak=↪\ \ 
 
-highlight clear SignColumn      " SignColumn should match background
-highlight clear LineNr          " Current line number row will have same background color in relative mode
-"highlight clear CursorLineNr    " Remove highlight color from current line number
-
 if has('cmdline_info')
     set ruler                   " Show the ruler
     set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%) " A ruler on steroids
@@ -236,13 +232,13 @@ cmap w!! w !sudo tee % >/dev/null
 
 " Stupid shift key fixes
 if has("user_commands")
-    command! -bang -nargs=* -complete=file E e<bang> <args>
-    command! -bang -nargs=* -complete=file W w<bang> <args>
+    command! -bang -nargs=* -complete=file E   e<bang> <args>
+    command! -bang -nargs=* -complete=file W   w<bang> <args>
     command! -bang -nargs=* -complete=file Wq wq<bang> <args>
     command! -bang -nargs=* -complete=file WQ wq<bang> <args>
     command! -bang Wa wa<bang>
     command! -bang WA wa<bang>
-    command! -bang Q q<bang>
+    command! -bang Q   q<bang>
     command! -bang QA qa<bang>
     command! -bang Qa qa<bang>
 endif
@@ -299,6 +295,9 @@ vnoremap > >gv
 " http://stackoverflow.com/a/8064607/127816
 vnoremap . :normal .<CR>
 
+" http://vim.wikia.com/wiki/Selecting_your_pasted_text
+nnoremap gp `[v`]
+
 " Easier window operation
 map <Leader>w <C-W>
 
@@ -314,7 +313,21 @@ map <C-H> <C-W>h
 
 " For some reason, vim registers <C-/> as <C-_>
 nmap <C-_> <Leader>c<Space>
+imap <C-_> <C-O><Leader>c<Space>
 vmap <C-_> <Leader>c<Space>gv
+
+inoremap <C-CR> <C-O>o
+inoremap <C-S-CR> <C-O>O
+
+" move line up and down
+nnoremap <A-j> :m .+1<CR>
+nnoremap <A-k> :m .-2<CR>
+inoremap <A-j> <Esc>:m .+1<CR>gi
+inoremap <A-k> <Esc>:m .-2<CR>gi
+vnoremap <A-j> :m '>+1<CR>gv
+vnoremap <A-k> :m '<-2<CR>gv
+
+vnoremap D y`>p`[v`]
 
 " Easier formatting
 nnoremap <silent> <leader>q gwip
@@ -418,22 +431,121 @@ function! WrapRelativeMotion(key, ...)
 endfunction
 
 " Map g* keys in Normal, Operator-pending, and Visual+select
-noremap <silent> $ :call WrapRelativeMotion("$")<CR>
-noremap <silent> <End> :call WrapRelativeMotion("$")<CR>
-noremap <silent> 0 :call WrapRelativeMotion("0")<CR>
+noremap <silent> $      :call WrapRelativeMotion("$")<CR>
+noremap <silent> <End>  :call WrapRelativeMotion("$")<CR>
+noremap <silent> 0      :call WrapRelativeMotion("0")<CR>
 noremap <silent> <Home> :call WrapRelativeMotion("0")<CR>
-noremap <silent> ^ :call WrapRelativeMotion("^")<CR>
+noremap <silent> ^      :call WrapRelativeMotion("^")<CR>
 " Overwrite the operator pending $/<End> mappings from above
 " to force inclusive motion with :execute normal!
-onoremap <silent> $ v:call WrapRelativeMotion("$")<CR>
-onoremap <silent> <End> v:call WrapRelativeMotion("$")<CR>
+onoremap <silent> $ v     :call WrapRelativeMotion("$")<CR>
+onoremap <silent> <End> v :call WrapRelativeMotion("$")<CR>
 " Overwrite the Visual+select mode mappings from above
 " to ensure the correct vis_sel flag is passed to function
-vnoremap <silent> $ :<C-U>call WrapRelativeMotion("$", 1)<CR>
-vnoremap <silent> <End> :<C-U>call WrapRelativeMotion("$", 1)<CR>
-vnoremap <silent> 0 :<C-U>call WrapRelativeMotion("0", 1)<CR>
+vnoremap <silent> $      :<C-U>call WrapRelativeMotion("$", 1)<CR>
+vnoremap <silent> <End>  :<C-U>call WrapRelativeMotion("$", 1)<CR>
+vnoremap <silent> 0      :<C-U>call WrapRelativeMotion("0", 1)<CR>
 vnoremap <silent> <Home> :<C-U>call WrapRelativeMotion("0", 1)<CR>
-vnoremap <silent> ^ :<C-U>call WrapRelativeMotion("^", 1)<CR>
+vnoremap <silent> ^      :<C-U>call WrapRelativeMotion("^", 1)<CR>
+
+" ==============================================================================
+" Functions
+" ==============================================================================
+
+function! InitializeDirectories()
+    let parent = $HOME
+    let prefix = 'vim'
+    let dir_list = {
+                \ 'backup': 'backupdir',
+                \ 'views': 'viewdir',
+                \ 'swap': 'directory' }
+
+    if has('persistent_undo')
+        let dir_list['undo'] = 'undodir'
+    endif
+
+    " To specify a different directory in which to place the vimbackup,
+    " vimviews, vimundo, and vimswap files/directories, add the following to
+    " your .vimrc.before.local file:
+    "   let g:consolidated_directory = <full path to desired directory>
+    "   eg: let g:consolidated_directory = $HOME . '/.vim/'
+    if exists('g:consolidated_directory')
+        let common_dir = g:consolidated_directory . prefix
+    else
+        let common_dir = parent . '/.' . prefix
+    endif
+
+    for [dirname, settingname] in items(dir_list)
+        let directory = common_dir . dirname . '/'
+        if exists("*mkdir")
+            if !isdirectory(directory)
+                call mkdir(directory)
+            endif
+        endif
+        if !isdirectory(directory)
+            echo "Warning: Unable to create backup directory: " . directory
+            echo "Try: mkdir -p " . directory
+        else
+            let directory = substitute(directory, " ", "\\\\ ", "g")
+            exec "set " . settingname . "=" . directory
+        endif
+    endfor
+
+    let viminfo = common_dir . 'info'
+    exec "set viminfo+=n" . viminfo
+
+endfunction
+
+let g:consolidated_directory = $HOME . '/.vim/'
+call InitializeDirectories()
+
+
+function! NERDTreeInitAsNeeded()
+    redir => bufoutput
+    buffers!
+    redir END
+    let idx = stridx(bufoutput, "NERD_tree")
+    if idx > -1
+        NERDTreeMirror
+        NERDTreeFind
+        wincmd l
+    endif
+endfunction
+
+
+function! StripTrailingWhitespace()
+    " Preparation: save last search, and cursor position.
+    let _s=@/
+    let l = line(".")
+    let c = col(".")
+    " do the business:
+    %s/\s\+$//e
+    " clean up: restore previous search history, and cursor position
+    let @/=_s
+    call cursor(l, c)
+endfunction
+
+
+function! s:RunShellCommand(cmdline)
+    botright new
+
+    setlocal buftype=nofile
+    setlocal bufhidden=delete
+    setlocal nobuflisted
+    setlocal noswapfile
+    setlocal nowrap
+    setlocal filetype=shell
+    setlocal syntax=shell
+
+    call setline(1, a:cmdline)
+    call setline(2, substitute(a:cmdline, '.', '=', 'g'))
+    execute 'silent $read !' . escape(a:cmdline, '%#')
+    setlocal nomodifiable
+    1
+endfunction
+
+command! -complete=file -nargs=+ Shell call s:RunShellCommand(<q-args>)
+" e.g. Grep current file for <search_term>: Shell grep -Hn <search_term> %
 
 " ==============================================================================
 " Plugins
@@ -454,6 +566,8 @@ if s:has_bundle('vim-colors-solarized')
     let g:solarized_contrast="normal"
     let g:solarized_visibility="normal"
     color solarized             " Load a colorscheme
+    highlight clear SignColumn      " SignColumn should match background
+    highlight clear CursorLineNr    " Remove highlight color from current line number
 endif
 
 if s:has_bundle('vim-airline')
@@ -473,6 +587,7 @@ if s:has_bundle('vim-airline')
         let g:airline_left_sep='›'  " Slightly fancier than '>'
         let g:airline_right_sep='‹' " Slightly fancier than '<'
     endif
+
     let g:airline#extensions#tabline#enabled = 1
     let g:airline#extensions#tabline#buffer_idx_mode = 1
     nmap <leader>1 <Plug>AirlineSelectTab1
@@ -489,14 +604,17 @@ endif
 
 if s:has_bundle('indentLine')
     " Vim
-    let g:indentLine_color_term = 239
+    let g:indentLine_color_term = 10
     "GVim
-    let g:indentLine_color_gui = '#A4E57E'
+    let g:indentLine_color_gui = '#586e75'
     " none X terminal
     let g:indentLine_color_tty_light = 7 " (default: 4)
     let g:indentLine_color_dark = 1 " (default: 2)
     " Vim & GVim
-    let g:indentLine_char = '︙' " ¦,┆,︙,│
+    let g:indentLine_char = '│' " ¦,┆,│
+    " disable by default
+    let g:indentLine_enabled=0
+    map <silent> <Leader>i :<C-U>IndentLinesToggle<CR>
 endif
 
 if s:has_bundle('ctrlp.vim')
@@ -580,8 +698,8 @@ if s:has_bundle('vim-textobj-sentence')
     augroup textobj_sentence
         autocmd!
         autocmd FileType markdown call textobj#sentence#init()
-        autocmd FileType textile call textobj#sentence#init()
-        autocmd FileType text call textobj#sentence#init()
+        autocmd FileType textile  call textobj#sentence#init()
+        autocmd FileType text     call textobj#sentence#init()
     augroup END
 endif
 
@@ -589,8 +707,8 @@ if s:has_bundle('vim-textobj-quote')
     augroup textobj_quote
         autocmd!
         autocmd FileType markdown call textobj#quote#init()
-        autocmd FileType textile call textobj#quote#init()
-        autocmd FileType text call textobj#quote#init({'educate': 0})
+        autocmd FileType textile  call textobj#quote#init()
+        autocmd FileType text     call textobj#quote#init({'educate': 0})
     augroup END
 endif
 
@@ -617,25 +735,26 @@ if s:has_bundle('nerdcommenter')
 endif
 
 if s:has_bundle('tabular')
-    nmap <Leader>a& :Tabularize /&<CR>
-    vmap <Leader>a& :Tabularize /&<CR>
-    nmap <Leader>a= :Tabularize /=<CR>
-    vmap <Leader>a= :Tabularize /=<CR>
-    nmap <Leader>a=> :Tabularize /=><CR>
-    vmap <Leader>a=> :Tabularize /=><CR>
-    nmap <Leader>a: :Tabularize /:<CR>
-    vmap <Leader>a: :Tabularize /:<CR>
-    nmap <Leader>a:: :Tabularize /:\zs<CR>
-    vmap <Leader>a:: :Tabularize /:\zs<CR>
-    nmap <Leader>a, :Tabularize /,<CR>
-    vmap <Leader>a, :Tabularize /,<CR>
-    nmap <Leader>a,, :Tabularize /,\zs<CR>
-    vmap <Leader>a,, :Tabularize /,\zs<CR>
+    cmap al/ Tabularize /
+    nmap <Leader>a&     :Tabularize /&<CR>
+    vmap <Leader>a&     :Tabularize /&<CR>
+    nmap <Leader>a=     :Tabularize /=<CR>
+    vmap <Leader>a=     :Tabularize /=<CR>
+    nmap <Leader>a=>    :Tabularize /=><CR>
+    vmap <Leader>a=>    :Tabularize /=><CR>
+    nmap <Leader>a:     :Tabularize /:<CR>
+    vmap <Leader>a:     :Tabularize /:<CR>
+    nmap <Leader>a::    :Tabularize /:\zs<CR>
+    vmap <Leader>a::    :Tabularize /:\zs<CR>
+    nmap <Leader>a,     :Tabularize /,<CR>
+    vmap <Leader>a,     :Tabularize /,<CR>
+    nmap <Leader>a,,    :Tabularize /,\zs<CR>
+    vmap <Leader>a,,    :Tabularize /,\zs<CR>
     nmap <Leader>a<Bar> :Tabularize /<Bar><CR>
     vmap <Leader>a<Bar> :Tabularize /<Bar><CR>
 endif
 
-if s:has_bundle('tagbar')
+" tags {
     set tags=./tags;/,~/.vimtags
 
     " Make tags placed in .git/tags file available in all levels of a repository
@@ -643,7 +762,7 @@ if s:has_bundle('tagbar')
     if gitroot != ''
         let &tags = &tags . ',' . gitroot . '/.git/tags'
     endif
-endif
+" }
 
 if s:has_bundle('tagbar')
     nnoremap <silent> <leader>tt :TagbarToggle<CR>
@@ -706,13 +825,13 @@ if s:has_bundle('youcompleteme')
     let g:UltiSnipsJumpBackwardTrigger = '<C-k>'
 
     " Enable omni completion.
-    autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+    autocmd FileType css           setlocal omnifunc=csscomplete#CompleteCSS
     autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-    autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-    autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-    autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-    autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
-    autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
+    autocmd FileType javascript    setlocal omnifunc=javascriptcomplete#CompleteJS
+    autocmd FileType python        setlocal omnifunc=pythoncomplete#Complete
+    autocmd FileType xml           setlocal omnifunc=xmlcomplete#CompleteTags
+    autocmd FileType ruby          setlocal omnifunc=rubycomplete#Complete
+    autocmd FileType haskell       setlocal omnifunc=necoghc#omnifunc
 
     " For snippet_complete marker.
     if has('conceal')
@@ -942,10 +1061,10 @@ if s:has_bundle('neosnippet')
     set completeopt-=preview
 endif
 
-" JSON {
+if s:has_bundle('vim-json')
     nmap <leader>jt <Esc>:%!python -m json.tool<CR><Esc>:set filetype=json<CR>
     let g:vim_json_syntax_conceal = 0
-" }
+endif
 
 if s:has_bundle('HTML-AutoCloseTag')
     " Make it so AutoCloseTag works for xml and xhtml files as well
@@ -969,109 +1088,4 @@ endif
 if s:has_bundle('haskellmod-vim')
     let g:haddock_browser="open"
 endif
-
-" ==============================================================================
-" Functions
-" ==============================================================================
-
-" Initialize directories {
-    function! InitializeDirectories()
-        let parent = $HOME
-        let prefix = 'vim'
-        let dir_list = {
-                    \ 'backup': 'backupdir',
-                    \ 'views': 'viewdir',
-                    \ 'swap': 'directory' }
-
-        if has('persistent_undo')
-            let dir_list['undo'] = 'undodir'
-        endif
-
-        " To specify a different directory in which to place the vimbackup,
-        " vimviews, vimundo, and vimswap files/directories, add the following to
-        " your .vimrc.before.local file:
-        "   let g:consolidated_directory = <full path to desired directory>
-        "   eg: let g:consolidated_directory = $HOME . '/.vim/'
-        if exists('g:consolidated_directory')
-            let common_dir = g:consolidated_directory . prefix
-        else
-            let common_dir = parent . '/.' . prefix
-        endif
-
-        for [dirname, settingname] in items(dir_list)
-            let directory = common_dir . dirname . '/'
-            if exists("*mkdir")
-                if !isdirectory(directory)
-                    call mkdir(directory)
-                endif
-            endif
-            if !isdirectory(directory)
-                echo "Warning: Unable to create backup directory: " . directory
-                echo "Try: mkdir -p " . directory
-            else
-                let directory = substitute(directory, " ", "\\\\ ", "g")
-                exec "set " . settingname . "=" . directory
-            endif
-        endfor
-
-        let viminfo = common_dir . 'info'
-        exec "set viminfo+=n" . viminfo
-
-    endfunction
-
-    let g:consolidated_directory = $HOME . '/.vim/'
-    call InitializeDirectories()
-
-" }
-
-" Initialize NERDTree as needed {
-    function! NERDTreeInitAsNeeded()
-        redir => bufoutput
-        buffers!
-        redir END
-        let idx = stridx(bufoutput, "NERD_tree")
-        if idx > -1
-            NERDTreeMirror
-            NERDTreeFind
-            wincmd l
-        endif
-    endfunction
-" }
-
-" Strip whitespace {
-    function! StripTrailingWhitespace()
-        " Preparation: save last search, and cursor position.
-        let _s=@/
-        let l = line(".")
-        let c = col(".")
-        " do the business:
-        %s/\s\+$//e
-        " clean up: restore previous search history, and cursor position
-        let @/=_s
-        call cursor(l, c)
-    endfunction
-" }
-
-" Shell command {
-    function! s:RunShellCommand(cmdline)
-        botright new
-
-        setlocal buftype=nofile
-        setlocal bufhidden=delete
-        setlocal nobuflisted
-        setlocal noswapfile
-        setlocal nowrap
-        setlocal filetype=shell
-        setlocal syntax=shell
-
-        call setline(1, a:cmdline)
-        call setline(2, substitute(a:cmdline, '.', '=', 'g'))
-        execute 'silent $read !' . escape(a:cmdline, '%#')
-        setlocal nomodifiable
-        1
-    endfunction
-
-    command! -complete=file -nargs=+ Shell call s:RunShellCommand(<q-args>)
-    " e.g. Grep current file for <search_term>: Shell grep -Hn <search_term> %
-" }
 

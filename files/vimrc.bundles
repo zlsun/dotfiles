@@ -68,6 +68,7 @@ if count(g:bundle_groups, 'programming')
     Plugin 'mattn/gist-vim'
     Plugin 'scrooloose/nerdcommenter'
     Plugin 'tpope/vim-commentary'
+    Plugin 'tpope/vim-endwise'
     Plugin 'godlygeek/tabular'
     if executable('ctags')
         Plugin 'majutsushi/tagbar'
@@ -168,6 +169,7 @@ if count(g:bundle_groups, 'misc')
     Plugin 'xolox/vim-session'
     Plugin 'lilydjwg/fcitx.vim'
     Plugin 'szw/vim-g'
+    Plugin 'gioele/vim-autoswap'
     Plugin 'DrawIt'
 endif
 
