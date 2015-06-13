@@ -150,7 +150,8 @@ alias -g X='| xargs'
 alias fuck='eval $(thefuck $(fc -ln -1))'
 alias f='fuck'
 
-alias ka='k -a'
+alias k='k -h'
+alias ka='k -h -A'
 
 alias gg='git gui'
 
