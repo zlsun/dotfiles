@@ -129,6 +129,8 @@ fawk() {
     eval $cmd
 }
 
+bindkey -s '^Z' '^qfg\n'
+
 alias mmv='noglob zmv -W'
 
 alias sga='sudo apt-get autoremove'
@@ -154,6 +156,10 @@ alias k='k -h'
 alias ka='k -h -A'
 
 alias gg='git gui'
+
+if [[ "$ENABLE_CORRECTION" == "true" ]]; then
+    alias touch='nocorrect touch'
+fi
 
 eval `dircolors ~/.dircolors`
 
