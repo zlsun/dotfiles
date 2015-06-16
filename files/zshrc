@@ -131,7 +131,18 @@ fawk() {
 
 bindkey -s '^Z' '^qfg\n'
 
+bindkey -M menuselect '/' accept-and-infer-next-history
+bindkey -M menuselect '?' undo
+bindkey -M menuselect ' ' accept-and-hold
+bindkey -M menuselect '*' history-incremental-search-forward
+
+alias -g X='| xargs'
+
 alias mmv='noglob zmv -W'
+
+# enable alias when use sudo
+# http://askubuntu.com/a/22043/399470
+alias sudo='sudo '
 
 alias sga='sudo apt-get autoremove'
 alias sgd='sudo apt-get dist-upgrade'
@@ -147,7 +158,7 @@ alias v='vim'
 alias svi='sudo vim'
 alias vimrc='vim ~/.vimrc'
 
-alias -g X='| xargs'
+alias gg='git gui'
 
 alias fuck='eval $(thefuck $(fc -ln -1))'
 alias f='fuck'
@@ -155,7 +166,19 @@ alias f='fuck'
 alias k='k -h'
 alias ka='k -h -A'
 
-alias gg='git gui'
+alias howdoi='howdoi -c'
+alias how='howdoi'
+alias howsh='howdoi shell'
+alias howpy='howdoi python'
+alias howc='howdoi c'
+alias howcp='howdoi c++'
+alias howjv='howdoi java'
+alias howml='howdoi html'
+alias howjs='howdoi js'
+alias howcss='howdoi css'
+
+alias pyhttp='python -m SimpleHTTPServer'
+alias pyftp='python -m pyftpdlib'
 
 if [[ "$ENABLE_CORRECTION" == "true" ]]; then
     alias touch='nocorrect touch'
