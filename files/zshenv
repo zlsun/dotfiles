@@ -49,6 +49,9 @@ export PATH=$HOME/.cabal/bin:$PATH
 # RVM
 export PATH=~/.rvm/bin:$PATH
 
+# Brew
+export PATH=~/.linuxbrew/bin:$PATH
+
 # include paths
 export CPLUS_INCLUDE_PATH=~/Desktop/working/sunlib/include/
 
