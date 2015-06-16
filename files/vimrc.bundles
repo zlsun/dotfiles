@@ -58,6 +58,8 @@ if count(g:bundle_groups, 'writing')
     Plugin 'reedes/vim-textobj-sentence'
     Plugin 'reedes/vim-textobj-quote'
     Plugin 'reedes/vim-wordy'
+    Plugin 'tpope/vim-markdown'
+    Plugin 'suan/vim-instant-markdown'
 endif
 
 if count(g:bundle_groups, 'programming')
@@ -163,8 +165,6 @@ if count(g:bundle_groups, 'elixir')
 endif
 
 if count(g:bundle_groups, 'misc')
-    Plugin 'tpope/vim-markdown'
-    Plugin 'spf13/vim-preview'
     Plugin 'xolox/vim-misc'
     Plugin 'xolox/vim-session'
     Plugin 'lilydjwg/fcitx.vim'
