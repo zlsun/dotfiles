@@ -30,6 +30,7 @@
     lr = log      --date=relative --all --decorate --pretty=format:"%C(green)%h\\ %C(yellow)[%ad]%Cred%d\\ %Creset%s%Cblue\\ [%cn]"
     mg = merge
     pl = pull -v
+    pa = pull -v --recurse-submodules
     ps = push -v
     re = remote
     rs = reset
