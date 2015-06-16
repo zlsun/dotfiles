@@ -217,6 +217,7 @@ autocmd BufNewFile,BufRead *.html.twig set filetype=html.twig
 autocmd BufNewFile,BufRead *.coffee set filetype=coffee
 autocmd BufNewFile,BufRead *.asm set filetype=nasm
 autocmd BufNewFile,BufRead *.inc set filetype=nasm
+autocmd BufNewFile,BufRead *.zsh-theme set filetype=zsh
 
 " ==============================================================================
 " Key mappings
