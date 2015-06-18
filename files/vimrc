@@ -1086,7 +1086,7 @@ if s:has_bundle('python-mode')
     let g:pymode_rope_goto_definition_bind = "<C-]>"
 endif
 
-if s:has_bundle('haskellmod-vim')
+if s:has_bundle('haskellmode-vim')
     let g:haddock_browser="open"
 endif
 
