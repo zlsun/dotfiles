@@ -43,6 +43,7 @@ if count(g:bundle_groups, 'general')
     Plugin 'tpope/vim-surround'
     Plugin 'tpope/vim-repeat'
     Plugin 'spf13/vim-autoclose'
+    Plugin 'wellle/targets.vim'
     Plugin 'Firef0x/matchit.zip'
 
     Plugin 'tpope/vim-abolish'
