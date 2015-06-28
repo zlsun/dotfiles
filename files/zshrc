@@ -183,6 +183,7 @@ alias pyftp='python -m pyftpdlib'
 if [[ "$ENABLE_CORRECTION" == "true" ]]; then
     alias touch='nocorrect touch'
     alias xclip='nocorrect xclip'
+    alias howdoi='nocorrect howdoi'
 fi
 
 eval `dircolors ~/.dircolors`
