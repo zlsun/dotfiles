@@ -131,10 +131,20 @@ fawk() {
 
 bindkey -s '^Z' '^qfg\n'
 
+bindkey -M menuselect 'h' vi-backward-char
+bindkey -M menuselect 'j' vi-down-line-or-history
+bindkey -M menuselect 'k' vi-up-line-or-history
+bindkey -M menuselect 'l' vi-forward-char
+
+bindkey -M menuselect 'a' vi-backward-char
+bindkey -M menuselect 's' vi-down-line-or-history
+bindkey -M menuselect 'w' vi-up-line-or-history
+bindkey -M menuselect 'd' vi-forward-char
+
 bindkey -M menuselect '/' accept-and-infer-next-history
-bindkey -M menuselect '?' undo
-bindkey -M menuselect ' ' accept-and-hold
-bindkey -M menuselect '*' history-incremental-search-forward
+bindkey -M menuselect '.' undo
+bindkey -M menuselect '\r' accept-and-hold
+bindkey -M menuselect ';' history-incremental-search-forward
 
 alias -g X='| xargs'
 
@@ -145,6 +155,7 @@ alias mmv='noglob zmv -W'
 alias sudo='sudo '
 
 alias sga='sudo apt-get autoremove'
+alias sgc='sudo apt-get autoclean'
 alias sgd='sudo apt-get dist-upgrade'
 alias sgg='sudo apt-get upgrade'
 alias sgi='sudo apt-get install'
