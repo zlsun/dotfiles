@@ -75,7 +75,7 @@ if ! zgen saved; then
 
         zlsun/umake
 
-        supercrabtree/k
+        rimraf/k
 
         zsh-users/zsh-syntax-highlighting
         zsh-users/zsh-completions src
