@@ -1,6 +1,4 @@
 
-autoload -U zmv
-
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
 
@@ -43,7 +41,6 @@ if ! zgen saved; then
         robbyrussell/oh-my-zsh plugins/atom
         robbyrussell/oh-my-zsh plugins/autopep8
         robbyrussell/oh-my-zsh plugins/cabal
-        robbyrussell/oh-my-zsh plugins/colored-man
         robbyrussell/oh-my-zsh plugins/colorize
         robbyrussell/oh-my-zsh plugins/command-not-found
         robbyrussell/oh-my-zsh plugins/common-aliases
@@ -74,6 +71,7 @@ if ! zgen saved; then
         robbyrussell/oh-my-zsh plugins/z
 
         zlsun/umake
+        zlsun/solarized-man
 
         rimraf/k
 
@@ -152,10 +150,11 @@ bindkey -M menuselect ';' history-incremental-search-forward
 
 # aliases
 
-alias -s html=x-www-browser
+alias -s html='x-www-browser'
 
 alias -g X='| xargs'
 
+autoload -U zmv
 alias mmv='noglob zmv -W'
 
 # enable alias when use sudo
@@ -196,9 +195,9 @@ alias howml='howdoi html'
 alias howjs='howdoi js'
 alias howcss='howdoi css'
 
-alias py=python
-alias py2=python2
-alias py3=python3
+alias py='python'
+alias py2='python2'
+alias py3='python3'
 
 alias pyhttp='python -m SimpleHTTPServer'
 alias pyftp='python -m pyftpdlib'
@@ -207,6 +206,7 @@ if [[ "$ENABLE_CORRECTION" == "true" ]]; then
     alias touch='nocorrect touch'
     alias xclip='nocorrect xclip'
     alias howdoi='nocorrect howdoi'
+    alias _z='nocorrect _z'
 fi
 
 eval `dircolors ~/.dircolors`
