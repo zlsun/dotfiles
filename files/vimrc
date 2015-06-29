@@ -32,13 +32,150 @@ if WINDOWS()
 endif
 
 " ==============================================================================
-" Setup Vundle
+" Setup Vundle & Plugins
 " ==============================================================================
 
 filetype off
 set rtp+=~/.vim/bundle/vundle
 call vundle#begin()
-source ~/.vimrc.bundles
+
+Plugin 'gmarik/vundle'
+Plugin 'MarcWeber/vim-addon-mw-utils'
+Plugin 'tomtom/tlib_vim'
+
+if executable('ag')
+    Plugin 'mileszs/ack.vim'
+    let g:ackprg = 'ag --nogroup --nocolor --column --smart-case'
+elseif executable('ack-grep')
+    let g:ackprg="ack-grep -H --nocolor --nogroup --column"
+    Plugin 'mileszs/ack.vim'
+elseif executable('ack')
+    Plugin 'mileszs/ack.vim'
+endif
+
+" General
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'flazz/vim-colorschemes'
+
+Plugin 'bling/vim-airline'
+Plugin 'bling/vim-bufferline'
+Plugin 'Yggdroot/indentLine'
+Plugin 'mhinz/vim-signify'
+
+Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'tacahiroy/ctrlp-funky'
+
+Plugin 'vim-scripts/sessionman.vim'
+Plugin 'vim-scripts/restore_view.vim'
+
+Plugin 'scrooloose/nerdtree'
+Plugin 'Xuyuanp/nerdtree-git-plugin'
+Plugin 'jistr/vim-nerdtree-tabs'
+
+Plugin 'mbbill/undotree'
+
+Plugin 'Lokaltog/vim-easymotion'
+Plugin 'kristijanhusak/vim-multiple-cursors'
+
+Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-repeat'
+Plugin 'spf13/vim-autoclose'
+Plugin 'wellle/targets.vim'
+Plugin 'Firef0x/matchit.zip'
+
+Plugin 'tpope/vim-abolish'
+Plugin 'osyo-manga/vim-over'
+
+Plugin 'kana/vim-textobj-user'
+Plugin 'kana/vim-textobj-indent'
+Plugin 'gcmt/wildfire.vim'
+
+" Writing
+Plugin 'reedes/vim-litecorrect'
+Plugin 'reedes/vim-textobj-sentence'
+Plugin 'reedes/vim-textobj-quote'
+Plugin 'reedes/vim-wordy'
+Plugin 'tpope/vim-markdown'
+Plugin 'suan/vim-instant-markdown'
+
+" Programming
+" Pick one of the checksyntax, jslint, or syntastic
+Plugin 'scrooloose/syntastic'
+Plugin 'tpope/vim-fugitive'
+Plugin 'mattn/webapi-vim'
+Plugin 'mattn/gist-vim'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'tpope/vim-commentary'
+Plugin 'tpope/vim-endwise'
+Plugin 'godlygeek/tabular'
+if executable('ctags')
+    Plugin 'majutsushi/tagbar'
+endif
+
+let s:completer='neocomplcache'
+
+if s:completer == 'snipmate'
+    Plugin 'garbas/vim-snipmate'
+    Plugin 'honza/vim-snippets'
+    " Source support_function.vim to support vim-snippets.
+    if filereadable(expand("~/.vim/bundle/vim-snippets/snippets/support_functions.vim"))
+        source ~/.vim/bundle/vim-snippets/snippets/support_functions.vim
+    endif
+elseif s:completer == 'youcompleteme'
+    Plugin 'Valloric/YouCompleteMe'
+    Plugin 'SirVer/ultisnips'
+    Plugin 'honza/vim-snippets'
+elseif s:completer == 'neocomplcache'
+    Plugin 'Shougo/neocomplcache'
+    Plugin 'Shougo/neosnippet'
+    Plugin 'Shougo/neosnippet-snippets'
+    Plugin 'honza/vim-snippets'
+elseif s:completer == 'neocomplete'
+    Plugin 'Shougo/neocomplete.vim.git'
+    Plugin 'Shougo/neosnippet'
+    Plugin 'Shougo/neosnippet-snippets'
+    Plugin 'honza/vim-snippets'
+endif
+
+" Python
+" Pick either python-mode or pyflakes & pydoc
+Plugin 'klen/python-mode'
+Plugin 'yssource/python.vim'
+Plugin 'python_match.vim'
+Plugin 'pythoncomplete'
+
+" HTML
+Plugin 'amirh/HTML-AutoCloseTag'
+Plugin 'hail2u/vim-css3-syntax'
+Plugin 'tpope/vim-haml'
+
+" JavaScript
+Plugin 'elzr/vim-json'
+Plugin 'groenewege/vim-less'
+Plugin 'pangloss/vim-javascript'
+Plugin 'briancollins/vim-jst'
+Plugin 'kchmck/vim-coffee-script'
+
+" Haskell
+Plugin 'travitch/hasksyn'
+Plugin 'dag/vim2hs'
+Plugin 'Twinside/vim-haskellConceal'
+Plugin 'Twinside/vim-haskellFold'
+Plugin 'lukerandall/haskellmode-vim'
+Plugin 'eagletmt/neco-ghc'
+Plugin 'eagletmt/ghcmod-vim'
+Plugin 'Shougo/vimproc'
+Plugin 'adinapoli/cumino'
+Plugin 'bitc/vim-hdevtools'
+
+" Misc
+Plugin 'xolox/vim-misc'
+Plugin 'xolox/vim-session'
+Plugin 'lilydjwg/fcitx.vim'
+Plugin 'szw/vim-g'
+Plugin 'gioele/vim-autoswap'
+Plugin 'DrawIt'
+
 call vundle#end()
 
 " Add an UnBundle command
