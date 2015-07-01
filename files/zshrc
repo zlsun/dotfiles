@@ -1,34 +1,7 @@
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
 ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
 DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# HIST_STAMPS="mm/dd/yyyy"
+HIST_STAMPS="yyyy-mm-dd"
 
 source ~/.zgen/zgen.zsh
 
@@ -113,20 +86,29 @@ zle-line-init() {
 }
 zle -N zle-line-init
 
-# ==================== User configurationi ====================
+# ========================= User configuration =========================
 
 # functions
 
 find_duplicate() {
     local dir=${1:-.}
-    find $dir -type f -print0 | xargs -0 -n1 md5sum | sort -k 1,32 | uniq -w 32 -d --all-repeated=separate | sed -e 's/^[0-9a-f]*\ *//;'
+    find $dir -type f -print0                   \
+        | xargs -0 -n1 md5sum                   \
+        | sort -k 1,32                          \
+        | uniq -w 32 -d --all-repeated=separate \
+        | sed -e 's/^[0-9a-f]*\ *//;'
+}
+
+top_commands() {
+    cat ~/.zsh_history                                        \
+        | cut -d ';' -f 2- 2>/dev/null                        \
+        | awk '{a[$1]++ } END{for(i in a){print a[i] " " i}}' \
+        | sort -rn                                            \
+        | head $*
 }
 
 fawk() {
-    local first="awk '{print "
-    local last="}'"
-    local cmd="${first}\$${1}${last}"
-    eval $cmd
+    eval "awk '{print \$${1}}'"
 }
 
 # key bindings
@@ -151,15 +133,32 @@ bindkey -M menuselect ';' history-incremental-search-forward
 # aliases
 
 alias -s html='x-www-browser'
+alias -s pdf='xdg-open'
 
 alias -g X='| xargs'
+alias -g S='| sort'
 
 autoload -U zmv
 alias mmv='noglob zmv -W'
 
 # enable alias when use sudo
 # http://askubuntu.com/a/22043/399470
-alias sudo='sudo '
+alias sudo='sudo'
+alias s='sudo '
+
+alias c='cat'
+alias e='echo'
+alias m='make'
+alias f='eval $(thefuck $(fc -ln -1))'
+
+alias k='k -h'
+alias ka='k -h -A'
+
+alias v='vim'
+alias svi='sudo vim'
+alias vimrc='vim ~/.vimrc'
+
+alias gg='git gui'
 
 alias sga='sudo apt-get autoremove'
 alias sgc='sudo apt-get autoclean'
@@ -171,18 +170,6 @@ alias sgr='sudo apt-get remove'
 alias sgu='sudo apt-get update'
 alias sgs='apt-cache search'
 alias sgf='apt-file search'
-
-alias v='vim'
-alias svi='sudo vim'
-alias vimrc='vim ~/.vimrc'
-
-alias gg='git gui'
-
-alias fuck='eval $(thefuck $(fc -ln -1))'
-alias f='fuck'
-
-alias k='k -h'
-alias ka='k -h -A'
 
 alias howdoi='howdoi -c'
 alias how='howdoi'
@@ -198,7 +185,6 @@ alias howcss='howdoi css'
 alias py='python'
 alias py2='python2'
 alias py3='python3'
-
 alias pyhttp='python -m SimpleHTTPServer'
 alias pyftp='python -m pyftpdlib'
 
