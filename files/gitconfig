@@ -33,6 +33,8 @@
     pa = pull -v --all
     pr = pull -v --recurse-submodules
     ps = push -v
+    rc = rm --cached
+    rd = rm --dry-run
     re = remote
     rs = reset
     rf = reset --soft
