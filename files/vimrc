@@ -1,9 +1,9 @@
 
 set nocompatible        " Must be first line
 
-" ==============================================================================
-" Platform settings
-" ==============================================================================
+" ============================================================================ "
+"                              Platform settings                               "
+" ============================================================================ "
 
 silent function! OSX()
     return has('macunix')
@@ -31,17 +31,20 @@ if WINDOWS()
     endif
 endif
 
-" ==============================================================================
-" Setup Vundle & Plugins
-" ==============================================================================
+" ============================================================================ "
+"                            Setup Vundle & Plugins                            "
+" ============================================================================ "
 
 filetype off
 set rtp+=~/.vim/bundle/vundle
 call vundle#begin()
 
 Plugin 'gmarik/vundle'
-Plugin 'MarcWeber/vim-addon-mw-utils'
+
+" Additional API
 Plugin 'tomtom/tlib_vim'
+Plugin 'mattn/webapi-vim'
+Plugin 'MarcWeber/vim-addon-mw-utils'
 
 if executable('ag')
     Plugin 'mileszs/ack.vim'
@@ -55,12 +58,11 @@ endif
 
 " General
 Plugin 'altercation/vim-colors-solarized'
-Plugin 'flazz/vim-colorschemes'
+" Plugin 'flazz/vim-colorschemes'
 
 Plugin 'bling/vim-airline'
 Plugin 'bling/vim-bufferline'
 Plugin 'Yggdroot/indentLine'
-Plugin 'mhinz/vim-signify'
 
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'tacahiroy/ctrlp-funky'
@@ -69,50 +71,50 @@ Plugin 'vim-scripts/sessionman.vim'
 Plugin 'vim-scripts/restore_view.vim'
 
 Plugin 'scrooloose/nerdtree'
-Plugin 'Xuyuanp/nerdtree-git-plugin'
 Plugin 'jistr/vim-nerdtree-tabs'
 
 Plugin 'mbbill/undotree'
+
+Plugin 'tpope/vim-repeat'
 
 Plugin 'Lokaltog/vim-easymotion'
 Plugin 'kristijanhusak/vim-multiple-cursors'
 
 Plugin 'tpope/vim-surround'
-Plugin 'tpope/vim-repeat'
 Plugin 'spf13/vim-autoclose'
-Plugin 'wellle/targets.vim'
 Plugin 'Firef0x/matchit.zip'
 
 Plugin 'tpope/vim-abolish'
 Plugin 'osyo-manga/vim-over'
 
-Plugin 'kana/vim-textobj-user'
-Plugin 'kana/vim-textobj-indent'
 Plugin 'gcmt/wildfire.vim'
+Plugin 'wellle/targets.vim'
 
-" Writing
-Plugin 'reedes/vim-litecorrect'
-Plugin 'reedes/vim-textobj-sentence'
+Plugin 'kana/vim-textobj-user'
+Plugin 'bps/vim-textobj-python'
+Plugin 'kana/vim-textobj-indent'
 Plugin 'reedes/vim-textobj-quote'
+Plugin 'reedes/vim-textobj-sentence'
+
 Plugin 'reedes/vim-wordy'
-Plugin 'tpope/vim-markdown'
-Plugin 'suan/vim-instant-markdown'
+Plugin 'reedes/vim-litecorrect'
 
 " Programming
-" Pick one of the checksyntax, jslint, or syntastic
-Plugin 'scrooloose/syntastic'
-Plugin 'tpope/vim-fugitive'
-Plugin 'mattn/webapi-vim'
-Plugin 'mattn/gist-vim'
-Plugin 'scrooloose/nerdcommenter'
-Plugin 'tpope/vim-commentary'
-" Plugin 'tpope/vim-endwise'
 Plugin 'godlygeek/tabular'
+Plugin 'tpope/vim-commentary'
+Plugin 'scrooloose/syntastic'
+Plugin 'scrooloose/nerdcommenter'
 if executable('ctags')
     Plugin 'majutsushi/tagbar'
 endif
 
-let s:completer='neocomplcache'
+" Git
+Plugin 'mattn/gist-vim'
+Plugin 'mhinz/vim-signify'
+Plugin 'tpope/vim-fugitive'
+Plugin 'Xuyuanp/nerdtree-git-plugin'
+
+let s:completer = 'neocomplcache'
 
 if s:completer == 'snipmate'
     Plugin 'garbas/vim-snipmate'
@@ -137,44 +139,47 @@ elseif s:completer == 'neocomplete'
     Plugin 'honza/vim-snippets'
 endif
 
+" Markdown
+Plugin 'tpope/vim-markdown'
+Plugin 'suan/vim-instant-markdown'
+
 " Python
-" Pick either python-mode or pyflakes & pydoc
+Plugin 'pythoncomplete'
 Plugin 'klen/python-mode'
 Plugin 'yssource/python.vim'
 Plugin 'python_match.vim'
-Plugin 'pythoncomplete'
 
 " HTML
-Plugin 'amirh/HTML-AutoCloseTag'
-Plugin 'hail2u/vim-css3-syntax'
 Plugin 'tpope/vim-haml'
+Plugin 'hail2u/vim-css3-syntax'
+Plugin 'amirh/HTML-AutoCloseTag'
 
 " JavaScript
 Plugin 'elzr/vim-json'
 Plugin 'groenewege/vim-less'
-Plugin 'pangloss/vim-javascript'
 Plugin 'briancollins/vim-jst'
+Plugin 'pangloss/vim-javascript'
 Plugin 'kchmck/vim-coffee-script'
 
 " Haskell
-Plugin 'travitch/hasksyn'
 Plugin 'dag/vim2hs'
-Plugin 'Twinside/vim-haskellConceal'
-Plugin 'Twinside/vim-haskellFold'
-Plugin 'lukerandall/haskellmode-vim'
-Plugin 'eagletmt/neco-ghc'
-Plugin 'eagletmt/ghcmod-vim'
 Plugin 'Shougo/vimproc'
+Plugin 'travitch/hasksyn'
 Plugin 'adinapoli/cumino'
+Plugin 'eagletmt/neco-ghc'
 Plugin 'bitc/vim-hdevtools'
+Plugin 'eagletmt/ghcmod-vim'
+Plugin 'Twinside/vim-haskellFold'
+Plugin 'Twinside/vim-haskellConceal'
+Plugin 'lukerandall/haskellmode-vim'
 
 " Misc
+Plugin 'DrawIt'
+Plugin 'szw/vim-g'
 Plugin 'xolox/vim-misc'
 Plugin 'xolox/vim-session'
 Plugin 'lilydjwg/fcitx.vim'
-Plugin 'szw/vim-g'
 Plugin 'gioele/vim-autoswap'
-Plugin 'DrawIt'
 
 call vundle#end()
 
@@ -186,9 +191,9 @@ endfunction
 
 com! -nargs=+ UnBundle call UnBundle(<args>)
 
-" ==============================================================================
-" Settings
-" ==============================================================================
+" ============================================================================ "
+"                                   Settings                                   "
+" ============================================================================ "
 
 set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
 set sessionoptions+=globals,localoptions,resize,winpos
@@ -205,15 +210,15 @@ if has('clipboard')
 endif
 
 set timeoutlen=500 ttimeoutlen=0
-set shortmess+=filmnrxoOtT          " Abbrev. of messages (avoids 'hit enter')
+set shortmess+=filmnrxoOtT                      " Abbrev. of messages (avoids 'hit enter')
 set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatibility
-set virtualedit=onemore             " Allow for cursor beyond last character
-set history=1000                    " Store a ton of history (default is 20)
-set nospell                         " Spell checking off
-set hidden                          " Allow buffer switching without saving
-set iskeyword-=.                    " '.' is an end of word designator
-set iskeyword-=#                    " '#' is an end of word designator
-set iskeyword-=-                    " '-' is an end of word designator
+set virtualedit=onemore                         " Allow for cursor beyond last character
+set history=1000                                " Store a ton of history (default is 20)
+set nospell                                     " Spell checking off
+set hidden                                      " Allow buffer switching without saving
+set iskeyword-=.                                " '.' is an end of word designator
+set iskeyword-=#                                " '#' is an end of word designator
+set iskeyword-=-                                " '-' is an end of word designator
 
 set backspace=indent,eol,start  " Backspace for dummies
 set showmatch                   " Show matching brackets/parenthesis
@@ -238,9 +243,7 @@ set softtabstop=4               " Let backspace delete indent
 set nojoinspaces                " Prevents inserting two spaces after punctuation on a join (J)
 set splitright                  " Puts new vsplit windows to the right of the current
 set splitbelow                  " Puts new split windows to the bottom of the current
-"set matchpairs+=<:>             " Match, to be used with %
 set pastetoggle=<F12>           " pastetoggle (sane indentation on pastes)
-"set comments=sl:/*,mb:*,elx:*/  " auto format comment blocks
 
 " Setting up the directories
 set backup                      " Backups are nice ...
@@ -258,9 +261,9 @@ let g:skipview_files = [
 
 let g:netrw_browsex_viewer= "x-www-browser"
 
-" ==============================================================================
-" UI
-" ==============================================================================
+" ============================================================================ "
+"                                      UI                                      "
+" ============================================================================ "
 
 set background=dark         " Assume a dark background
 set mouse=a                 " Automatically enable mouse usage
@@ -309,13 +312,13 @@ if has('gui_running')
     endif
 else
     if &term == 'xterm' || &term == 'screen'
-        set t_Co=256             " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
+        set t_Co=256 " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
     endif
 endif
 
-" ==============================================================================
-" Autocommands
-" ==============================================================================
+" ============================================================================ "
+"                                 Autocommands                                 "
+" ============================================================================ "
 
 " Most prefer to automatically switch to the current file directory when
 " a new buffer is opened.
@@ -356,9 +359,9 @@ autocmd BufNewFile,BufRead *.asm       set filetype=nasm
 autocmd BufNewFile,BufRead *.inc       set filetype=nasm
 autocmd BufNewFile,BufRead *.zsh-theme set filetype=zsh
 
-" ==============================================================================
-" Key mappings
-" ==============================================================================
+" ============================================================================ "
+"                                 Key mappings                                 "
+" ============================================================================ "
 
 " Shortcuts
 " Change Working Directory to that of the current file
@@ -586,9 +589,9 @@ vnoremap <silent> 0      :<C-U>call WrapRelativeMotion("0", 1)<CR>
 vnoremap <silent> <Home> :<C-U>call WrapRelativeMotion("0", 1)<CR>
 vnoremap <silent> ^      :<C-U>call WrapRelativeMotion("^", 1)<CR>
 
-" ==============================================================================
-" Functions
-" ==============================================================================
+" ============================================================================ "
+"                                  Functions                                   "
+" ============================================================================ "
 
 function! InitializeDirectories()
     let parent = $HOME
@@ -685,9 +688,9 @@ endfunction
 command! -complete=file -nargs=+ Shell call s:RunShellCommand(<q-args>)
 " e.g. Grep current file for <search_term>: Shell grep -Hn <search_term> %
 
-" ==============================================================================
-" Plugins
-" ==============================================================================
+" ============================================================================ "
+"                                   Plugins                                    "
+" ============================================================================ "
 
 function! s:has_bundle(name)
     if !isdirectory(expand("~/.vim/bundle/" . a:name))
@@ -706,9 +709,9 @@ if s:has_bundle('vim-colors-solarized')
     let g:solarized_termtrans=1
     let g:solarized_contrast="normal"
     let g:solarized_visibility="normal"
-    color solarized             " Load a colorscheme
-    highlight clear SignColumn      " SignColumn should match background
-    highlight clear CursorLineNr    " Remove highlight color from current line number
+    color solarized              " Load a colorscheme
+    highlight clear SignColumn   " SignColumn should match background
+    highlight clear CursorLineNr " Remove highlight color from current line number
 endif
 
 if s:has_bundle('vim-airline')
@@ -731,22 +734,26 @@ if s:has_bundle('vim-airline')
 
     let g:airline#extensions#tabline#enabled = 1
     let g:airline#extensions#tabline#buffer_idx_mode = 1
-    nmap <leader>1 <Plug>AirlineSelectTab1
-    nmap <leader>2 <Plug>AirlineSelectTab2
-    nmap <leader>3 <Plug>AirlineSelectTab3
-    nmap <leader>4 <Plug>AirlineSelectTab4
-    nmap <leader>5 <Plug>AirlineSelectTab5
-    nmap <leader>6 <Plug>AirlineSelectTab6
-    nmap <leader>7 <Plug>AirlineSelectTab7
-    nmap <leader>8 <Plug>AirlineSelectTab8
-    nmap <leader>9 <Plug>AirlineSelectTab9
-    nmap <leader>0 <Plug>AirlineSelectTab0
+
+    if g:airline#extensions#tabline#enabled == 1
+        nmap <leader>1 <Plug>AirlineSelectTab1
+        nmap <leader>2 <Plug>AirlineSelectTab2
+        nmap <leader>3 <Plug>AirlineSelectTab3
+        nmap <leader>4 <Plug>AirlineSelectTab4
+        nmap <leader>5 <Plug>AirlineSelectTab5
+        nmap <leader>6 <Plug>AirlineSelectTab6
+        nmap <leader>7 <Plug>AirlineSelectTab7
+        nmap <leader>8 <Plug>AirlineSelectTab8
+        nmap <leader>9 <Plug>AirlineSelectTab9
+        nmap <leader>0 <Plug>AirlineSelectTab0
+    endif
+
 endif
 
 if s:has_bundle('indentLine')
     " Vim
     let g:indentLine_color_term = 10
-    "GVim
+    " GVim
     let g:indentLine_color_gui = '#586e75'
     " none X terminal
     let g:indentLine_color_tty_light = 7 " (default: 4)
@@ -857,20 +864,6 @@ if s:has_bundle('syntastic')
     let g:syntastic_cpp_compiler_options = ' -std=c++11'
 endif
 
-if s:has_bundle('vim-fugitive')
-    nnoremap <silent> <leader>gs :Gstatus<CR>
-    nnoremap <silent> <leader>gd :Gdiff<CR>
-    nnoremap <silent> <leader>gc :Gcommit<CR>
-    nnoremap <silent> <leader>gb :Gblame<CR>
-    nnoremap <silent> <leader>gl :Glog<CR>
-    nnoremap <silent> <leader>gp :Git push<CR>
-    nnoremap <silent> <leader>gr :Gread<CR>
-    nnoremap <silent> <leader>gw :Gwrite<CR>
-    nnoremap <silent> <leader>ge :Gedit<CR>
-    nnoremap <silent> <leader>gi :Git add -p %<CR>
-    nnoremap <silent> <leader>gg :SignifyToggle<CR>
-endif
-
 if s:has_bundle('nerdcommenter')
     let NERDSpaceDelims=1
 endif
@@ -891,6 +884,12 @@ if s:has_bundle('tabular')
     vmap <Leader>a,     :Tabularize /,<CR>
     nmap <Leader>a,,    :Tabularize /,\zs<CR>
     vmap <Leader>a,,    :Tabularize /,\zs<CR>
+    nmap <Leader>a'     :Tabularize /'<CR>
+    vmap <Leader>a'     :Tabularize /'<CR>
+    nmap <Leader>a''    :Tabularize /'\zs<CR>
+    vmap <Leader>a''    :Tabularize /'\zs<CR>
+    nmap <Leader>a"     :Tabularize /"<CR>
+    vmap <Leader>a"     :Tabularize /"<CR>
     nmap <Leader>a<Bar> :Tabularize /<Bar><CR>
     vmap <Leader>a<Bar> :Tabularize /<Bar><CR>
 endif
@@ -924,6 +923,20 @@ if s:has_bundle('tagbar')
                 \ }
 endif
 
+if s:has_bundle('vim-fugitive')
+    nnoremap <silent> <leader>gs :Gstatus<CR>
+    nnoremap <silent> <leader>gd :Gdiff<CR>
+    nnoremap <silent> <leader>gc :Gcommit<CR>
+    nnoremap <silent> <leader>gb :Gblame<CR>
+    nnoremap <silent> <leader>gl :Glog<CR>
+    nnoremap <silent> <leader>gp :Git push<CR>
+    nnoremap <silent> <leader>gr :Gread<CR>
+    nnoremap <silent> <leader>gw :Gwrite<CR>
+    nnoremap <silent> <leader>ge :Gedit<CR>
+    nnoremap <silent> <leader>gi :Git add -p %<CR>
+    nnoremap <silent> <leader>gg :SignifyToggle<CR>
+endif
+
 " OmniComplete {
     if has("autocmd") && exists("+omnifunc")
         autocmd Filetype *
@@ -932,17 +945,17 @@ endif
             \endif
     endif
 
-    hi Pmenu  guifg=#000000 guibg=#F8F8F8 ctermfg=black ctermbg=Lightgray
-    hi PmenuSbar  guifg=#8A95A7 guibg=#F8F8F8 gui=NONE ctermfg=darkcyan ctermbg=lightgray cterm=NONE
-    hi PmenuThumb  guifg=#F8F8F8 guibg=#8A95A7 gui=NONE ctermfg=lightgray ctermbg=darkcyan cterm=NONE
+    hi Pmenu      guifg=#000000 guibg=#F8F8F8          ctermfg=black     ctermbg=Lightgray
+    hi PmenuSbar  guifg=#8A95A7 guibg=#F8F8F8 gui=NONE ctermfg=darkcyan  ctermbg=lightgray cterm=NONE
+    hi PmenuThumb guifg=#F8F8F8 guibg=#8A95A7 gui=NONE ctermfg=lightgray ctermbg=darkcyan  cterm=NONE
 
     " Some convenient mappings
-    inoremap <expr> <Esc>      pumvisible() ? "\<C-e>" : "\<Esc>"
-    inoremap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
-    inoremap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
-    inoremap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
-    inoremap <expr> <C-d>      pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<C-d>"
-    inoremap <expr> <C-u>      pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<C-u>"
+    inoremap <expr> <Esc>  pumvisible() ? "\<C-e>" : "\<Esc>"
+    inoremap <expr> <CR>   pumvisible() ? "\<C-y>" : "\<CR>"
+    inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
+    inoremap <expr> <Up>   pumvisible() ? "\<C-p>" : "\<Up>"
+    inoremap <expr> <C-d>  pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<C-d>"
+    inoremap <expr> <C-u>  pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<C-u>"
 
     " Automatically open and close the popup menu / preview window
     au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
@@ -1018,7 +1031,7 @@ elseif s:completer == 'neocomplete' && s:has_bundle('neocomplete.vim')
     inoremap <expr><C-l> neocomplete#complete_common_string()
 
     " <C-h>, <BS>: close popup and delete backword char.
-    inoremap <expr><BS> neocomplete#close_popup()."\<C-h>"
+    inoremap <expr><BS>  neocomplete#close_popup()."\<C-h>"
     inoremap <expr><C-h> neocomplete#close_popup()."\<C-h>"
     inoremap <expr><C-y> neocomplete#close_popup()
     inoremap <expr><C-e> neocomplete#cancel_popup()
@@ -1176,13 +1189,13 @@ elseif s:completer == 'neocomplcache' && s:has_bundle('neocomplcache.vim')
 
 else
     " Enable omni-completion.
-    autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+    autocmd FileType css           setlocal omnifunc=csscomplete#CompleteCSS
     autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-    autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-    autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-    autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-    autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
-    autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
+    autocmd FileType javascript    setlocal omnifunc=javascriptcomplete#CompleteJS
+    autocmd FileType python        setlocal omnifunc=pythoncomplete#Complete
+    autocmd FileType xml           setlocal omnifunc=xmlcomplete#CompleteTags
+    autocmd FileType ruby          setlocal omnifunc=rubycomplete#Complete
+    autocmd FileType haskell       setlocal omnifunc=necoghc#omnifunc
 endif
 
 if s:has_bundle('neosnippet')
@@ -1206,17 +1219,6 @@ if s:has_bundle('neosnippet')
     set completeopt-=preview
 endif
 
-if s:has_bundle('vim-json')
-    nmap <leader>jt <Esc>:%!python -m json.tool<CR><Esc>:set filetype=json<CR>
-    let g:vim_json_syntax_conceal = 0
-endif
-
-if s:has_bundle('HTML-AutoCloseTag')
-    " Make it so AutoCloseTag works for xml and xhtml files as well
-    au FileType xhtml,xml ru ftplugin/html/autoclosetag.vim
-    nmap <Leader>ac <Plug>ToggleAutoCloseMappings
-endif
-
 if s:has_bundle('python-mode')
     " Disable if python support not present
     if !has('python')
@@ -1228,6 +1230,17 @@ if s:has_bundle('python-mode')
     let g:pymode_options = 0
     let g:pymode_rope = 1
     let g:pymode_rope_goto_definition_bind = "<C-]>"
+endif
+
+if s:has_bundle('vim-json')
+    nmap <leader>jt <Esc>:%!python -m json.tool<CR><Esc>:set filetype=json<CR>
+    let g:vim_json_syntax_conceal = 0
+endif
+
+if s:has_bundle('HTML-AutoCloseTag')
+    " Make it so AutoCloseTag works for xml and xhtml files as well
+    au FileType xhtml,xml ru ftplugin/html/autoclosetag.vim
+    nmap <Leader>ac <Plug>ToggleAutoCloseMappings
 endif
 
 if s:has_bundle('haskellmode-vim')
