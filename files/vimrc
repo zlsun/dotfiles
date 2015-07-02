@@ -500,18 +500,18 @@ map <leader>et :tabe %%
 
 " For tab
 map <Leader>tn :tabnew<CR>
-map <Leader>tc :tabclose<CR>
 map <Leader>to :tabonly<CR>
-map <Leader>tj :tabprevious<CR>
 map <Leader>tk :tabnext<CR>
-map <Leader>th :tabfirst<CR>
 map <Leader>tl :tablast<CR>
+map <Leader>tc :tabclose<CR>
+map <Leader>th :tabfirst<CR>
+map <Leader>tj :tabprevious<CR>
 
 " Find merge conflict markers
 map <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
 
-" Map <Leader>ff to display all lines with keyword under cursor
-" and ask which one to jump to
+" Map <Leader>ff to display all lines with keyword under cursor and ask which
+" one to jump to
 nmap <Leader>ff [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
 
 " Source current file
@@ -520,9 +520,9 @@ map <Leader>so :source %<CR>
 " Copy the whole file
 map <Leader>sa :<C-U>%y+<CR>
 
-" If the current buffer has never been saved, it will have no name,
-" call the file browser to save it, otherwise just save it.
-" see: http://vim.wikia.com/wiki/Map_Ctrl-S_to_save_current_or_new_files
+" If the current buffer has never been saved, it will have no name, call the
+" file browser to save it, otherwise just save it. see:
+" http://vim.wikia.com/wiki/Map_Ctrl-S_to_save_current_or_new_files
 command! -nargs=0 -bar Update if &modified
                             \|    if empty(bufname('%'))
                             \|        browse confirm write
@@ -555,10 +555,9 @@ endfunction
 nmap <silent> <F7> :call ToggleSpell()<CR>
 imap <silent> <F7> <C-O>: call ToggleSpell()<CR>
 
-" End/Start of line motion keys act relative to row/wrap width in the
-" presence of `:set wrap`, and relative to line for `:set nowrap`.
-" Default vim behaviour is to act relative to text line in both cases
-" Same for 0, home, end, etc
+" End/Start of line motion keys act relative to row/wrap width in the presence
+" of `:set wrap`, and relative to line for `:set nowrap`. Default vim behaviour
+" is to act relative to text line in both cases Same for 0, home, end, etc
 function! WrapRelativeMotion(key, ...)
     let vis_sel=""
     if a:0
@@ -605,11 +604,6 @@ function! InitializeDirectories()
         let dir_list['undo'] = 'undodir'
     endif
 
-    " To specify a different directory in which to place the vimbackup,
-    " vimviews, vimundo, and vimswap files/directories, add the following to
-    " your .vimrc.before.local file:
-    "   let g:consolidated_directory = <full path to desired directory>
-    "   eg: let g:consolidated_directory = $HOME . '/.vim/'
     if exists('g:consolidated_directory')
         let common_dir = g:consolidated_directory . prefix
     else
@@ -715,15 +709,7 @@ if s:has_bundle('vim-colors-solarized')
 endif
 
 if s:has_bundle('vim-airline')
-    " Set configuration options for the statusline plugin vim-airline.
-    " Use the powerline theme and optionally enable powerline symbols.
-    " To use the symbols , , , , , , and .in the statusline
-    " segments add the following to your .vimrc.before.local file:
-    "   let g:airline_powerline_fonts=1
-    " If the previous symbols do not render for you then install a
-    " powerline enabled font.
-    " See `:echo g:airline_theme_map` for some more choices
-    " Default in terminal vim is 'dark'
+
     let g:airline_powerline_fonts=1
     let g:airline_theme = 'solarized'
     if !exists('g:airline_powerline_fonts')
@@ -815,7 +801,10 @@ if s:has_bundle('nerdtree')
     nmap <leader>nt :NERDTreeFind<CR>
 
     let NERDTreeShowBookmarks=1
-    let NERDTreeIgnore=['\.py[cd]$', '\~$', '\.swo$', '\.swp$', '^\.git$', '^\.hg$', '^\.svn$', '\.bzr$']
+    let NERDTreeIgnore=[
+                \ '\.py[cd]$', '\~$', '\.swo$', '\.swp$', '^\.git$',
+                \ '^\.hg$', '^\.svn$', '\.bzr$',
+                \ ]
     let NERDTreeChDirMode=0
     let NERDTreeQuitOnOpen=1
     let NERDTreeMouseMode=2
@@ -912,14 +901,16 @@ if s:has_bundle('tagbar')
     " And make sure gotags is in your path
     let g:tagbar_type_go = {
                 \ 'ctagstype' : 'go',
-                \ 'kinds'     : [  'p:package', 'i:imports:1', 'c:constants', 'v:variables',
-                \ 't:types',  'n:interfaces', 'w:fields', 'e:embedded', 'm:methods',
-                \ 'r:constructor', 'f:functions' ],
+                \ 'kinds'     : [
+                \       'p:package', 'i:imports:1', 'c:constants', 'v:variables',
+                \       't:types',  'n:interfaces', 'w:fields', 'e:embedded',
+                \       'm:methods', 'r:constructor', 'f:functions',
+                \  ],
                 \ 'sro' : '.',
                 \ 'kind2scope' : { 't' : 'ctype', 'n' : 'ntype' },
                 \ 'scope2kind' : { 'ctype' : 't', 'ntype' : 'n' },
-                \ 'ctagsbin'  : 'gotags',
-                \ 'ctagsargs' : '-sort -silent'
+                \ 'ctagsbin'   : 'gotags',
+                \ 'ctagsargs'  : '-sort -silent'
                 \ }
 endif
 
@@ -940,9 +931,9 @@ endif
 " OmniComplete {
     if has("autocmd") && exists("+omnifunc")
         autocmd Filetype *
-            \if &omnifunc == "" |
-            \setlocal omnifunc=syntaxcomplete#Complete |
-            \endif
+            \ if &omnifunc == "" |
+            \ setlocal omnifunc=syntaxcomplete#Complete |
+            \ endif
     endif
 
     hi Pmenu      guifg=#000000 guibg=#F8F8F8          ctermfg=black     ctermbg=Lightgray
