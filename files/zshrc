@@ -1,4 +1,6 @@
 
+# ============================= Plugins ===============================
+
 ENABLE_CORRECTION="true"
 DISABLE_UNTRACKED_FILES_DIRTY="true"
 HIST_STAMPS="yyyy-mm-dd"
@@ -86,7 +88,7 @@ zle-line-init() {
 }
 zle -N zle-line-init
 
-# ========================= User configuration =========================
+# ======================== User configuration ==========================
 
 # functions
 
@@ -108,7 +110,7 @@ top_commands() {
 }
 
 fawk() {
-    eval "awk '{print \$${1}}'"
+    awk "{print \$${1}}"
 }
 
 # key bindings
