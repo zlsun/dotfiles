@@ -83,7 +83,6 @@ Plugin 'kristijanhusak/vim-multiple-cursors'
 
 Plugin 'tpope/vim-surround'
 Plugin 'spf13/vim-autoclose'
-Plugin 'Firef0x/matchit.zip'
 
 Plugin 'tpope/vim-abolish'
 Plugin 'osyo-manga/vim-over'
@@ -91,10 +90,12 @@ Plugin 'osyo-manga/vim-over'
 Plugin 'reedes/vim-wordy'
 Plugin 'reedes/vim-litecorrect'
 
-" Textobjs
 Plugin 'gcmt/wildfire.vim'
 Plugin 'wellle/targets.vim'
+
+" Textobjs
 Plugin 'kana/vim-textobj-user'
+Plugin 'kana/vim-textobj-line'
 Plugin 'bps/vim-textobj-python'
 Plugin 'kana/vim-textobj-indent'
 Plugin 'reedes/vim-textobj-quote'
@@ -168,11 +169,11 @@ Plugin 'kchmck/vim-coffee-script'
 
 " Haskell
 Plugin 'dag/vim2hs'
-Plugin 'Shougo/vimproc'
 Plugin 'travitch/hasksyn'
 Plugin 'adinapoli/cumino'
 Plugin 'eagletmt/neco-ghc'
 Plugin 'bitc/vim-hdevtools'
+Plugin 'Shougo/vimproc.vim'
 Plugin 'eagletmt/ghcmod-vim'
 Plugin 'Twinside/vim-haskellFold'
 Plugin 'Twinside/vim-haskellConceal'
@@ -181,8 +182,9 @@ Plugin 'lukerandall/haskellmode-vim'
 " Misc
 Plugin 'DrawIt'
 Plugin 'szw/vim-g'
-Plugin 'xolox/vim-misc'
-Plugin 'xolox/vim-session'
+" Plugin 'xolox/vim-misc'
+" Plugin 'xolox/vim-session'
+Plugin 'qpkorr/vim-renamer'
 Plugin 'lilydjwg/fcitx.vim'
 Plugin 'gioele/vim-autoswap'
 
@@ -217,7 +219,7 @@ endif
 set timeoutlen=500 ttimeoutlen=0
 set shortmess+=filmnrxoOtT                      " Abbrev. of messages (avoids 'hit enter')
 set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatibility
-set virtualedit=onemore                         " Allow for cursor beyond last character
+set virtualedit=block,onemore                   " Allow for cursor beyond last character
 set history=1000                                " Store a ton of history (default is 20)
 set nospell                                     " Spell checking off
 set hidden                                      " Allow buffer switching without saving
@@ -435,13 +437,13 @@ nnoremap Y y$
 noremap j gj
 noremap k gk
 
-" Visual shifting (does not exit Visual mode)
-vnoremap < <gv
-vnoremap > >gv
-
 " Allow using the repeat operator with a visual selection (!)
 " http://stackoverflow.com/a/8064607/127816
 vnoremap . :normal .<CR>
+
+" Visual shifting (does not exit Visual mode)
+vnoremap < <gv
+vnoremap > >gv
 
 " http://vim.wikia.com/wiki/Selecting_your_pasted_text
 nnoremap gp `[v`]
@@ -482,6 +484,10 @@ nnoremap <silent> <leader>q gwip
 " search results.
 " nmap <silent> <leader>/ :nohlsearch<CR>
 nmap <silent> <leader>/ :set invhlsearch<CR>
+
+" Render the whole file or selected text with Jinja2
+nmap <silent> <Leader>r :%!envtpl<CR>
+vmap <silent> <Leader>r :!envtpl<CR>
 
 " Code folding options
 nmap <leader>f0 :set foldlevel=0<CR>
@@ -707,8 +713,9 @@ if s:has_bundle('vim-colors-solarized')
     let g:solarized_contrast = "normal"
     let g:solarized_visibility = "normal"
     color solarized              " Load a colorscheme
-    highlight clear SignColumn   " SignColumn should match background
-    highlight clear CursorLineNr " Remove highlight color from current line number
+    hi MatchParen cterm=bold ctermbg=red ctermfg=white
+    hi clear SignColumn   " SignColumn should match background
+    hi clear CursorLineNr " Remove highlight color from current line number
 endif
 
 if s:has_bundle('vim-airline')
@@ -823,14 +830,14 @@ if s:has_bundle('undotree')
     let g:undotree_SetFocusWhenToggle = 1
 endif
 
-if s:has_bundle('matchit.zip')
-    let b:match_ignorecase = 1
-endif
-
 if s:has_bundle('wildfire.vim')
+    nmap <leader>s <Plug>(wildfire-quick-select)
     let g:wildfire_objects = {
-                \ "*" : ["i'", 'i"', "i)", "i]", "i}", "ip"],
-                \ "html,xml" : ["at"],
+                \ "*" : split("i' i\" i) i] i} ip"),
+                \ "json" : split("i\" a\" i] a] a, i} a} a, ip"),
+                \ "html,xml" : split("i' i\" i) i] i} at it"),
+                \ "python" : split("i' i\" i) i] i} ip if ic"),
+                \ "text,textile,markdown" : split("iQ iq is i) i} ip"),
                 \ }
 endif
 
@@ -909,7 +916,6 @@ endif
 
 if s:has_bundle('tagbar')
     nnoremap <silent> <leader>tt :TagbarToggle<CR>
-
     " If using go please install the gotags program using the following
     " go install github.com/jstemmer/gotags
     " And make sure gotags is in your path
@@ -942,13 +948,7 @@ if s:has_bundle('vim-fugitive')
     nnoremap <silent> <leader>gg :SignifyToggle<CR>
 endif
 
-" OmniComplete {
-    if has("autocmd") && exists("+omnifunc")
-        au Filetype *
-            \  if &omnifunc == ""
-            \|     setlocal omnifunc=syntaxcomplete#Complete
-            \| endif
-    endif
+if exists("+omnifunc")
 
     hi Pmenu      guifg=#000000 guibg=#F8F8F8          ctermfg=black     ctermbg=Lightgray
     hi PmenuSbar  guifg=#8A95A7 guibg=#F8F8F8 gui=NONE ctermfg=darkcyan  ctermbg=lightgray cterm=NONE
@@ -962,13 +962,20 @@ endif
     inoremap <expr> <C-d>  pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<C-d>"
     inoremap <expr> <C-u>  pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<C-u>"
 
+    au Filetype *
+                \  if &omnifunc == ""
+                \|     setlocal omnifunc=syntaxcomplete#Complete
+                \| endif
+
     " Automatically open and close the popup menu / preview window
     au CursorMovedI,InsertLeave *
-        \| if pumvisible() == 0
-        \|     silent! pclose
-        \| endif
+                \  if pumvisible() == 0
+                \|     silent! pclose
+                \| endif
+
     set completeopt=menu,preview,longest
-" }
+
+endif
 
 if s:completer == 'snipmate' && s:has_bundle('vim-snipmate')
     " Setting the author var
@@ -1253,5 +1260,14 @@ endif
 
 if s:has_bundle('haskellmode-vim')
     let g:haddock_browser = "open"
+endif
+
+if s:has_bundle('vim-renamer')
+    let g:RenamerSupportColonWToRename = 1
+    " nnoremap <buffer> <silent> <Del> :call renamer#DeleteEntry()<CR>
+    " nnoremap <buffer> <silent> t     :call renamer#ToggleOriginalFilesWindow()<CR>
+    " nnoremap <buffer> <silent> r     :call renamer#Refresh()<CR>
+    " nnoremap <buffer> <silent> <Tab> :call renamer#ChangeLevel(1)<CR>
+    " nnoremap <buffer> <silent> <BS>  :call renamer#ChangeLevel(-1)<CR>
 endif
 
