@@ -204,3 +204,7 @@ fi
 
 eval `dircolors ~/.dircolors`
 
+if [[ ! $TERM =~ screen ]]; then
+    TERM=screen-256color exec tmux
+fi
+
