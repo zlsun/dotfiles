@@ -113,6 +113,11 @@ fawk() {
     awk "{print \$${1}}"
 }
 
+vim_rename() {
+    local dir=${1:-.}
+    vim -c "cd $dir|Renamer"
+}
+
 # key bindings
 
 bindkey -s '^Z' '^qfg\n'
