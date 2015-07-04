@@ -492,8 +492,7 @@ nnoremap <silent> <leader>q gwip
 " nmap <silent> <leader>/ :nohlsearch<CR>
 nmap <silent> <leader>/ :set invhlsearch<CR>
 
-" Render the whole file or selected text with Jinja2
-nmap <silent> <Leader>r :%!envtpl<CR>
+" Render selected text with Jinja2
 vmap <silent> <Leader>r :!envtpl<CR>
 
 " Code folding options
