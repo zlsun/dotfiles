@@ -204,7 +204,9 @@ fi
 
 eval `dircolors ~/.dircolors`
 
-if [[ ! $TERM =~ screen ]]; then
+if [[ $(tty|grep -o '/dev/tty') = /dev/tty ]] && type fbterm > /dev/null; then
+    exec fbterm
+elif [[ ! $TERM =~ screen ]] && type tmux > /dev/null; then
     TERM=screen-256color exec tmux
 fi
 
