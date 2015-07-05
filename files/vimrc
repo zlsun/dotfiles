@@ -482,7 +482,7 @@ vnoremap <A-j> :m '>+1<CR>gv
 vnoremap <A-k> :m '<-2<CR>gv
 
 " Copy the whole file
-map <Leader>a :<C-U>%y+<CR>
+map <Leader>cf :<C-U>%y+<CR>
 
 " Easier formatting
 nnoremap <silent> <leader>q gwip
@@ -885,7 +885,9 @@ if s:has_bundle('nerdcommenter')
 endif
 
 if s:has_bundle('tabular')
-    cmap al/ Tabularize /
+    " cmap al/ Tabularize /
+    nmap <Leader>a      :Tabularize /
+    vmap <Leader>a      :Tabularize /
     nmap <Leader>a&     :Tabularize /&<CR>
     vmap <Leader>a&     :Tabularize /&<CR>
     nmap <Leader>a=     :Tabularize /=<CR>
