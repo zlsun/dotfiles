@@ -42,12 +42,12 @@ if ! zgen saved; then
         robbyrussell/oh-my-zsh plugins/themes
         robbyrussell/oh-my-zsh plugins/vundle
         robbyrussell/oh-my-zsh plugins/web-search
-        robbyrussell/oh-my-zsh plugins/z
 
         zlsun/umake
         zlsun/solarized-man
 
         rimraf/k
+        Neki/fasd
 
         zsh-users/zsh-syntax-highlighting
         zsh-users/zsh-completions src
@@ -101,10 +101,10 @@ find_duplicate() {
 }
 
 top_commands() {
-    cat ~/.zsh_history                                        \
-        | cut -d ';' -f 2- 2>/dev/null                        \
-        | awk '{a[$1]++ } END{for(i in a){print a[i] " " i}}' \
-        | sort -rn                                            \
+    cat ~/.zsh_history                                      \
+        | cut -d ';' -f 2- 2>/dev/null                      \
+        | awk '{a[$1]++}END{for(i in a){print a[i] " " i}}' \
+        | sort -rn                                          \
         | head $*
 }
 
@@ -121,9 +121,13 @@ exists() {
     type $1 &> /dev/null
 }
 
-# Extensions
+# ZSH
 
 autoload -U zmv
+
+# make zsh know about hosts already accessed by SSH
+zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
+
 
 # Key bindings
 
@@ -196,7 +200,7 @@ alias -g NE="2> /dev/null"
 alias -g NUL="> /dev/null 2>&1"
 alias -g P="2>&1| pygmentize -l pytb"
 
-# l*
+# l* - ls
 alias l='ls -lFh'     #size,show type,human readable
 alias la='ls -lAFh'   #long list,show almost all,show type,human readable
 alias lr='ls -tRFh'   #sorted by date,recursive,show type,human readable
@@ -207,11 +211,11 @@ alias lS='ls -1FSsh'
 alias lart='ls -1Fcart'
 alias lrt='ls -1Fcrt'
 
-# k*
+# k* - k <https://github.com/rimraf/k>
 alias k='k -h'
 alias ka='k -h -A'
 
-# how*
+# how* - howdoi <https://github.com/gleitz/howdoi>
 alias howdoi='howdoi -c'
 alias how='howdoi'
 alias howsh='howdoi shell'
@@ -223,14 +227,14 @@ alias howml='howdoi html'
 alias howjs='howdoi js'
 alias howcss='howdoi css'
 
-# py*
+# py* - python
 alias py='python'
 alias py2='python2'
 alias py3='python3'
 alias pyhttp='python -m SimpleHTTPServer'
 alias pyftp='python -m pyftpdlib'
 
-# sg*
+# sg* - apt-*
 alias sga='sudo apt-get autoremove'
 alias sgc='sudo apt-get autoclean'
 alias sgd='sudo apt-get dist-upgrade'
@@ -245,6 +249,8 @@ alias sgf='apt-file search'
 # quick access to files
 alias zshrc='$EDITOR ~/.zshrc'
 alias vimrc='$EDITOR ~/.vimrc'
+alias tmxcf='$EDITOR ~/.tmux.conf'
+alias srcls='$EDITOR /etc/apt/sources.list'
 
 # enable alias when use sudo
 # http://askubuntu.com/a/22043/399470
@@ -253,12 +259,16 @@ alias s='sudo '
 # shorten frequent commands
 alias c='cat'
 alias e='echo'
-alias f='eval $(thefuck $(fc -ln -1))'
+alias f='eval $(thefuck $(fc -ln -1))' # https://github.com/nvbn/thefuck
 alias gg='git gui'
 alias h='history'
 alias m='make'
 alias p='ps -f'
 alias v='vim'
+
+# fasd
+alias A='fasd -A'
+alias o='fasd -a -e $XOPEN'
 
 # meaning aliases
 alias help='man'
@@ -283,16 +293,11 @@ alias mmv='noglob zmv -W'
 
 # nocorrect
 if [[ "$ENABLE_CORRECTION" == "true" ]]; then
-    alias touch='nocorrect touch'
-    alias xclip='nocorrect xclip'
     alias howdoi='nocorrect howdoi'
     alias _z='nocorrect _z'
 fi
 
 # Others
-
-# make zsh know about hosts already accessed by SSH
-zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
 
 eval `dircolors ~/.dircolors`
 
