@@ -267,7 +267,7 @@ alias p='ps -f'
 alias v='vim'
 
 # fasd
-export _FASD_VIMINFO="~/.vim/viminfo"
+export _FASD_VIMINFO="~/.vim/info"
 export _FASD_BACKENDS="native viminfo current"
 alias A='fasd -A'
 alias o='fasd -a -B recently-used -e $XOPEN'

@@ -354,7 +354,7 @@ endif
 
 func! InitializeDirectories()
     let parent = $HOME
-    let prefix = 'vim'
+    let prefix = ''
     let dir_list = {
                 \ 'backup': 'backupdir',
                 \ 'views': 'viewdir',
