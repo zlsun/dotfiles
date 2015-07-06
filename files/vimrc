@@ -67,6 +67,7 @@ Plugin 'altercation/vim-colors-solarized'
 Plugin 'bling/vim-airline'
 " Plugin 'bling/vim-bufferline'
 Plugin 'Yggdroot/indentLine'
+Plugin 'kshenoy/vim-signature'
 
 Plugin 'scrooloose/nerdtree'
 Plugin 'jistr/vim-nerdtree-tabs'
@@ -784,6 +785,11 @@ if s:has_bundle('indentLine')
     " disable by default
     let g:indentLine_enabled = 0
     map <silent> <Leader>i :<C-U>IndentLinesToggle<CR>
+endif
+
+if s:has_bundle('vim-signature')
+    let g:SignatureMarkTextHLDynamic = 1
+    let g:SignatureMarkerTextHLDynamic = 1
 endif
 
 if s:has_bundle('nerdtree')
