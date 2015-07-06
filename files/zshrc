@@ -258,8 +258,8 @@ alias s='sudo '
 
 # shorten frequent commands
 alias c='cat'
-alias e='echo'
-alias f='eval $(thefuck $(fc -ln -1))' # https://github.com/nvbn/thefuck
+alias ec='echo'
+alias fk='eval $(thefuck $(fc -ln -1))' # https://github.com/nvbn/thefuck
 alias gg='git gui'
 alias h='history'
 alias m='make'
@@ -267,8 +267,10 @@ alias p='ps -f'
 alias v='vim'
 
 # fasd
+export _FASD_VIMINFO="~/.vim/viminfo"
+export _FASD_BACKENDS="native viminfo current"
 alias A='fasd -A'
-alias o='fasd -a -e $XOPEN'
+alias o='fasd -a -B recently-used -e $XOPEN'
 
 # meaning aliases
 alias help='man'
