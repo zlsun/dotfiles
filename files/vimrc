@@ -159,6 +159,7 @@ Plugin 'python_match.vim'
 
 " HTML
 Plugin 'tpope/vim-haml'
+Plugin 'mattn/emmet-vim'
 Plugin 'hail2u/vim-css3-syntax'
 Plugin 'amirh/HTML-AutoCloseTag'
 
@@ -1270,6 +1271,12 @@ if s:has_bundle('python-mode')
     let g:pymode_options = 0
     let g:pymode_rope = 1
     let g:pymode_rope_goto_definition_bind = "<C-]>"
+endif
+
+if s:has_bundle('emmet-vim')
+    let g:user_emmet_install_global = 0
+    let g:user_emmet_install_global = 0
+    autocmd FileType html,css EmmetInstall
 endif
 
 if s:has_bundle('vim-json')
