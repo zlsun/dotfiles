@@ -905,7 +905,7 @@ if s:has_bundle('vim-template')
     let g:email = s:your_email
     let g:license = s:your_default_license
     let g:templates_no_builtin_templates = 1
-    let g:templates_directory = '~/.vim/templates/'
+    let g:templates_directory = ['~/.vim/templates/']
 endif
 
 if s:has_bundle('vim-autoformat')
