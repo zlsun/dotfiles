@@ -113,6 +113,7 @@ Plugin 'Xuyuanp/nerdtree-git-plugin'
 " Programming
 Plugin 'godlygeek/tabular'
 Plugin 'scrooloose/syntastic'
+Plugin 'aperezdc/vim-template'
 Plugin 'Chiel92/vim-autoformat'
 if executable('ctags')
     Plugin 'majutsushi/tagbar'
@@ -120,8 +121,6 @@ endif
 
 " Comment
 Plugin 'tomtom/tcomment_vim'
-" Plugin 'tpope/vim-commentary'
-" Plugin 'scrooloose/nerdcommenter'
 
 let s:completer = 'neocomplcache'
 
@@ -185,8 +184,6 @@ Plugin 'lukerandall/haskellmode-vim'
 " Misc
 Plugin 'DrawIt'
 Plugin 'szw/vim-g'
-" Plugin 'xolox/vim-misc'
-" Plugin 'xolox/vim-session'
 Plugin 'qpkorr/vim-renamer'
 Plugin 'lilydjwg/fcitx.vim'
 Plugin 'gioele/vim-autoswap'
@@ -200,6 +197,14 @@ func! UnBundle(arg, ...)
 endfunc
 
 com! -nargs=+ UnBundle call UnBundle(<args>)
+
+" ======================================================================== "
+"                            Personal Settings                             "
+" ======================================================================== "
+
+let s:your_name = 'zlsun'
+let s:your_email = 'zlsun1995@gmail.com'
+let s:your_default_license = 'MIT'
 
 " ======================================================================== "
 "                               Settings                                   "
@@ -873,6 +878,14 @@ if s:has_bundle('syntastic')
     let g:syntastic_cpp_compiler_options = ' -std=c++11'
 endif
 
+if s:has_bundle('vim-template')
+    let g:username = s:your_name
+    let g:email = s:your_email
+    let g:license = s:your_default_license
+    let g:templates_no_builtin_templates = 1
+    let g:templates_directory = '~/.vim/templates/'
+endif
+
 if s:has_bundle('vim-autoformat')
     nnoremap <Leader>f :Autoformat<CR>
     " let g:formatdef_my_clangformat = "'clang-format -lines='.a:firstline.':'.a:lastline.' --assume-filename='.bufname('%').' -style=\"{BasedOnStyle: WebKit, AlignTrailingComments: true, '.(&textwidth ? 'ColumnLimit: '.&textwidth.', ' : '').(&expandtab ? 'UseTab: Never, IndentWidth: '.&shiftwidth : 'UseTab: Always').'}\"'"
@@ -991,7 +1004,7 @@ endif
 
 if s:completer == 'snipmate' && s:has_bundle('vim-snipmate')
     " Setting the author var
-    let g:snips_author = 'zlsun <zlsun1995@gmail.com>'
+    let g:snips_author = s:your_name . ' <' . s:your_email . '>'
 
 elseif s:completer == 'youcompleteme' && s:has_bundle('YouCompleteMe')
     let g:acp_enableAtStartup = 0
