@@ -713,7 +713,7 @@ com! -complete=file -nargs=+ Shell call s:RunShellCommand(<q-args>)
 
 func! s:has_bundle(name)
     if !isdirectory(expand("~/.vim/bundle/" . a:name))
-        echo a:name . " is disable"
+        echo a:name . " is not installed, run :VundleInstall to install"
     endif
     return isdirectory(expand("~/.vim/bundle/" . a:name))
 endfunc
