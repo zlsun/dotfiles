@@ -421,37 +421,28 @@ let maplocalleader = '_'
 nmap <Space> <Leader>
 nmap <Space><Space> <Leader><Leader>
 
-" Smash Escape
-inoremap jk <Esc>
-inoremap kj <Esc>
-
 " map ; to :
 " see: http://vim.wikia.com/wiki/Map_semicolon_to_colon
 map ; :
 noremap ;; ;
 
-" Map S/space to replace
-nmap S :%s///g<Left><Left><Left>
-vmap <Space> :s///g<Left><Left><Left>
+" Wrapped lines goes down/up to next row, rather than next line in file.
+noremap j gj
+noremap k gk
 
-" Fullscreen mode for GVIM and Terminal, need 'wmctrl' in you PATH
-map <silent> <F11> :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
+" Smash Escape
+inoremap jk <Esc>
+inoremap kj <Esc>
 
-" The following two lines conflict with moving to top and
-" bottom of the screen
-map <S-H> gT
-map <S-L> gt
-
-" Easier horizontal scrolling
-map zl zL
-map zh zH
+" Map Q to replace
+nmap Q :%s///g<Left><Left><Left>
+vmap Q :s///g<Left><Left><Left>
 
 " Yank from the cursor to the end of the line, to be consistent with C and D.
 nnoremap Y y$
 
-" Wrapped lines goes down/up to next row, rather than next line in file.
-noremap j gj
-noremap k gk
+" Duplicate selected text
+vnoremap D y`>p`[v`]
 
 " Allow using the repeat operator with a visual selection (!)
 " http://stackoverflow.com/a/8064607/127816
@@ -461,10 +452,20 @@ vnoremap . :normal .<CR>
 vnoremap < <gv
 vnoremap > >gv
 
+" Easier horizontal scrolling
+map zl zL
+map zh zH
+
 " http://vim.wikia.com/wiki/Selecting_your_pasted_text
 nnoremap gp `[v`]
 
-vnoremap D y`>p`[v`]
+" The following two lines conflict with moving to top and
+" bottom of the screen
+map <S-H> gT
+map <S-L> gt
+
+" Fullscreen mode for GVIM and Terminal, need 'wmctrl' in you PATH
+map <silent> <F11> :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
 
 " Easier window operation
 map <Leader>w <C-W>
@@ -490,9 +491,6 @@ inoremap <A-k> <Esc>:m .-2<CR>gi
 vnoremap <A-j> :m '>+1<CR>gv
 vnoremap <A-k> :m '<-2<CR>gv
 
-" Copy the whole file
-map <Leader>cf :<C-U>%y+<CR>
-
 " Easier formatting
 nnoremap <silent> <leader>q gwip
 
@@ -516,6 +514,18 @@ nmap <leader>f7 :set foldlevel=7<CR>
 nmap <leader>f8 :set foldlevel=8<CR>
 nmap <leader>f9 :set foldlevel=9<CR>
 
+" Copy the whole file
+map <Leader>cf :<C-U>%y+<CR>
+
+" Source current file
+map <Leader>so :source %<CR>
+
+" Find merge conflict markers
+map <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
+
+" Display all lines with keyword under cursor and ask which one to jump to
+nmap <Leader>ff [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
+
 " Some helpers to edit mode
 " http://vimcasts.org/e/14
 cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
@@ -532,15 +542,6 @@ map <Leader>tl :tablast<CR>
 map <Leader>tc :tabclose<CR>
 map <Leader>th :tabfirst<CR>
 map <Leader>tj :tabprevious<CR>
-
-" Find merge conflict markers
-map <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
-
-" Display all lines with keyword under cursor and ask which one to jump to
-nmap <Leader>ff [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
-
-" Source current file
-map <Leader>so :source %<CR>
 
 " If the current buffer has never been saved, it will have no name, call the
 " file browser to save it, otherwise just save it. see:
