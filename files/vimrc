@@ -46,6 +46,9 @@ Plugin 'tomtom/tlib_vim'
 Plugin 'mattn/webapi-vim'
 Plugin 'MarcWeber/vim-addon-mw-utils'
 
+" Chinese documentation
+Plugin 'asins/vimcdoc'
+
 if executable('ag')
     Plugin 'mileszs/ack.vim'
     let g:ackprg = 'ag --nogroup --nocolor --column --smart-case'
@@ -769,11 +772,12 @@ endif
 
 if s:has_bundle('ctrlp.vim')
     let g:ctrlp_working_path_mode = 'ra'
-    nnoremap <silent> <Leader>p :CtrlP<CR>
-    nnoremap <silent> <Leader>m :CtrlPMRU<CR>
+    let g:ctrlp_extensions = ['quickfix']
     let g:ctrlp_custom_ignore = {
                 \ 'dir':  '\.git$\|\.hg$\|\.svn$',
                 \ 'file': '\.exe$\|\.so$\|\.dll$\|\.pyc$' }
+
+    nnoremap <silent> <Leader>m :CtrlPMRU<CR>
 
     " On Windows use "dir" as fallback command.
     if WINDOWS()
@@ -1272,10 +1276,5 @@ endif
 
 if s:has_bundle('vim-renamer')
     let g:RenamerSupportColonWToRename = 1
-    " nnoremap <buffer> <silent> <Del> :call renamer#DeleteEntry()<CR>
-    " nnoremap <buffer> <silent> t     :call renamer#ToggleOriginalFilesWindow()<CR>
-    " nnoremap <buffer> <silent> r     :call renamer#Refresh()<CR>
-    " nnoremap <buffer> <silent> <Tab> :call renamer#ChangeLevel(1)<CR>
-    " nnoremap <buffer> <silent> <BS>  :call renamer#ChangeLevel(-1)<CR>
 endif
 
