@@ -75,6 +75,7 @@ Plugin 'mbbill/undotree'
 
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'tacahiroy/ctrlp-funky'
+Plugin 'dyng/ctrlsf.vim'
 
 Plugin 'sessionman.vim'
 Plugin 'restore_view.vim'
@@ -847,6 +848,17 @@ if s:has_bundle('ctrlp.vim')
         nnoremap <Leader>fu :CtrlPFunky<Cr>
     endif
 
+endif
+
+if s:has_bundle('ctrlsf.vim')
+    nmap     <C-F>f <Plug>CtrlSFPrompt
+    vmap     <C-F>f <Plug>CtrlSFVwordPath
+    vmap     <C-F>F <Plug>CtrlSFVwordExec
+    nmap     <C-F>n <Plug>CtrlSFCwordPath
+    nmap     <C-F>p <Plug>CtrlSFPwordPath
+    nnoremap <C-F>o :CtrlSFOpen<CR>
+    nnoremap <C-F>t :CtrlSFToggle<CR>
+    inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
 endif
 
 if s:has_bundle('sessionman.vim')
