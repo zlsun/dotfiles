@@ -231,6 +231,7 @@ alias howcss='howdoi css'
 alias py='python'
 alias py2='python2'
 alias py3='python3'
+alias pyi='sudo -H pip install'
 alias pyhttp='python -m SimpleHTTPServer'
 alias pyftp='python -m pyftpdlib'
 
