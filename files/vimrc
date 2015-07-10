@@ -50,8 +50,8 @@ Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'asins/vimcdoc'
 
 if executable('ag')
-    Plugin 'mileszs/ack.vim'
     let g:ackprg = 'ag --nogroup --nocolor --column --smart-case'
+    Plugin 'mileszs/ack.vim'
 elseif executable('ack-grep')
     let g:ackprg = "ack-grep -H --nocolor --nogroup --column"
     Plugin 'mileszs/ack.vim'
@@ -292,15 +292,16 @@ let g:netrw_browsex_viewer =  "x-www-browser"
 " ======================================================================== "
 
 set background=dark         " Assume a dark background
+set colorcolumn=80,100      " Highlight column 80 and 100
+set cursorline              " Highlight current line
+set linespace=0             " No extra spaces between rows
 set mouse=a                 " Automatically enable mouse usage
 set mousehide               " Hide the mouse cursor while typing
-set tabpagemax=15           " Only show 15 tabs
-set linespace=0             " No extra spaces between rows
-set showmode                " Display the current mode
-set cursorline              " Highlight current line
+set noeb novb t_vb=         " Disable beeping
 set number                  " Line numbers on
 set relativenumber          " Enable relative line number
-set noeb novb t_vb=         " Disable beeping
+set showmode                " Display the current mode
+set tabpagemax=15           " Only show 15 tabs
 
 " Custom invisibles
 set list
@@ -318,7 +319,6 @@ if has('statusline')
     " Broken down into easily includeable segments
     set statusline=%<%f\                     " Filename
     set statusline+=%w%h%m%r                 " Options
-    set statusline+=%{fugitive#statusline()} " Git Hotness
     set statusline+=\ [%{&ff}/%Y]            " Filetype
     set statusline+=\ [%{getcwd()}]          " Current dir
     set statusline+=%=%-14.(%l,%c%V%)\ %p%%  " Right aligned file nav info
@@ -470,6 +470,9 @@ aug resCur
     au BufWinEnter * call ResCur()
 aug END
 
+" Set scripts to be executable from the shell
+au BufWritePost * if getline(1) =~ "^#!.*/bin/" | silent !chmod +x <afile> | endif
+
 " Remove trailing whitespaces and ^M chars
 au FileType c,cpp,java,go,php,javascript,python,yml,perl,nasm
     \ au BufWritePre <buffer> call StripTrailingWhitespace()
@@ -483,6 +486,7 @@ au FileType haskell setlocal commentstring=--\ %s
 " Workaround broken color highlighting in Haskell
 au FileType haskell,rust setlocal nospell
 
+" Set filetypes
 au BufNewFile,BufRead *.html.twig set filetype=html.twig
 au BufNewFile,BufRead *.coffee    set filetype=coffee
 au BufNewFile,BufRead *.asm       set filetype=nasm
@@ -724,8 +728,9 @@ vnoremap <silent> ^      :<C-U>call WrapRelativeMotion("^", 1)<CR>
 func! s:has_bundle(name)
     if !isdirectory(expand("~/.vim/bundle/" . a:name))
         echo a:name . " is not installed, run :VundleInstall to install"
+        return 0
     endif
-    return isdirectory(expand("~/.vim/bundle/" . a:name))
+    return 1
 endfunc
 
 if s:has_bundle('ack.vim')
@@ -873,6 +878,10 @@ if s:has_bundle('sessionman.vim')
     nmap <leader>sl :SessionList<CR>
     nmap <leader>ss :SessionSave<CR>
     nmap <leader>sc :SessionClose<CR>
+endif
+
+if s:has_bundle('vim-multiple-cursors')
+    vmap // :MultipleCursorsFind 
 endif
 
 if s:has_bundle('wildfire.vim')
