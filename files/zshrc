@@ -43,11 +43,11 @@ if ! zgen saved; then
         robbyrussell/oh-my-zsh plugins/vundle
         robbyrussell/oh-my-zsh plugins/web-search
 
-        zlsun/umake
         zlsun/solarized-man
+        zlsun/umake
 
-        rimraf/k
         Neki/fasd
+        rimraf/k
 
         zsh-users/zsh-syntax-highlighting
         zsh-users/zsh-completions src
@@ -152,8 +152,6 @@ bindkey -M menuselect ';' history-incremental-search-forward
 
 EDITOR='vim'
 XOPEN='xdg-open'
-PLAYER='mplayer'
-XPLAYER='smplayer'
 BROWSER='x-www-browser'
 
 # open file depends on their SUFFIX
@@ -162,21 +160,13 @@ if [ ${ZSH_VERSION//\./} -ge 420 ]; then
     _browser_fts=(htm html de org net com at cx nl se dk dk php)
     for ft in $_browser_fts ; do alias -s $ft=$BROWSER ; done
 
-    _editor_fts=(cpp cxx cc c hh h inl asc txt TXT tex)
+    _editor_fts=(asc c cc cpp cxx h hh ini tex txt TXT)
     for ft in $_editor_fts ; do alias -s $ft=$EDITOR ; done
 
-    _image_fts=(jpg jpeg png gif mng tiff tif xpm)
-    for ft in $_image_fts ; do alias -s $ft=$XOPEN; done
-
+    _image_fts=(bmp gif jpg jpeg mng png tif tiff xpm)
     _media_fts=(ape avi flv mkv mov mp3 mpeg mpg ogg ogm rm wav webm)
-    for ft in $_media_fts ; do alias -s $ft=$PLAYER ; done
-
-    # read documents
-    alias -s pdf=$XOPEN
-    alias -s ps=gv
-    alias -s dvi=xdvi
-    alias -s chm=xchm
-    alias -s djvu=djview
+    _doc_fts=(pdf doc docx xls xlsx ppt ps dvi chm djvu)
+    for ft in $_image_fts $_media_fts $_doc_fts ; do alias -s $ft=$XOPEN ; done
 
     # list whats inside packed file
     alias -s zip="unzip -l"
@@ -187,12 +177,12 @@ if [ ${ZSH_VERSION//\./} -ge 420 ]; then
 fi
 
 # command line tail shortcuts
-alias -g H='| head'
-alias -g T='| tail'
 alias -g G='| grep'
+alias -g H='| head'
 alias -g L="| less"
 alias -g M="| most"
 alias -g S='| sort'
+alias -g T='| tail'
 alias -g X='| xargs'
 alias -g LL="2>&1 | less"
 alias -g CA="2>&1 | cat -A"
@@ -201,11 +191,11 @@ alias -g NUL="> /dev/null 2>&1"
 alias -g P="2>&1| pygmentize -l pytb"
 
 # l* - ls
-alias l='ls -lFh'     #size,show type,human readable
-alias la='ls -lAFh'   #long list,show almost all,show type,human readable
-alias lr='ls -tRFh'   #sorted by date,recursive,show type,human readable
-alias lt='ls -ltFh'   #long list,sorted by date,show type,human readable
-alias ll='ls -l'      #long list
+alias l='ls -lFh'     # size,show type,human readable
+alias la='ls -lAFh'   # long list,show almost all,show type,human readable
+alias lr='ls -tRFh'   # sorted by date,recursive,show type,human readable
+alias lt='ls -ltFh'   # long list,sorted by date,show type,human readable
+alias ll='ls -l'      # long list
 alias ldot='ls -ld .*'
 alias lS='ls -1FSsh'
 alias lart='ls -1Fcart'
@@ -218,14 +208,14 @@ alias ka='k -h -A'
 # how* - howdoi <https://github.com/gleitz/howdoi>
 alias howdoi='howdoi -c'
 alias how='howdoi'
-alias howsh='howdoi shell'
-alias howpy='howdoi python'
 alias howc='howdoi c'
 alias howcp='howdoi c++'
+alias howcss='howdoi css'
+alias howjs='howdoi js'
 alias howjv='howdoi java'
 alias howml='howdoi html'
-alias howjs='howdoi js'
-alias howcss='howdoi css'
+alias howpy='howdoi python'
+alias howsh='howdoi shell'
 
 # py* - python
 alias py='python'
@@ -234,8 +224,29 @@ alias py3='python3'
 alias pyi='sudo -H pip install'
 alias pyi2='sudo -H pip2 install'
 alias pyi3='sudo -H pip3 install'
-alias pyhttp='python -m SimpleHTTPServer'
 alias pyftp='python -m pyftpdlib'
+alias pyhttp='python -m SimpleHTTPServer'
+alias pypf='python -m cProfile'
+alias pypf2='python2 -m cProfile'
+alias pypf3='python3 -m cProfile'
+alias pytime='python -m timeit'
+alias pytime2='python2 -m timeit'
+alias pytime3='python3 -m timeit'
+alias pytrace='python -m trace'
+alias pytrace2='python2 -m trace'
+alias pytrace3='python3 -m trace'
+alias pypdb='python -m pdb'
+alias pypdb2='python2 -m pdb'
+alias pypdb3='python3 -m pdb'
+alias ipy='ipython'
+alias ipy2='ipython2'
+alias ipy3='ipython3'
+alias iqt='ipython qtconsole'
+alias iqt2='ipython2 qtconsole'
+alias iqt3='ipython3 qtconsole'
+alias nb='ipython notebook'
+alias nb2='ipython2 notebook'
+alias nb3='ipython3 notebook'
 
 # sg* - apt-*
 alias sga='sudo apt-get autoremove'
@@ -250,10 +261,10 @@ alias sgs='apt-cache search'
 alias sgf='apt-file search'
 
 # quick access to files
-alias zshrc='$EDITOR ~/.zshrc'
-alias vimrc='$EDITOR ~/.vimrc'
-alias tmxcf='$EDITOR ~/.tmux.conf'
 alias srcls='$EDITOR /etc/apt/sources.list'
+alias tmxcf='$EDITOR ~/.tmux.conf'
+alias vimrc='$EDITOR ~/.vimrc'
+alias zshrc='$EDITOR ~/.zshrc'
 
 # enable alias when use sudo
 # http://askubuntu.com/a/22043/399470
@@ -286,8 +297,8 @@ alias hgrep="fc -El 0 | grep"
 alias sortnr='sort -n -r'
 alias dud='du -d 1 -h'
 alias duf='du -sh *'
-alias fd='find . -type d -name'
-alias ff='find . -type f -name'
+alias fd='noglob find . -type d -name'
+alias ff='noglob find . -type f -name'
 
 # prompt before operating file
 alias rm='rm -i'
@@ -299,7 +310,6 @@ alias mmv='noglob zmv -W'
 # nocorrect
 if [[ "$ENABLE_CORRECTION" == "true" ]]; then
     alias howdoi='nocorrect howdoi'
-    alias _z='nocorrect _z'
 fi
 
 # Others

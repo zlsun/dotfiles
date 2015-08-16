@@ -184,6 +184,9 @@ Plugin 'Twinside/vim-haskellFold'
 Plugin 'Twinside/vim-haskellConceal'
 Plugin 'lukerandall/haskellmode-vim'
 
+" Kotlin
+Plugin 'udalov/kotlin-vim'
+
 " Misc
 Plugin 'DrawIt'
 Plugin 'szw/vim-g'
@@ -471,7 +474,12 @@ aug resCur
 aug END
 
 " Set scripts to be executable from the shell
-au BufWritePost * if getline(1) =~ "^#!.*/bin/" | silent !chmod +x <afile> | endif
+func! s:chmod(file)
+    if getline(1) =~ "^#!.*/bin/"
+        silent !chmod +x a:file
+    endif
+endfunc
+" au BufWritePost * call s:chmod(<afile>)
 
 " Remove trailing whitespaces and ^M chars
 au FileType c,cpp,java,go,php,javascript,python,yml,perl,nasm
@@ -573,6 +581,8 @@ vnoremap > >gv
 map <S-H> gT
 map <S-L> gt
 
+map <silent> <F5> :!./%<CR><CR>
+
 " Fullscreen mode for GVIM and Terminal, need 'wmctrl' in you PATH
 map <silent> <F11> :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
 
@@ -612,16 +622,16 @@ map <Leader>= <C-w>=
 nmap <silent> <leader>/ :set invhlsearch<CR>
 
 " Code folding options
-nmap <leader>f10 :set foldlevel=0<CR>
-nmap <leader>f1  :set foldlevel=1<CR>
-nmap <leader>f2  :set foldlevel=2<CR>
-nmap <leader>f3  :set foldlevel=3<CR>
-nmap <leader>f4  :set foldlevel=4<CR>
-nmap <leader>f5  :set foldlevel=5<CR>
-nmap <leader>f6  :set foldlevel=6<CR>
-nmap <leader>f7  :set foldlevel=7<CR>
-nmap <leader>f8  :set foldlevel=8<CR>
-nmap <leader>f9  :set foldlevel=9<CR>
+nmap <leader>f0 :set foldlevel=0<CR>
+nmap <leader>f1 :set foldlevel=1<CR>
+nmap <leader>f2 :set foldlevel=2<CR>
+nmap <leader>f3 :set foldlevel=3<CR>
+nmap <leader>f4 :set foldlevel=4<CR>
+nmap <leader>f5 :set foldlevel=5<CR>
+nmap <leader>f6 :set foldlevel=6<CR>
+nmap <leader>f7 :set foldlevel=7<CR>
+nmap <leader>f8 :set foldlevel=8<CR>
+nmap <leader>f9 :set foldlevel=9<CR>
 
 " Copy the whole file
 map <Leader>cf :<C-U>%y+<CR>
@@ -687,6 +697,18 @@ endfunc
 
 nmap <silent> <F7> :call ToggleSpell()<CR>
 imap <silent> <F7> <C-O>: call ToggleSpell()<CR>
+
+au BufEnter * let b:in_hex_view = 0
+func! ToggleHexView()
+    if b:in_hex_view
+        %!xxd -r
+    else
+        %!xxd
+    endif
+    let b:in_hex_view = !b:in_hex_view
+endfunc
+
+nmap <silent> <F8> :call ToggleHexView()<CR>
 
 " End/Start of line motion keys act relative to row/wrap width in the presence
 " of `:set wrap`, and relative to line for `:set nowrap`. Default vim behaviour
