@@ -958,10 +958,6 @@ if s:has_bundle('vim-autoformat')
     let g:formatters_cpp = ['my_astyle_cpp']
 endif
 
-if s:has_bundle('nerdcommenter')
-    let NERDSpaceDelims = 1
-endif
-
 if s:has_bundle('tabular')
     nmap <Leader>a      :Tabularize /
     vmap <Leader>a      :Tabularize /
