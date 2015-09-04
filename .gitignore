@@ -1,4 +1,4 @@
 
-files/pip/*
-!files/pip/pip.conf
+files/i3/*
+!files/i3/config
 
