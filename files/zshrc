@@ -188,9 +188,10 @@ alias -g LL="2>&1 | less"
 alias -g CA="2>&1 | cat -A"
 alias -g NE="2> /dev/null"
 alias -g NUL="> /dev/null 2>&1"
+alias -g WC='| wc'
 alias -g P="2>&1| pygmentize -l pytb"
 
-# l* - ls
+# l* -> ls
 alias l='ls -lFh'     # size,show type,human readable
 alias la='ls -lAFh'   # long list,show almost all,show type,human readable
 alias lr='ls -tRFh'   # sorted by date,recursive,show type,human readable
@@ -201,11 +202,11 @@ alias lS='ls -1FSsh'
 alias lart='ls -1Fcart'
 alias lrt='ls -1Fcrt'
 
-# k* - k <https://github.com/rimraf/k>
+# k* -> k <https://github.com/rimraf/k>
 alias k='k -h'
 alias ka='k -h -A'
 
-# how* - howdoi <https://github.com/gleitz/howdoi>
+# how* -> howdoi <https://github.com/gleitz/howdoi>
 alias howdoi='howdoi -c'
 alias how='howdoi'
 alias howc='howdoi c'
@@ -217,13 +218,19 @@ alias howml='howdoi html'
 alias howpy='howdoi python'
 alias howsh='howdoi shell'
 
-# py* - python
+# py* -> python
 alias py='python'
 alias py2='python2'
 alias py3='python3'
 alias pyi='sudo -H pip install'
 alias pyi2='sudo -H pip2 install'
 alias pyi3='sudo -H pip3 install'
+alias pyiu='pip install --user'
+alias pyiu2='pip2 install --user'
+alias pyiu3='pip3 install --user'
+alias pyu='sudo -H pip uninstall'
+alias pyu2='sudo -H pip2 uninstall'
+alias pyu3='sudo -H pip3 uninstall'
 alias pyftp='python -m pyftpdlib'
 alias pyhttp='python -m SimpleHTTPServer'
 alias pypf='python -m cProfile'
@@ -248,7 +255,7 @@ alias nb='ipython notebook'
 alias nb2='ipython2 notebook'
 alias nb3='ipython3 notebook'
 
-# sg* - apt-*
+# sg* -> apt-*
 alias sga='sudo apt-get autoremove'
 alias sgc='sudo apt-get autoclean'
 alias sgd='sudo apt-get dist-upgrade'
@@ -259,6 +266,24 @@ alias sgr='sudo apt-get remove'
 alias sgu='sudo apt-get update'
 alias sgs='apt-cache search'
 alias sgf='apt-file search'
+
+# sp* -> pacman
+alias spd='sudo pacman -D'
+alias spt='sudo pacman -T'
+alias spq='sudo pacman -Q'
+alias spr='sudo pacman -R'
+alias sps='sudo pacman -S'
+alias spu='sudo pacman -U'
+
+# yt* -> yaourt
+alias ytq='yaourt -Q'
+alias ytr='yaourt -R'
+alias yts='yaourt -S'
+alias ytu='yaourt -U'
+alias ytc='yaourt -C'
+alias ytb='yaourt -B'
+alias ytg='yaourt -G'
+alias ytt='yaourt --stats'
 
 # quick access to files
 alias srcls='$EDITOR /etc/apt/sources.list'
@@ -277,13 +302,14 @@ alias fk='eval $(thefuck $(fc -ln -1))' # https://github.com/nvbn/thefuck
 alias gg='git gui'
 alias h='history'
 alias m='make'
-alias p='ps -f'
+alias sv='s v'
 alias v='vim'
 
 # fasd
 export _FASD_VIMINFO="~/.vim/info"
 export _FASD_BACKENDS="native viminfo current"
 alias A='fasd -A'
+alias D='fasd -D'
 alias o='fasd -a -B recently-used -e $XOPEN'
 
 # meaning aliases
@@ -317,7 +343,7 @@ fi
 eval `dircolors ~/.dircolors`
 
 if [[ $(tty|grep -o '/dev/tty') = /dev/tty ]] && exists fbterm; then
-    exec fbterm
+    # exec fbterm
 elif [[ ! $TERM =~ screen ]] && exists tmux; then
     # TERM=screen-256color exec tmux
 fi
