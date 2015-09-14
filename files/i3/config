@@ -195,7 +195,7 @@ bar {
     colors {
         separator  $base00
         background $base03
-        statusline $base11
+        statusline $base13
         focused_workspace  $base13  $blue    $base13
         active_workspace   $base13  $violet  $base13
         inactive_workspace $base03  $base03  $base11
