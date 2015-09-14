@@ -91,7 +91,7 @@ zle -N zle-line-init
 
 # Functions
 
-find_duplicate() {
+find-duplicate() {
     local dir=${1:-.}
     find $dir -type f -print0                   \
         | xargs -0 -n1 md5sum                   \
@@ -100,7 +100,7 @@ find_duplicate() {
         | sed -e 's/^[0-9a-f]*\ *//;'
 }
 
-top_commands() {
+top-commands() {
     cat ~/.zsh_history                                      \
         | cut -d ';' -f 2- 2>/dev/null                      \
         | awk '{a[$1]++}END{for(i in a){print a[i] " " i}}' \
@@ -108,11 +108,16 @@ top_commands() {
         | head $*
 }
 
+save-rm-rf() {
+    comm -23 <(pacman -Qeq) <(pacman -Qmq) | pacman -S -
+    comm -23 <(pacman -Qdq) <(pacman -Qmq) | pacman -S --asdeps -
+}
+
 fawk() {
     awk "{print \$${1}}"
 }
 
-vim_rename() {
+vimrename() {
     local dir=${1:-.}
     vim -c "cd $dir|Renamer"
 }
@@ -131,7 +136,7 @@ zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f
 
 # Key bindings
 
-bindkey -s '^Z' '^qfg\n'
+bindkey -s '^Z' '^q fg\n'
 
 bindkey -M menuselect 'h' vi-backward-char
 bindkey -M menuselect 'j' vi-down-line-or-history
@@ -158,7 +163,7 @@ BROWSER='x-www-browser'
 if [ ${ZSH_VERSION//\./} -ge 420 ]; then
     # open browser on urls
     _browser_fts=(htm html de org net com at cx nl se dk dk php)
-    for ft in $_browser_fts ; do alias -s $ft=$BROWSER ; done
+    for ft in $_browser_fts ; do alias -s $ft=$XOPEN ; done
 
     _editor_fts=(asc c cc cpp cxx h hh ini tex txt TXT)
     for ft in $_editor_fts ; do alias -s $ft=$EDITOR ; done
@@ -184,11 +189,11 @@ alias -g M="| most"
 alias -g S='| sort'
 alias -g T='| tail'
 alias -g X='| xargs'
+alias -g WC='| wc'
 alias -g LL="2>&1 | less"
 alias -g CA="2>&1 | cat -A"
 alias -g NE="2> /dev/null"
 alias -g NUL="> /dev/null 2>&1"
-alias -g WC='| wc'
 alias -g P="2>&1| pygmentize -l pytb"
 
 # l* -> ls
@@ -287,9 +292,11 @@ alias ytt='yaourt --stats'
 
 # quick access to files
 alias srcls='$EDITOR /etc/apt/sources.list'
+alias pcmcf='$EDITOR /etc/pacman.conf'
 alias tmxcf='$EDITOR ~/.tmux.conf'
 alias vimrc='$EDITOR ~/.vimrc'
 alias zshrc='$EDITOR ~/.zshrc'
+alias i3cfg='$EDITOR ~/.i3/config'
 
 # enable alias when use sudo
 # http://askubuntu.com/a/22043/399470

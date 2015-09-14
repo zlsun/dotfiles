@@ -1,15 +1,19 @@
 
-
-font pango:DejaVu Sans Mono 11
+font pango:UbuntuMono 13
 
 set $mod Mod4
 floating_modifier $mod
 
 bindsym $mod+Return exec i3-sensible-terminal
 
-bindsym $mod+q kill
-bindsym $mod+d exec dmenu_run
-# bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
+bindsym $mod+Shift+q kill
+
+bindsym $mod+d   exec --no-startup-id rofi -show run
+bindsym $mod+p   exec --no-startup-id j4-dmenu-desktop --dmenu="rofi -dmenu -i -p '' "
+bindsym $mod+Tab exec --no-startup-id rofi -show window
+bindsym $mod+F1  exec --no-startup-id clerk
+bindsym $mod+F2  exec --no-startup-id rofi-surfraw
+bindsym $mod+F3  exec --no-startup-id rofi-pass
 
 # change container layout (stacked, tabbed, toggle split)
 bindsym $mod+w layout tabbed
@@ -43,9 +47,9 @@ bindsym $mod+k focus up
 bindsym $mod+l focus right
 
 # alternatively, you can use the cursor keys:
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
+bindsym $mod+Left  focus left
+bindsym $mod+Down  focus down
+bindsym $mod+Up    focus up
 bindsym $mod+Right focus right
 
 # move focused window
@@ -55,9 +59,9 @@ bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
 
 # alternatively, you can use the cursor keys:
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Left  move left
+bindsym $mod+Shift+Down  move down
+bindsym $mod+Shift+Up    move up
 bindsym $mod+Shift+Right move right
 
 # switch to workspace
@@ -95,31 +99,34 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 bindsym $mod+equal move scratchpad
 bindsym $mod+minus scratchpad show
 
-# Pulse Audio controls
+exec --no-startup-id terminator -c terminator-scratchpad
+for_window [class="terminator-scratchpad"] move scratchpad
+
+# Audio controls
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 0 +5% #increase sound volume
 bindsym XF86AudioLowerVolume exec pactl set-sink-volume 0 -5% #decrease sound volume
 bindsym XF86AudioMute        exec pactl set-sink-mute 0 toggle # mute sound
 
+# Media player controls
+bindsym XF86AudioPlay   exec --no-startup-id mpc play
+bindsym XF86AudioPause  exec --no-startup-id mpc toggle
+bindsym XF86AudioNext   exec --no-startup-id mpc next
+bindsym XF86AudioPrev   exec --no-startup-id mpc pre
+bindsym $mod+backslash  exec --no-startup-id mpc toggle
+bindsym $mod+braceright exec --no-startup-id mpc next
+bindsym $mod+braceleft  exec --no-startup-id mpc pre
+
 # Sreen brightness controls
-bindsym XF86MonBrightnessUp exec xbacklight -inc 20 # increase screen brightness
+bindsym XF86MonBrightnessUp   exec xbacklight -inc 20 # increase screen brightness
 bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightness
 
-# Touchpad controls
-# bindsym XF86TouchpadToggle exec /some/path/toggletouchpad.sh # toggle touchpad
-
-# Media player controls
-bindsym XF86AudioPlay  exec playerctl play
-bindsym XF86AudioPause exec playerctl pause
-bindsym XF86AudioNext  exec playerctl next
-bindsym XF86AudioPrev  exec playerctl previous
-
 # Screenshot
-set $to_screenshots 'mv $f ~/Pictures/Screenshots/'
-set $to_clipboard   'imgclip $f && rm -f $f'
-bindsym --release Print       exec --no-startup-id scrot -e $to_screenshots
-bindsym --release Ctrl+Print  exec --no-startup-id scrot -e $to_clipboard
-bindsym --release Shift+Print exec --no-startup-id scrot -s -e $to_screenshots
-bindsym --release Alt+Print   exec --no-startup-id scrot -s -e $to_clipboard
+set $to_screenshots 'mv /tmp/scrot.png ~/Pictures/Screenshots/'
+set $to_clipboard   'imgclip /tmp/scrot.png'
+bindsym --release Print       exec --no-startup-id scrot /tmp/scrot.png -e $to_clipboard
+bindsym --release Ctrl+Print  exec --no-startup-id scrot /tmp/scrot.png -s -e $to_clipboard
+bindsym --release Shift+Print exec --no-startup-id scrot /tmp/scrot.png -e $to_screenshots
+bindsym --release Mod1+Print  exec --no-startup-id scrot /tmp/scrot.png -s -e $to_screenshots
 
 # Mode: shutdown, reboot, lock screen
 set $Locker i3lock && sleep 1
@@ -139,59 +146,60 @@ bindsym $mod+Pause mode "$mode_system"
 
 # Mode: resize window (you can also use the mouse for that)
 mode "resize" {
-        # These bindings trigger as soon as you enter the resize mode
-        bindsym h resize shrink width 10 px or 10 ppt
-        bindsym j resize grow height 10 px or 10 ppt
-        bindsym k resize shrink height 10 px or 10 ppt
-        bindsym l resize grow width 10 px or 10 ppt
-        # same bindings, but for the arrow keys
-        bindsym Left resize shrink width 10 px or 10 ppt
-        bindsym Down resize grow height 10 px or 10 ppt
-        bindsym Up resize shrink height 10 px or 10 ppt
-        bindsym Right resize grow width 10 px or 10 ppt
-        # back to normal: Enter or Escape
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
+    # These bindings trigger as soon as you enter the resize mode
+    bindsym h resize shrink width  10 px or 10 ppt
+    bindsym j resize grow   height 10 px or 10 ppt
+    bindsym k resize shrink height 10 px or 10 ppt
+    bindsym l resize grow   width  10 px or 10 ppt
+    # same bindings, but for the arrow keys
+    bindsym Left  resize shrink width  10 px or 10 ppt
+    bindsym Down  resize grow   height 10 px or 10 ppt
+    bindsym Up    resize shrink height 10 px or 10 ppt
+    bindsym Right resize grow   width  10 px or 10 ppt
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
 }
 bindsym $mod+r mode "resize"
 
 new_window 1pixel
 new_float 1pixel
-
 hide_edge_borders both
-# focus_follows_mouse no
 
-## Default
-## class                    border  backgr. text    indicator
-# client.focused            #4c7899 #285577 #ffffff #2e9ef4
-# client.focused_inactive   #333333 #5f676a #ffffff #484e50
-# client.unfocused          #333333 #222222 #888888 #292d2e
-# client.urgent             #2f343a #900000 #ffffff #900000
+set $base03  #002b36
+set $base02  #073642
+set $base01  #586e75
+set $base00  #657b83
+set $base10  #839496
+set $base11  #93a1a1
+set $base12  #eee8d5
+set $base13  #fdf6e3
+set $yellow  #b58900
+set $orange  #cb4b16
+set $red     #dc322f
+set $magenta #d33682
+set $violet  #6c71c4
+set $blue    #268bd2
+set $cyan    #2aa198
+set $green   #859900
+set $custom  #1c5766
 
-## class                    border  backgr. text    indicator
-# client.focused              #ad7fa8 #75507b #ffffff #ad7fa8
-# client.focused_inactive     #555753 #3c3c3c #ffffff #ad7fa8
-# client.unfocused            #555753 #3c3c3c #888888 #ad7fa8
-# client.urgent               #ad7fa8 #ad7fa8 #ffffff #ff0000
+client.focused          $blue    $blue    $base03 $blue
+client.focused_inactive $base02  $base02  $base12 $violet
+client.unfocused        $base02  $base02  $base11 $base01
+client.urgent           $magenta $magenta $base13 $red
 
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
 bar {
-    status_command    i3status
-    position          bottom
+    status_command i3status
+    position       bottom
     colors {
-        background #000000
-        statusline #ffffff
-        focused_workspace  #ffffff #285577
-        active_workspace   #ffffff #333333
-        inactive_workspace #888888 #222222
-        urgent_workspace   #ffffff #900000
-        # background #3c3c3c
-        # statusline #bbbbbb
-        # focused_workspace    #ad7fa8 #75507b #ffffff
-        # active_workspace     #75507b #ad7fa8 #ffffff
-        # inactive_workspace   #3c3c3c #3c3c3c #aaaaaa
-        # urgent_workspace     #df5757 #c22f2f #ffffff
+        separator  $base00
+        background $base03
+        statusline $base11
+        focused_workspace  $base13  $blue    $base13
+        active_workspace   $base13  $violet  $base13
+        inactive_workspace $base03  $base03  $base11
+        urgent_workspace   $magenta $magenta $base13
     }
 }
 

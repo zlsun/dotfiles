@@ -97,6 +97,13 @@ Plugin 'reedes/vim-litecorrect'
 Plugin 'gcmt/wildfire.vim'
 Plugin 'wellle/targets.vim'
 
+Plugin 'VisIncr'
+Plugin 'DrawIt'
+Plugin 'szw/vim-g'
+Plugin 'qpkorr/vim-renamer'
+Plugin 'lilydjwg/fcitx.vim'
+Plugin 'gioele/vim-autoswap'
+
 " Textobjs
 Plugin 'kana/vim-textobj-user'
 Plugin 'kana/vim-textobj-line'
@@ -187,12 +194,8 @@ Plugin 'lukerandall/haskellmode-vim'
 " Kotlin
 Plugin 'udalov/kotlin-vim'
 
-" Misc
-Plugin 'DrawIt'
-Plugin 'szw/vim-g'
-Plugin 'qpkorr/vim-renamer'
-Plugin 'lilydjwg/fcitx.vim'
-Plugin 'gioele/vim-autoswap'
+" i3
+Plugin 'PotatoesMaster/i3-vim-syntax'
 
 call vundle#end()
 
@@ -558,8 +561,8 @@ vnoremap D y`>p`[v`]
 nnoremap Y y$
 
 " Map Q to replace
-nmap Q :%s///g<Left><Left><Left>
-vmap Q :s///g<Left><Left><Left>
+nmap Q :%s///g<Left><Left><Left><C-R><C-/><Right>
+vmap Q :s///g<Left><Left><Left><C-R><C-/><Right>
 
 " Allow using the repeat operator with a visual selection (!)
 " http://stackoverflow.com/a/8064607/127816
