@@ -40,7 +40,7 @@ git_clone() {
     if ! [[ -d ~/.vim/bundle/vundle ]]; then
         git clone http://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
     fi
-    vi +BundleInstall +qall
+    vi +VundleInstall +qall
 }
 
 link_all
