@@ -99,8 +99,7 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 bindsym $mod+equal move scratchpad
 bindsym $mod+minus scratchpad show
 
-exec --no-startup-id terminator -c terminator-scratchpad
-for_window [class="terminator-scratchpad"] move scratchpad
+for_window [class="terminatorscratchpad"] move scratchpad
 
 # Audio controls
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 0 +5% #increase sound volume

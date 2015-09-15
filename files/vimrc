@@ -333,7 +333,7 @@ endif
 " GVIM- (here instead of .gvimrc)
 if has('gui_running')
     set lines=40                " 40 lines of text instead of 24
-    set guioptions=agimt
+    set guioptions=ai
     set linespace=-2
     if LINUX()
         set guifont=Ubuntu\ Mono\ derivative\ Powerline\ 12

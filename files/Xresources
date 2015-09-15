@@ -26,11 +26,11 @@
 #define S_base3         #fdf6e3
 
 ! rofi
-rofi.foreground: S_base0
-rofi.background: S_base03
+rofi.foreground:  S_base0
+rofi.background:  S_base03
 rofi.highlightfg: S_base1
 rofi.highlightbg: S_base01
-rofi.bordercolor: S_base02
-rofi.font: UbuntuMono 13
+rofi.bordercolor: S_base0
+rofi.font: Source Code Pro 12
 rofi.opacity: 80
 
