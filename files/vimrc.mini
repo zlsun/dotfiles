@@ -1,0 +1,517 @@
+
+set nocompatible        " Must be first line
+
+set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
+set sessionoptions+=globals,localoptions,resize,winpos
+filetype plugin indent on   " Automatically detect file types.
+syntax on                   " Syntax highlighting
+scriptencoding utf-8
+
+if has('clipboard')
+    if has('unnamedplus')  " When possible use + register for copy-paste
+        set clipboard=unnamed,unnamedplus
+    else         " On mac and Windows, use * register for copy-paste
+        set clipboard=unnamed
+    endif
+endif
+
+set timeoutlen=500 ttimeoutlen=0
+set shortmess+=filmnrxoOtT                      " Abbrev. of messages (avoids 'hit enter')
+set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatibility
+set virtualedit=block,onemore                   " Allow for cursor beyond last character
+set history=1000                                " Store a ton of history (default is 20)
+set nospell                                     " Spell checking off
+set hidden                                      " Allow buffer switching without saving
+set iskeyword-=.                                " '.' is an end of word designator
+set iskeyword-=#                                " '#' is an end of word designator
+set iskeyword-=-                                " '-' is an end of word designator
+
+set backspace=indent,eol,start  " Backspace for dummies
+set showmatch                   " Show matching brackets/parenthesis
+set incsearch                   " Find as you type search
+set hlsearch                    " Highlight search terms
+set winminheight=0              " Windows can be 0 line high
+set ignorecase                  " Case insensitive search
+set smartcase                   " Case sensitive when uc present
+set wildmenu                    " Show list instead of just completing
+set wildmode=list:longest,full  " Command <Tab> completion, list matches, then longest common part, then all.
+set whichwrap=b,s,h,l,<,>,[,]   " Backspace and cursor keys wrap too
+set scrolljump=5                " Lines to scroll when cursor leaves screen
+set scrolloff=3                 " Minimum lines to keep above and below cursor
+set foldenable                  " Auto fold code
+
+set nowrap                      " Do not wrap long lines
+set autoindent                  " Indent at the same level of the previous line
+set shiftwidth=4                " Use indents of 4 spaces
+set expandtab                   " Tabs are spaces, not tabs
+set tabstop=4                   " An indentation every four columns
+set softtabstop=4               " Let backspace delete indent
+set nojoinspaces                " Prevents inserting two spaces after punctuation on a join (J)
+set splitright                  " Puts new vsplit windows to the right of the current
+set splitbelow                  " Puts new split windows to the bottom of the current
+set pastetoggle=<F12>           " pastetoggle (sane indentation on pastes)
+
+" Setting up the directories
+set backup                      " Backups are nice ...
+if has('persistent_undo')
+    set undofile                " So is persistent undo ...
+    set undolevels=1000         " Maximum number of changes that can be undone
+    set undoreload=10000        " Maximum number lines to save for undo on a buffer reload
+endif
+
+set tags=./tags;/,~/.vimtags
+
+" Make tags placed in .git/tags file available in all levels of a repository
+let gitroot = substitute(system('git rev-parse --show-toplevel'), '[\n\r]', '', 'g')
+if gitroot != ''
+    let &tags = &tags . ',' . gitroot . '/.git/tags'
+endif
+
+" Add exclusions to mkview and loadview
+" eg: *.*, svn-commit.tmp
+let g:skipview_files = [
+    \ '\[example pattern\]'
+    \ ]
+
+let g:netrw_browsex_viewer =  "x-www-browser"
+
+" ======================================================================== "
+"                               UI Settings                                "
+" ======================================================================== "
+
+set background=dark         " Assume a dark background
+set colorcolumn=80,100      " Highlight column 80 and 100
+set cursorline              " Highlight current line
+set linespace=0             " No extra spaces between rows
+set mouse=a                 " Automatically enable mouse usage
+set mousehide               " Hide the mouse cursor while typing
+set noeb novb t_vb=         " Disable beeping
+set number                  " Line numbers on
+set relativenumber          " Enable relative line number
+set showmode                " Display the current mode
+set tabpagemax=15           " Only show 15 tabs
+
+" Custom invisibles
+set list
+set listchars=tab:›\ ,trail:•,extends:❯,precedes:❮,nbsp:.
+set showbreak=↪\ \ 
+
+if has('cmdline_info')
+    set ruler   " Show the ruler
+    set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%) " A ruler on steroids
+    set showcmd " Show partial commands in status line and selected characters/lines in visual mode
+endif
+
+if has('statusline')
+    set laststatus=2
+    " Broken down into easily includeable segments
+    set statusline=%<%f\                     " Filename
+    set statusline+=%w%h%m%r                 " Options
+    set statusline+=\ [%{&ff}/%Y]            " Filetype
+    set statusline+=\ [%{getcwd()}]          " Current dir
+    set statusline+=%=%-14.(%l,%c%V%)\ %p%%  " Right aligned file nav info
+endif
+
+" GVIM- (here instead of .gvimrc)
+if has('gui_running')
+    set lines=40                " 40 lines of text instead of 24
+    set guioptions=ai
+    set linespace=-2
+    if LINUX()
+        set guifont=Source\ Code\ Pro\ 11
+    elseif OSX()
+        set guifont=Andale\ Mono\ Regular:h12,Menlo\ Regular:h11,Consolas\ Regular:h12,Courier\ New\ Regular:h14
+    elseif WINDOWS()
+        set guifont=Andale_Mono:h10,Menlo:h10,Consolas:h11,Courier_New:h10
+    endif
+else
+    if &term == 'xterm' || &term == 'screen'
+        set t_Co=256 " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
+    endif
+    if &term =~ '^screen'
+        " tmux will send xterm-style keys when its xterm-keys option is on
+        execute "set <xUp>=\e[1;*A"
+        execute "set <xDown>=\e[1;*B"
+        execute "set <xRight>=\e[1;*C"
+        execute "set <xLeft>=\e[1;*D"
+    endif
+endif
+
+" ======================================================================== "
+"                                Functions                                 "
+" ======================================================================== "
+
+func! InitializeDirectories()
+    let parent = $HOME
+    let prefix = ''
+    let dir_list = {
+                \ 'backup': 'backupdir',
+                \ 'views': 'viewdir',
+                \ 'swap': 'directory',
+                \ }
+
+    if has('persistent_undo')
+        let dir_list['undo'] = 'undodir'
+    endif
+
+    if exists('g:consolidated_directory')
+        let common_dir = g:consolidated_directory . prefix
+    else
+        let common_dir = parent . '/.' . prefix
+    endif
+
+    for [dirname, settingname] in items(dir_list)
+        let directory = common_dir . dirname . '/'
+        if exists("*mkdir")
+            if !isdirectory(directory)
+                call mkdir(directory, "p")
+            endif
+        endif
+        if !isdirectory(directory)
+            echo "Warning: Unable to create backup directory: " . directory
+            echo "Try: mkdir -p " . directory
+        else
+            let directory = substitute(directory, " ", "\\\\ ", "g")
+            exec "set " . settingname . "=" . directory
+        endif
+    endfor
+
+    let viminfo = common_dir . 'info'
+    exec "set viminfo+=n" . viminfo
+
+endfunc
+
+let g:consolidated_directory = $HOME . '/.vim/'
+call InitializeDirectories()
+
+
+func! StripTrailingWhitespace()
+    " Preparation: save last search, and cursor position.
+    let _s = @/
+    let l = line(".")
+    let c = col(".")
+    " do the business:
+    %s/\s\+$//e
+    " clean up: restore previous search history, and cursor position
+    let @/ = _s
+    call cursor(l, c)
+endfunc
+
+
+func! s:RunShellCommand(cmdline)
+    botright new
+
+    setlocal buftype=nofile
+    setlocal bufhidden=delete
+    setlocal nobuflisted
+    setlocal noswapfile
+    setlocal nowrap
+    setlocal filetype=shell
+    setlocal syntax=shell
+
+    call setline(1, a:cmdline)
+    call setline(2, substitute(a:cmdline, '.', '=', 'g'))
+    execute 'silent $read !' . escape(a:cmdline, '%#')
+    setlocal nomodifiable
+    1
+endfunc
+
+com! -complete=file -nargs=+ Shell call s:RunShellCommand(<q-args>)
+" e.g. Grep current file for <search_term>: Shell grep -Hn <search_term> %
+
+" ======================================================================== "
+"                               Autocommands                               "
+" ======================================================================== "
+
+" Most prefer to automatically switch to the current file directory when a new
+" buffer is opened.
+au BufEnter * if bufname("") !~ "^\[A-Za-z0-9\]*://" | lcd %:p:h | endif
+
+" Instead of reverting the cursor to the last position in the buffer, we
+" set it to the first line when editing a git commit message
+au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
+
+" http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
+" Restore cursor to file position in previous editing session
+func! ResCur()
+    if line("'\"") <= line("$")
+        normal! g`"
+        return 1
+    endif
+endfunc
+
+aug resCur
+    au!
+    au BufWinEnter * call ResCur()
+aug END
+
+" Set scripts to be executable from the shell
+func! s:chmod(file)
+    if getline(1) =~ "^#!.*/bin/"
+        silent !chmod +x a:file
+    endif
+endfunc
+" au BufWritePost * call s:chmod(<afile>)
+
+" Remove trailing whitespaces and ^M chars
+au FileType c,cpp,java,go,php,javascript,python,yml,perl,nasm
+    \ au BufWritePre <buffer> call StripTrailingWhitespace()
+
+au FileType txt set wrap
+
+au FileType haskell,puppet,ruby,yml setlocal expandtab shiftwidth=2 softtabstop=2
+" preceding line best in a plugin but here for now.
+" Workaround vim-commentary for Haskell
+au FileType haskell setlocal commentstring=--\ %s
+" Workaround broken color highlighting in Haskell
+au FileType haskell,rust setlocal nospell
+
+" Set filetypes
+au BufNewFile,BufRead *.html.twig set filetype=html.twig
+au BufNewFile,BufRead *.coffee    set filetype=coffee
+au BufNewFile,BufRead *.asm       set filetype=nasm
+au BufNewFile,BufRead *.inc       set filetype=nasm
+au BufNewFile,BufRead *.zsh-theme set filetype=zsh
+
+" ======================================================================== "
+"                               Key mappings                               "
+" ======================================================================== "
+
+" Shortcuts
+" Change Working Directory to that of the current file
+cmap cwd lcd %:p:h
+cmap cd. lcd %:p:h
+
+" For when you forget to sudo.. Really Write the file.
+cmap w!! w !sudo tee % >/dev/null
+
+" Stupid shift key fixes
+if has("user_commands")
+    com! -bang -nargs=* -complete=file E   e<bang> <args>
+    com! -bang -nargs=* -complete=file W   w<bang> <args>
+    com! -bang -nargs=* -complete=file Wq wq<bang> <args>
+    com! -bang -nargs=* -complete=file WQ wq<bang> <args>
+    com! -bang Wa wa<bang>
+    com! -bang WA wa<bang>
+    com! -bang Q   q<bang>
+    com! -bang QA qa<bang>
+    com! -bang Qa qa<bang>
+endif
+
+cmap Tabe tabe
+
+" The default leader is '\', but many people prefer ',' as it's in a standard
+" location.
+let mapleader = ','
+let maplocalleader = '_'
+
+" Map space as leader.
+" see: http://redd.it/1vdrxg
+nmap <Space> <Leader>
+nmap <Space><Space> <Leader><Leader>
+
+" map ; to :
+" see: http://vim.wikia.com/wiki/Map_semicolon_to_colon
+map ; :
+noremap ;; ;
+
+" Wrapped lines goes down/up to next row, rather than next line in file.
+noremap j gj
+noremap k gk
+
+" Smash Escape
+inoremap jk <Esc>
+inoremap kj <Esc>
+
+" Duplicate selected text
+vnoremap D y`>p`[v`]
+
+" Yank from the cursor to the end of the line, to be consistent with C and D.
+nnoremap Y y$
+
+" Map Q to replace
+nmap Q :%s///g<Left><Left><Left>
+vmap Q :s///g<Left><Left><Left>
+
+" Allow using the repeat operator with a visual selection (!)
+" http://stackoverflow.com/a/8064607/127816
+vnoremap . :normal .<CR>
+
+" Easier horizontal scrolling
+map zl zL
+map zh zH
+
+" http://vim.wikia.com/wiki/Selecting_your_pasted_text
+nnoremap gp `[v`]
+
+" Visual shifting (does not exit Visual mode)
+vnoremap < <gv
+vnoremap > >gv
+
+" The following two lines conflict with moving to top and
+" bottom of the screen
+map <S-H> gT
+map <S-L> gt
+
+map <silent> <F5> :!./%<CR><CR>
+
+" Fullscreen mode for GVIM and Terminal, need 'wmctrl' in you PATH
+map <silent> <F11> :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
+
+" Easier moving in tabs and windows
+" The lines conflict with the default digraph mapping of <C-K>
+map <C-J> <C-W>j
+map <C-K> <C-W>k
+map <C-L> <C-W>l
+map <C-H> <C-W>h
+
+inoremap <C-CR> <C-O>o
+inoremap <C-S-CR> <C-O>O
+
+" move line up and down
+nnoremap <A-j> :m .+1<CR>
+nnoremap <A-k> :m .-2<CR>
+inoremap <A-j> <Esc>:m .+1<CR>gi
+inoremap <A-k> <Esc>:m .-2<CR>gi
+vnoremap <A-j> :m '>+1<CR>gv
+vnoremap <A-k> :m '<-2<CR>gv
+
+" Easier formatting
+nnoremap <silent> <leader>q gwip
+
+" Render selected text with Jinja2
+vmap <silent> <Leader>r :!envtpl<CR>
+
+" Easier window operation
+map <Leader>w <C-W>
+
+" Adjust viewports to the same size
+map <Leader>= <C-w>=
+
+" Most prefer to toggle search highlighting rather than clear the current
+" search results.
+" nmap <silent> <leader>/ :nohlsearch<CR>
+nmap <silent> <leader>/ :set invhlsearch<CR>
+
+" Code folding options
+nmap <leader>f0 :set foldlevel=0<CR>
+nmap <leader>f1 :set foldlevel=1<CR>
+nmap <leader>f2 :set foldlevel=2<CR>
+nmap <leader>f3 :set foldlevel=3<CR>
+nmap <leader>f4 :set foldlevel=4<CR>
+nmap <leader>f5 :set foldlevel=5<CR>
+nmap <leader>f6 :set foldlevel=6<CR>
+nmap <leader>f7 :set foldlevel=7<CR>
+nmap <leader>f8 :set foldlevel=8<CR>
+nmap <leader>f9 :set foldlevel=9<CR>
+
+" Copy the whole file
+map <Leader>cf :<C-U>%y+<CR>
+
+" Find merge conflict markers
+map <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
+
+" Display all lines with keyword under cursor and ask which one to jump to
+nmap <Leader>ff [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
+
+" Source current file
+map <Leader>so :source %<CR>
+
+" Some helpers to edit mode
+" http://vimcasts.org/e/14
+cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
+map <leader>ew :e %%
+map <leader>es :sp %%
+map <leader>ev :vsp %%
+map <leader>et :tabe %%
+
+" For tab
+map <Leader>tn :tabnew<CR>
+map <Leader>to :tabonly<CR>
+map <Leader>tk :tabnext<CR>
+map <Leader>tl :tablast<CR>
+map <Leader>tc :tabclose<CR>
+map <Leader>th :tabfirst<CR>
+map <Leader>tj :tabprevious<CR>
+
+" If the current buffer has never been saved, it will have no name, call the
+" file browser to save it, otherwise just save it. see:
+" http://vim.wikia.com/wiki/Map_Ctrl-S_to_save_current_or_new_files
+com! -nargs=0 -bar Update
+    \  if &modified
+    \|     if empty(bufname('%'))
+    \|         browse confirm write
+    \|     else
+    \|         confirm write
+    \|     endif
+    \| endif
+noremap <silent> <C-S> :<C-U>Update<CR>
+inoremap <C-S> <Esc>:Update<CR>
+
+" Spell Check
+" see: http://vim.wikia.com/wiki/Toggle_spellcheck_with_function_keys
+
+let g:spell_lang_index = 0
+let g:spell_lang_list = ["nospell","en"]
+
+func! ToggleSpell()
+    let g:spell_lang_index = g:spell_lang_index + 1
+    if g:spell_lang_index >= len(g:spell_lang_list)
+        let g:spell_lang_index = 0
+    endif
+    if g:spell_lang_index == 0
+        setlocal nospell
+    else
+        execute "setlocal spell spelllang=" . get(g:spell_lang_list, g:spell_lang_index)
+    endif
+    echo "spell checking language:" g:spell_lang_list[g:spell_lang_index]
+endfunc
+
+nmap <silent> <F7> :call ToggleSpell()<CR>
+imap <silent> <F7> <C-O>: call ToggleSpell()<CR>
+
+au BufEnter * let b:in_hex_view = 0
+func! ToggleHexView()
+    if b:in_hex_view
+        %!xxd -r
+    else
+        %!xxd
+    endif
+    let b:in_hex_view = !b:in_hex_view
+endfunc
+
+nmap <silent> <F8> :call ToggleHexView()<CR>
+
+" End/Start of line motion keys act relative to row/wrap width in the presence
+" of `:set wrap`, and relative to line for `:set nowrap`. Default vim behaviour
+" is to act relative to text line in both cases Same for 0, home, end, etc
+func! WrapRelativeMotion(key, ...)
+    let vis_sel = ""
+    if a:0
+        let vis_sel = "gv"
+    endif
+    if &wrap
+        execute "normal!" vis_sel . "g" . a:key
+    else
+        execute "normal!" vis_sel . a:key
+    endif
+endfunc
+
+" Map g* keys in Normal, Operator-pending, and Visual+select
+noremap <silent> $       :call WrapRelativeMotion("$")<CR>
+noremap <silent> <End>   :call WrapRelativeMotion("$")<CR>
+noremap <silent> 0       :call WrapRelativeMotion("0")<CR>
+noremap <silent> <Home>  :call WrapRelativeMotion("0")<CR>
+noremap <silent> ^       :call WrapRelativeMotion("^")<CR>
+" Overwrite the operator pending $/<End> mappings from above
+" to force inclusive motion with :execute normal!
+onoremap <silent> $     v:call WrapRelativeMotion("$")<CR>
+onoremap <silent> <End> v:call WrapRelativeMotion("$")<CR>
+" Overwrite the Visual+select mode mappings from above
+" to ensure the correct vis_sel flag is passed to function
+vnoremap <silent> $      :<C-U>call WrapRelativeMotion("$", 1)<CR>
+vnoremap <silent> <End>  :<C-U>call WrapRelativeMotion("$", 1)<CR>
+vnoremap <silent> 0      :<C-U>call WrapRelativeMotion("0", 1)<CR>
+vnoremap <silent> <Home> :<C-U>call WrapRelativeMotion("0", 1)<CR>
+vnoremap <silent> ^      :<C-U>call WrapRelativeMotion("^", 1)<CR>
+

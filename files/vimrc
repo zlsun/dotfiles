@@ -336,7 +336,7 @@ if has('gui_running')
     set guioptions=ai
     set linespace=-2
     if LINUX()
-        set guifont=Ubuntu\ Mono\ derivative\ Powerline\ 12
+        set guifont=Source\ Code\ Pro\ 11
     elseif OSX()
         set guifont=Andale\ Mono\ Regular:h12,Menlo\ Regular:h11,Consolas\ Regular:h12,Courier\ New\ Regular:h14
     elseif WINDOWS()
@@ -382,7 +382,7 @@ func! InitializeDirectories()
         let directory = common_dir . dirname . '/'
         if exists("*mkdir")
             if !isdirectory(directory)
-                call mkdir(directory)
+                call mkdir(directory, "p")
             endif
         endif
         if !isdirectory(directory)
@@ -561,8 +561,8 @@ vnoremap D y`>p`[v`]
 nnoremap Y y$
 
 " Map Q to replace
-nmap Q :%s///g<Left><Left><Left><C-R><C-/><Right>
-vmap Q :s///g<Left><Left><Left><C-R><C-/><Right>
+nmap Q :%s///g<Left><Left><Left>
+vmap Q :s///g<Left><Left><Left>
 
 " Allow using the repeat operator with a visual selection (!)
 " http://stackoverflow.com/a/8064607/127816
@@ -825,7 +825,6 @@ endif
 if s:has_bundle('nerdtree')
     map <C-e> <plug>NERDTreeTabsToggle<CR>
     map <leader>e :NERDTreeFind<CR>
-    nmap <leader>nt :NERDTreeFind<CR>
 
     let NERDTreeShowBookmarks = 1
     let NERDTreeIgnore = [
@@ -837,6 +836,7 @@ if s:has_bundle('nerdtree')
     let NERDTreeMouseMode = 2
     let NERDTreeShowHidden = 1
     let NERDTreeKeepTreeInNewTab = 1
+    let NERDTreeBookmarksFile = '~/.vim/NERDTreeBookmarks'
     let g:NERDShutUp = 1
     let g:nerdtree_tabs_open_on_gui_startup = 0
 endif

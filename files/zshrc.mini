@@ -1,98 +1,103 @@
 
-# ============================= Plugins ===============================
+# Options
 
-ENABLE_CORRECTION="true"
-DISABLE_UNTRACKED_FILES_DIRTY="true"
-HIST_STAMPS="yyyy-mm-dd"
+unsetopt menu_complete   # do not autoselect the first completion entry
+unsetopt flowcontrol
+setopt auto_menu         # show completion menu on succesive tab press
+setopt complete_in_word
+setopt always_to_end
+setopt auto_cd
+setopt multios
+setopt cdablevars
+setopt prompt_subst
 
-source ~/.zgen/zgen.zsh
+zmodload -i zsh/complist
+autoload -U colors && colors
+autoload -U zmv
 
-if ! zgen saved; then
-    echo "Creating a zgen save"
+# Theme
 
-    zgen oh-my-zsh
+# ls colors
+eval `dircolors ~/.dircolors`
+ls --color -d . &>/dev/null 2>&1 && alias ls='ls --color=tty' || alias ls='ls -G'
 
-    zgen loadall <<EOBUNDLES
-        robbyrussell/oh-my-zsh plugins/autopep8
-        robbyrussell/oh-my-zsh plugins/cabal
-        robbyrussell/oh-my-zsh plugins/colorize
-        robbyrussell/oh-my-zsh plugins/command-not-found
-        robbyrussell/oh-my-zsh plugins/copydir
-        robbyrussell/oh-my-zsh plugins/copyfile
-        robbyrussell/oh-my-zsh plugins/cp
-        robbyrussell/oh-my-zsh plugins/dircycle
-        robbyrussell/oh-my-zsh plugins/django
-        robbyrussell/oh-my-zsh plugins/extract
-        robbyrussell/oh-my-zsh plugins/gem
-        robbyrussell/oh-my-zsh plugins/git
-        robbyrussell/oh-my-zsh plugins/github
-        robbyrussell/oh-my-zsh plugins/gitignore
-        robbyrussell/oh-my-zsh plugins/gpg-agent
-        robbyrussell/oh-my-zsh plugins/gradle
-        robbyrussell/oh-my-zsh plugins/history
-        robbyrussell/oh-my-zsh plugins/jsontools
-        robbyrussell/oh-my-zsh plugins/node
-        robbyrussell/oh-my-zsh plugins/npm
-        robbyrussell/oh-my-zsh plugins/pep8
-        robbyrussell/oh-my-zsh plugins/pip
-        robbyrussell/oh-my-zsh plugins/python
-        robbyrussell/oh-my-zsh plugins/ruby
-        robbyrussell/oh-my-zsh plugins/sublime
-        robbyrussell/oh-my-zsh plugins/sudo
-        robbyrussell/oh-my-zsh plugins/systemd
-        robbyrussell/oh-my-zsh plugins/themes
-        robbyrussell/oh-my-zsh plugins/vundle
-        robbyrussell/oh-my-zsh plugins/web-search
+local _user="%{$fg[cyan]%}%n@%m%{$reset_color%} "
+local _wd="%{$fg[blue]%}%8~%{$reset_color%} "
+local _jobs="%{$fg[cyan]%}%(1j. ⚙ %j.)%{$reset_color%}"
+local _return="%{$fg[red]%}%(?..↵ %?)%{$reset_color%}"
 
-        zlsun/solarized-man
-        # zlsun/umake
+PROMPT="╭─${_user}${_wd}
+╰─▶ "
+PROMPT2="  ▶ "
+RPROMPT="${_return}${_jobs}"
 
-        Neki/fasd
-        rimraf/k
-        chrissicool/zsh-256color
+# Completion
 
-        zsh-users/zsh-syntax-highlighting
-        zsh-users/zsh-completions src
-        zsh-users/zsh-history-substring-search
-
-        # autosuggestions should be loaded last
-        tarruda/zsh-autosuggestions
-
-EOBUNDLES
-
-    zgen load zlsun/avit-mod avit-mod
-
-    zgen save
+## case-insensitive (all),partial-word and then substring completion
+if [ "x$CASE_SENSITIVE" = "xtrue" ]; then
+  zstyle ':completion:*' matcher-list 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+  unset CASE_SENSITIVE
+else
+  if [ "x$HYPHEN_INSENSITIVE" = "xtrue" ]; then
+    zstyle ':completion:*' matcher-list 'm:{a-zA-Z-_}={A-Za-z_-}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+    unset HYPHEN_INSENSITIVE
+  else
+    zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+  fi
 fi
 
-# bind UP and DOWN arrow keys
-zmodload zsh/terminfo
-# bindkey "$terminfo[kcuu1]" history-substring-search-up
-# bindkey "$terminfo[kcud1]" history-substring-search-down
+zstyle ':completion:*' list-colors ''
 
-# bind UP and DOWN arrow keys (compatibility fallback
-# for Ubuntu 12.04, Fedora 21, and MacOSX 10.9 users)
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
+# should this be in keybindings?
+bindkey -M menuselect '^o' accept-and-infer-next-history
 
-# bind P and N for EMACS mode
-bindkey -M emacs '^P' history-substring-search-up
-bindkey -M emacs '^N' history-substring-search-down
+zstyle ':completion:*:*:*:*:*' menu select
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
+zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w -w"
 
-# bind k and j for VI mode
-bindkey -M vicmd 'k' history-substring-search-up
-bindkey -M vicmd 'j' history-substring-search-down
+# disable named-directories autocompletion
+zstyle ':completion:*:cd:*' tag-order local-directories directory-stack path-directories
 
-AUTOSUGGESTION_HIGHLIGHT_COLOR='fg=11'
-AUTOSUGGESTION_HIGHLIGHT_CURSOR=0
+# Use caching so that commands like apt and dpkg complete are useable
+zstyle ':completion::complete:*' use-cache 1
+zstyle ':completion::complete:*' cache-path $ZSH_CACHE_DIR
 
-# Enable autosuggestions automatically.
-zle-line-init() {
-    zle autosuggest-start
-}
-zle -N zle-line-init
+# Don't complete uninteresting users
+zstyle ':completion:*:*:*:users' ignored-patterns \
+        adm amanda apache at avahi avahi-autoipd beaglidx bin cacti canna \
+        clamav daemon dbus distcache dnsmasq dovecot fax ftp games gdm \
+        gkrellmd gopher hacluster haldaemon halt hsqldb ident junkbust kdm \
+        ldap lp mail mailman mailnull man messagebus  mldonkey mysql nagios \
+        named netdump news nfsnobody nobody nscd ntp nut nx obsrun openvpn \
+        operator pcap polkitd postfix postgres privoxy pulse pvm quagga radvd \
+        rpc rpcuser rpm rtkit scard shutdown squid sshd statd svn sync tftp \
+        usbmux uucp vcsa wwwrun xfs '_*'
 
-# ======================== User configuration ==========================
+zstyle '*' single-ignored show
+
+# make zsh know about hosts already accessed by SSH
+zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
+
+# Key bindings
+
+bindkey -s '^Z' '^q fg\n'
+
+bindkey '^J' autosuggest-execute-suggestion
+
+bindkey -M menuselect 'h' vi-backward-char
+bindkey -M menuselect 'j' vi-down-line-or-history
+bindkey -M menuselect 'k' vi-up-line-or-history
+bindkey -M menuselect 'l' vi-forward-char
+
+bindkey -M menuselect 'a' vi-backward-char
+bindkey -M menuselect 's' vi-down-line-or-history
+bindkey -M menuselect 'w' vi-up-line-or-history
+bindkey -M menuselect 'd' vi-forward-char
+
+bindkey -M menuselect '/' accept-and-infer-next-history
+bindkey -M menuselect '.' undo
+bindkey -M menuselect ' ' accept-and-hold
+bindkey -M menuselect ';' history-incremental-search-forward
 
 # Functions
 
@@ -138,35 +143,6 @@ vimrename() {
 exists() {
     type $1 &> /dev/null
 }
-
-# ZSH
-
-autoload -U zmv
-
-# make zsh know about hosts already accessed by SSH
-zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
-
-
-# Key bindings
-
-bindkey -s '^Z' '^q fg\n'
-
-bindkey '^J' autosuggest-execute-suggestion
-
-bindkey -M menuselect 'h' vi-backward-char
-bindkey -M menuselect 'j' vi-down-line-or-history
-bindkey -M menuselect 'k' vi-up-line-or-history
-bindkey -M menuselect 'l' vi-forward-char
-
-bindkey -M menuselect 'a' vi-backward-char
-bindkey -M menuselect 's' vi-down-line-or-history
-bindkey -M menuselect 'w' vi-up-line-or-history
-bindkey -M menuselect 'd' vi-forward-char
-
-bindkey -M menuselect '/' accept-and-infer-next-history
-bindkey -M menuselect '.' undo
-bindkey -M menuselect ' ' accept-and-hold
-bindkey -M menuselect ';' history-incremental-search-forward
 
 # Aliases
 
@@ -355,19 +331,4 @@ alias cp='cp -i'
 alias mv='mv -i'
 
 alias mmv='noglob zmv -W'
-
-# nocorrect
-if [[ "$ENABLE_CORRECTION" == "true" ]]; then
-    alias howdoi='nocorrect howdoi'
-fi
-
-# Others
-
-eval `dircolors ~/.dircolors`
-
-if [[ $(tty|grep -o '/dev/tty') = /dev/tty ]] && exists fbterm; then
-    # exec fbterm
-elif [[ ! $TERM =~ screen ]] && exists tmux; then
-    # TERM=screen-256color exec tmux
-fi
 
