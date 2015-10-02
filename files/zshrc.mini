@@ -21,7 +21,7 @@ autoload -U zmv
 eval `dircolors ~/.dircolors`
 ls --color -d . &>/dev/null 2>&1 && alias ls='ls --color=tty' || alias ls='ls -G'
 
-local _user="%{$fg[cyan]%}%n@%m%{$reset_color%} "
+local _user="%{$fg[red]%}%n@%m%{$reset_color%} "
 local _wd="%{$fg[blue]%}%8~%{$reset_color%} "
 local _jobs="%{$fg[cyan]%}%(1j. ⚙ %j.)%{$reset_color%}"
 local _return="%{$fg[red]%}%(?..↵ %?)%{$reset_color%}"
@@ -81,8 +81,6 @@ zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f
 # Key bindings
 
 bindkey -s '^Z' '^q fg\n'
-
-bindkey '^J' autosuggest-execute-suggestion
 
 bindkey -M menuselect 'h' vi-backward-char
 bindkey -M menuselect 'j' vi-down-line-or-history

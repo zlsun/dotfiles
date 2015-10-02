@@ -7,13 +7,12 @@ floating_modifier $mod
 bindsym $mod+Return exec i3-sensible-terminal
 
 bindsym $mod+Shift+q kill
-
-bindsym $mod+d   exec --no-startup-id rofi -show run
-bindsym $mod+q   exec --no-startup-id j4-dmenu-desktop --dmenu="rofi -dmenu -i -p '' "
-bindsym $mod+Tab exec --no-startup-id rofi -show window
-bindsym $mod+F1  exec --no-startup-id clerk
-bindsym $mod+F2  exec --no-startup-id rofi-surfraw
-bindsym $mod+F3  exec --no-startup-id rofi-pass
+# reload the configuration file
+bindsym $mod+Shift+c reload
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+# exit i3 (logs you out of your X session)
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
 # change container layout (stacked, tabbed, toggle split)
 bindsym $mod+w layout tabbed
@@ -76,47 +75,52 @@ bindsym $mod+Shift+8 move container to workspace 8
 bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
-# reload the configuration file
-bindsym $mod+Shift+c reload
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-bindsym $mod+Shift+r restart
-# exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
-
 # scratchpad
 bindsym $mod+equal move scratchpad
 bindsym $mod+minus scratchpad show
 
+bindsym $mod+d   exec --no-startup-id rofi -show run
+bindsym $mod+q   exec --no-startup-id j4-dmenu-desktop --dmenu="rofi -dmenu -i -p '' "
+bindsym $mod+Tab exec --no-startup-id rofi -show window
+bindsym $mod+F1  exec --no-startup-id clerk
+bindsym $mod+F2  exec --no-startup-id rofi-surfraw
+bindsym $mod+F3  exec --no-startup-id rofi-pass
+
 # Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
-bindsym XF86AudioMute        exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
-bindsym $mod+Up   exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
-bindsym $mod+Down exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
-bindsym $mod+m    exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+set $send_signal pkill -SIGRTMIN+10 i3blocks
+bindsym XF86AudioRaiseVolume  exec --no-startup-id pactl set-sink-volume 0 +5%  && $send_signal # increase sound volume
+bindsym XF86AudioLowerVolume  exec --no-startup-id pactl set-sink-volume 0 -5%  && $send_signal # decrease sound volume
+bindsym XF86AudioMute         exec --no-startup-id pactl set-sink-mute 0 toggle && $send_signal # mute sound
+bindsym $mod+Up               exec --no-startup-id pactl set-sink-volume 0 +5%  && $send_signal # increase sound volume
+bindsym $mod+Down             exec --no-startup-id pactl set-sink-volume 0 -5%  && $send_signal # decrease sound volume
+bindsym $mod+m                exec --no-startup-id pactl set-sink-mute 0 toggle && $send_signal # mute sound
 
 # Media player controls
-bindsym XF86AudioPlay   exec --no-startup-id mpc play
-bindsym XF86AudioPause  exec --no-startup-id mpc pause
-bindsym XF86AudioNext   exec --no-startup-id mpc next
-bindsym XF86AudioPrev   exec --no-startup-id mpc pre
-bindsym $mod+backslash  exec --no-startup-id mpc toggle
-bindsym $mod+braceright exec --no-startup-id mpc next
-bindsym $mod+braceleft  exec --no-startup-id mpc pre
+bindsym XF86AudioPlay         exec --no-startup-id mpc play
+bindsym XF86AudioPause        exec --no-startup-id mpc pause
+bindsym XF86AudioNext         exec --no-startup-id mpc next
+bindsym XF86AudioPrev         exec --no-startup-id mpc pre
+bindsym $mod+backslash        exec --no-startup-id mpc toggle
+bindsym $mod+braceright       exec --no-startup-id mpc next
+bindsym $mod+braceleft        exec --no-startup-id mpc pre
 
 # Sreen brightness controls
 bindsym XF86MonBrightnessDown exec --no-startup-id xbacklight -dec 20 # decrease screen brightness
 bindsym XF86MonBrightnessUp   exec --no-startup-id xbacklight -inc 20 # increase screen brightness
-bindsym $mod+Left  exec --no-startup-id xbacklight -dec 20 # decrease screen brightness
-bindsym $mod+Right exec --no-startup-id xbacklight -inc 20 # increase screen brightness
+bindsym $mod+Left             exec --no-startup-id xbacklight -dec 20 # decrease screen brightness
+bindsym $mod+Right            exec --no-startup-id xbacklight -inc 20 # increase screen brightness
 
 # Screenshot
-set $to_clipboard   'imgclip /tmp/scrot.png'
-set $to_screenshots 'mv /tmp/scrot.png ~/Pictures/Screenshots/'
-bindsym --release Print       exec --no-startup-id scrot /tmp/scrot.png -e $to_clipboard
-bindsym --release Shift+Print exec --no-startup-id scrot /tmp/scrot.png -s -e $to_clipboard
-bindsym --release Ctrl+Print  exec --no-startup-id scrot /tmp/scrot.png -e $to_screenshots
-bindsym --release Mod1+Print  exec --no-startup-id scrot /tmp/scrot.png -s -e $to_screenshots
+set $tmp_png        '/tmp/scrot.png'
+set $formated_png   '/tmp/%Y-%m-%d_%R%M%S_$wx$h.png'
+set $to_clipboard   'xclip-set c $f'
+set $to_screenshots 'mv $f ~/Pictures/Screenshots/'
+bindsym --release            Print exec --no-startup-id scrot $tmp_png              -e $to_clipboard
+bindsym --release       Ctrl+Print exec --no-startup-id scrot $tmp_png           -s -e $to_clipboard
+bindsym --release       Mod1+Print exec --no-startup-id scrot $tmp_png      -d 5 -s -e $to_clipboard
+bindsym --release      Shift+Print exec --no-startup-id scrot $formated_png         -e $to_screenshots
+bindsym --release Ctrl+Shift+Print exec --no-startup-id scrot $formated_png      -s -e $to_screenshots
+bindsym --release Mod1+Shift+Print exec --no-startup-id scrot $formated_png -d 5 -s -e $to_screenshots
 
 # Mode: shutdown, reboot, lock screen
 set $Locker i3lock -d -e -c 000000 && sleep 1
@@ -137,10 +141,10 @@ bindsym $mod+Pause mode "$mode_system"
 # Mode: resize window (you can also use the mouse for that)
 mode "resize" {
     # These bindings trigger as soon as you enter the resize mode
-    bindsym h resize shrink width  10 px or 10 ppt
-    bindsym j resize grow   height 10 px or 10 ppt
-    bindsym k resize shrink height 10 px or 10 ppt
-    bindsym l resize grow   width  10 px or 10 ppt
+    bindsym h     resize shrink width  10 px or 10 ppt
+    bindsym j     resize grow   height 10 px or 10 ppt
+    bindsym k     resize shrink height 10 px or 10 ppt
+    bindsym l     resize grow   width  10 px or 10 ppt
     # same bindings, but for the arrow keys
     bindsym Left  resize shrink width  10 px or 10 ppt
     bindsym Down  resize grow   height 10 px or 10 ppt
@@ -180,8 +184,9 @@ client.unfocused        $base02  $base02  $base11 $base01
 client.urgent           $magenta $magenta $base13 $red
 
 bar {
-    status_command i3status
+    status_command i3blocks
     position       bottom
+    height         25
     colors {
         separator  $base00
         background $base03
@@ -193,12 +198,14 @@ bar {
     }
 }
 
-for_window [class="Gitk"]               floating enable
-for_window [class="Git-gui"]            floating enable
-for_window [window_role="pop-up"]       floating enable
-for_window [window_role="bubble"]       floating enable
-for_window [window_role="task_dialog"]  floating enable
-for_window [title="Terminator首选项"]   floating enable
+for_window [class="Gitk"]                       floating enable
+for_window [class="Git-gui"]                    floating enable
+for_window [class="FeelUOwn"]                   floating enable
+for_window [window_role="pop-up"]               floating enable
+for_window [window_role="bubble"]               floating enable
+for_window [window_role="task_dialog"]          floating enable
+for_window [title="Terminator首选项"]           floating enable
+for_window [title="任务管理器 - Google Chrome"] floating enable
 
 exec --no-startup-id ~/.fehbg
 exec --no-startup-id i3-msg 'workspace 1; exec terminator -l i3'

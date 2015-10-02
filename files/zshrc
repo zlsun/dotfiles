@@ -27,7 +27,6 @@ if ! zgen saved; then
         robbyrussell/oh-my-zsh plugins/git
         robbyrussell/oh-my-zsh plugins/github
         robbyrussell/oh-my-zsh plugins/gitignore
-        robbyrussell/oh-my-zsh plugins/gpg-agent
         robbyrussell/oh-my-zsh plugins/gradle
         robbyrussell/oh-my-zsh plugins/history
         robbyrussell/oh-my-zsh plugins/jsontools
@@ -37,6 +36,7 @@ if ! zgen saved; then
         robbyrussell/oh-my-zsh plugins/pip
         robbyrussell/oh-my-zsh plugins/python
         robbyrussell/oh-my-zsh plugins/ruby
+        robbyrussell/oh-my-zsh plugins/rsync
         robbyrussell/oh-my-zsh plugins/sublime
         robbyrussell/oh-my-zsh plugins/sudo
         robbyrussell/oh-my-zsh plugins/systemd
@@ -168,6 +168,28 @@ bindkey -M menuselect '.' undo
 bindkey -M menuselect ' ' accept-and-hold
 bindkey -M menuselect ';' history-incremental-search-forward
 
+auto-add-man() {
+    [[ -z $BUFFER ]] && zle up-history
+    if [[ $BUFFER == man\ * ]]; then
+        LBUFFER="${LBUFFER#man }"
+    else
+        LBUFFER="man $LBUFFER"
+    fi
+}
+zle -N auto-add-man
+bindkey "\em" auto-add-man
+
+auto-add-help() {
+    [[ -z $BUFFER ]] && zle up-history
+    if [[ $BUFFER == *\ --help ]]; then
+        LBUFFER="${LBUFFER% --help}"
+    else
+        LBUFFER="$LBUFFER --help"
+    fi
+}
+zle -N auto-add-help
+bindkey "\eh" auto-add-help
+
 # Aliases
 
 EDITOR='vim'
@@ -240,9 +262,11 @@ alias howpy='howdoi python'
 alias howsh='howdoi shell'
 
 # py* -> python
+#
 alias py='python'
 alias py2='python2'
 alias py3='python3'
+
 alias pyi='sudo -H pip install'
 alias pyi2='sudo -H pip2 install'
 alias pyi3='sudo -H pip3 install'
@@ -252,8 +276,10 @@ alias pyiu3='pip3 install --user'
 alias pyu='sudo -H pip uninstall'
 alias pyu2='sudo -H pip2 uninstall'
 alias pyu3='sudo -H pip3 uninstall'
+
 alias pyftp='python -m pyftpdlib'
-alias pyhttp='python -m SimpleHTTPServer'
+alias pyhttp='python3 -m http.server'
+
 alias pypf='python -m cProfile'
 alias pypf2='python2 -m cProfile'
 alias pypf3='python3 -m cProfile'
@@ -266,6 +292,7 @@ alias pytrace3='python3 -m trace'
 alias pypdb='python -m pdb'
 alias pypdb2='python2 -m pdb'
 alias pypdb3='python3 -m pdb'
+
 alias ipy='ipython'
 alias ipy2='ipython2'
 alias ipy3='ipython3'

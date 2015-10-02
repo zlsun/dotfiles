@@ -41,13 +41,14 @@ call vundle#begin()
 
 Plugin 'gmarik/vundle'
 
-" Additional API
-Plugin 'tomtom/tlib_vim'
-Plugin 'mattn/webapi-vim'
-Plugin 'MarcWeber/vim-addon-mw-utils'
-
 " Chinese documentation
 Plugin 'asins/vimcdoc'
+
+" Additional
+Plugin 'tomtom/tlib_vim'
+Plugin 'mattn/webapi-vim'
+Plugin 'Shougo/vimproc.vim'
+Plugin 'MarcWeber/vim-addon-mw-utils'
 
 if executable('ag')
     let g:ackprg = 'ag --nogroup --nocolor --column --smart-case'
@@ -61,50 +62,36 @@ endif
 
 " General
 
+" ColorSchemes
 Plugin 'altercation/vim-colors-solarized'
 " Plugin 'flazz/vim-colorschemes'
 
+" Indicators
 Plugin 'bling/vim-airline'
 " Plugin 'bling/vim-bufferline'
 Plugin 'Yggdroot/indentLine'
 Plugin 'kshenoy/vim-signature'
 
+" Navigators
+Plugin 'mbbill/undotree'
 Plugin 'scrooloose/nerdtree'
 Plugin 'jistr/vim-nerdtree-tabs'
-
-Plugin 'mbbill/undotree'
-
+Plugin 'dyng/ctrlsf.vim'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'tacahiroy/ctrlp-funky'
-Plugin 'dyng/ctrlsf.vim'
 
+" SessionManagers
 Plugin 'sessionman.vim'
 Plugin 'restore_view.vim'
 
-Plugin 'Lokaltog/vim-easymotion'
-Plugin 'kristijanhusak/vim-multiple-cursors'
-
-Plugin 'tpope/vim-surround'
-Plugin 'spf13/vim-autoclose'
-Plugin 'tpope/vim-repeat'
-
-Plugin 'tpope/vim-abolish'
-Plugin 'osyo-manga/vim-over'
-
-Plugin 'reedes/vim-wordy'
-Plugin 'reedes/vim-litecorrect'
-
-Plugin 'gcmt/wildfire.vim'
-Plugin 'wellle/targets.vim'
-
-Plugin 'VisIncr'
-Plugin 'DrawIt'
+" Utils
 Plugin 'szw/vim-g'
 Plugin 'qpkorr/vim-renamer'
 Plugin 'lilydjwg/fcitx.vim'
 Plugin 'gioele/vim-autoswap'
 
 " Textobjs
+Plugin 'wellle/targets.vim'
 Plugin 'kana/vim-textobj-user'
 Plugin 'kana/vim-textobj-line'
 Plugin 'bps/vim-textobj-python'
@@ -113,24 +100,40 @@ Plugin 'kana/vim-textobj-entire'
 Plugin 'reedes/vim-textobj-quote'
 Plugin 'reedes/vim-textobj-sentence'
 
+" Editing
+Plugin 'DrawIt'
+Plugin 'VisIncr'
+Plugin 'tpope/vim-repeat'
+Plugin 'gcmt/wildfire.vim'
+Plugin 'tpope/vim-surround'
+Plugin 'spf13/vim-autoclose'
+Plugin 'osyo-manga/vim-over'
+Plugin 'Lokaltog/vim-easymotion'
+Plugin 'kristijanhusak/vim-multiple-cursors'
+
+" Writing
+Plugin 'reedes/vim-wordy'
+Plugin 'tpope/vim-abolish'
+Plugin 'reedes/vim-litecorrect'
+
+" Coding
+Plugin 'godlygeek/tabular'
+Plugin 'tomtom/tcomment_vim'
+Plugin 'scrooloose/syntastic'
+Plugin 'aperezdc/vim-template'
+Plugin 'Chiel92/vim-autoformat'
+Plugin 'johnsyweb/vim-makeshift'
+if executable('ctags')
+    Plugin 'majutsushi/tagbar'
+endif
+
 " Git
 Plugin 'mattn/gist-vim'
 Plugin 'mhinz/vim-signify'
 Plugin 'tpope/vim-fugitive'
 Plugin 'Xuyuanp/nerdtree-git-plugin'
 
-" Programming
-Plugin 'godlygeek/tabular'
-Plugin 'scrooloose/syntastic'
-Plugin 'aperezdc/vim-template'
-Plugin 'Chiel92/vim-autoformat'
-if executable('ctags')
-    Plugin 'majutsushi/tagbar'
-endif
-
-" Comment
-Plugin 'tomtom/tcomment_vim'
-
+" AutoCompletion
 let s:completer = 'neocomplcache'
 
 if s:completer == 'snipmate'
@@ -156,46 +159,52 @@ elseif s:completer == 'neocomplete'
     Plugin 'honza/vim-snippets'
 endif
 
-" Markdown
+" Languages
+
+"" Markdown
 Plugin 'tpope/vim-markdown'
 Plugin 'suan/vim-instant-markdown'
 
-" Python
+"" Python
 Plugin 'pythoncomplete'
 Plugin 'klen/python-mode'
-Plugin 'yssource/python.vim'
 Plugin 'python_match.vim'
+Plugin 'yssource/python.vim'
 
-" HTML
+"" HTML
 Plugin 'tpope/vim-haml'
 Plugin 'mattn/emmet-vim'
-Plugin 'hail2u/vim-css3-syntax'
 Plugin 'amirh/HTML-AutoCloseTag'
 
-" JavaScript
-Plugin 'elzr/vim-json'
+"" CSS
 Plugin 'groenewege/vim-less'
+Plugin 'hail2u/vim-css3-syntax'
+
+"" JavaScript
+Plugin 'elzr/vim-json'
 Plugin 'briancollins/vim-jst'
 Plugin 'pangloss/vim-javascript'
 Plugin 'kchmck/vim-coffee-script'
 
-" Haskell
-Plugin 'dag/vim2hs'
-Plugin 'travitch/hasksyn'
-Plugin 'adinapoli/cumino'
-Plugin 'eagletmt/neco-ghc'
-Plugin 'bitc/vim-hdevtools'
-Plugin 'Shougo/vimproc.vim'
-Plugin 'eagletmt/ghcmod-vim'
-Plugin 'Twinside/vim-haskellFold'
-Plugin 'Twinside/vim-haskellConceal'
+"" Haskell
+" Plugin 'dag/vim2hs'
+" Plugin 'travitch/hasksyn'
+" Plugin 'eagletmt/neco-ghc'
+" Plugin 'bitc/vim-hdevtools'
+" Plugin 'eagletmt/ghcmod-vim'
+" Plugin 'Twinside/vim-haskellFold'
+" Plugin 'Twinside/vim-haskellConceal'
 Plugin 'lukerandall/haskellmode-vim'
 
-" Kotlin
+"" Kotlin
 Plugin 'udalov/kotlin-vim'
 
-" i3
+"" elm
+Plugin 'lambdatoast/elm.vim'
+
+"" Configuration files
 Plugin 'PotatoesMaster/i3-vim-syntax'
+Plugin 'Matt-Deacalion/vim-systemd-syntax'
 
 call vundle#end()
 
@@ -584,7 +593,9 @@ vnoremap > >gv
 map <S-H> gT
 map <S-L> gt
 
-map <silent> <F5> :!./%<CR><CR>
+map <silent>   <F5> :!./%<CR>
+map <silent>   <F6> :w:<C-U>make!<CR>
+map <silent> <S-F6> :w:<C-U>make! 
 
 " Fullscreen mode for GVIM and Terminal, need 'wmctrl' in you PATH
 map <silent> <F11> :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
@@ -1332,8 +1343,13 @@ if s:has_bundle('HTML-AutoCloseTag')
     nmap <Leader>ac <Plug>ToggleAutoCloseMappings
 endif
 
+if s:has_bundle('vim2hs')
+    let g:hpaste_author = s:your_name
+endif
+
 if s:has_bundle('haskellmode-vim')
     let g:haddock_browser = "open"
+    let g:haddock_docdir  = "/usr/share/doc/ghc/html/"
 endif
 
 if s:has_bundle('vim-renamer')
