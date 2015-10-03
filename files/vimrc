@@ -134,7 +134,7 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'Xuyuanp/nerdtree-git-plugin'
 
 " AutoCompletion
-let s:completer = 'neocomplcache'
+let s:completer = 'youcompleteme'
 
 if s:completer == 'snipmate'
     Plugin 'garbas/vim-snipmate'
@@ -166,8 +166,8 @@ Plugin 'tpope/vim-markdown'
 Plugin 'suan/vim-instant-markdown'
 
 "" Python
-Plugin 'pythoncomplete'
-Plugin 'klen/python-mode'
+" Plugin 'pythoncomplete'
+" Plugin 'klen/python-mode'
 Plugin 'python_match.vim'
 Plugin 'yssource/python.vim'
 
@@ -593,9 +593,13 @@ vnoremap > >gv
 map <S-H> gT
 map <S-L> gt
 
-map <silent>   <F5> :!./%<CR>
-map <silent>   <F6> :w:<C-U>make!<CR>
-map <silent> <S-F6> :w:<C-U>make! 
+map <silent>   <F5> :w<CR>:!./%<CR>
+map <silent>   <F6> :w<CR>:<C-U>make!<CR>
+map <silent> <S-F6> :w<CR>:<C-U>make! 
+
+imap <silent>   <F5> <Esc>:w<CR>:!./%<CR>
+imap <silent>   <F6> <Esc>:w<CR>:<C-U>make!<CR>
+imap <silent> <S-F6> <Esc>:w<CR>:<C-U>make! 
 
 " Fullscreen mode for GVIM and Terminal, need 'wmctrl' in you PATH
 map <silent> <F11> :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
@@ -606,6 +610,8 @@ map <C-J> <C-W>j
 map <C-K> <C-W>k
 map <C-L> <C-W>l
 map <C-H> <C-W>h
+
+inoremap <C-Z> <Esc><C-Z>i
 
 inoremap <C-CR> <C-O>o
 inoremap <C-S-CR> <C-O>O
@@ -847,7 +853,7 @@ if s:has_bundle('nerdtree')
     let NERDTreeMouseMode = 2
     let NERDTreeShowHidden = 1
     let NERDTreeKeepTreeInNewTab = 1
-    let NERDTreeBookmarksFile = '~/.vim/NERDTreeBookmarks'
+    let NERDTreeBookmarksFile = $HOME . '/.vim/NERDTreeBookmarks'
     let g:NERDShutUp = 1
     let g:nerdtree_tabs_open_on_gui_startup = 0
 endif
@@ -1101,8 +1107,8 @@ elseif s:completer == 'neocomplete' && s:has_bundle('neocomplete.vim')
     " Define dictionary.
     let g:neocomplete#sources#dictionary#dictionaries = {
                 \ 'default' : '',
-                \ 'vimshell' : $HOME.'/.vimshell_hist',
-                \ 'scheme' : $HOME.'/.gosh_completions'
+                \ 'vimshell' : $HOME . '/.vimshell_hist',
+                \ 'scheme' : $HOME . '/.gosh_completions'
                 \ }
 
     " Define keyword.
@@ -1209,8 +1215,8 @@ elseif s:completer == 'neocomplcache' && s:has_bundle('neocomplcache.vim')
     " Define dictionary.
     let g:neocomplcache_dictionary_filetype_lists = {
                 \ 'default' : '',
-                \ 'vimshell' : $HOME.'/.vimshell_hist',
-                \ 'scheme' : $HOME.'/.gosh_completions'
+                \ 'vimshell' : $HOME . '/.vimshell_hist',
+                \ 'scheme' : $HOME . '/.gosh_completions'
                 \ }
 
     " Define keyword.

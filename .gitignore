@@ -2,3 +2,19 @@
 files/i3/*
 !files/i3/config
 
+config/*/*
+!config/clerk/config
+!config/fcitx/config
+!config/git/gitk
+!config/mpd/mpd.conf
+!config/psd/psd.conf
+!config/ranger/commands.py
+!config/ranger/rc.conf
+!config/ranger/rifle.conf
+!config/ranger/scope.sh
+!config/rofi-pass/rofi-pass.conf
+!config/rofi-surfraw/config
+!config/terminator/config
+!config/twmn/twmn.conf
+!config/zathura/zathurarc
+

@@ -1,7 +1,6 @@
 
 # ============================= Plugins ===============================
 
-ENABLE_CORRECTION="true"
 DISABLE_UNTRACKED_FILES_DIRTY="true"
 HIST_STAMPS="yyyy-mm-dd"
 
@@ -14,34 +13,21 @@ if ! zgen saved; then
 
     zgen loadall <<EOBUNDLES
         robbyrussell/oh-my-zsh plugins/autopep8
-        robbyrussell/oh-my-zsh plugins/cabal
         robbyrussell/oh-my-zsh plugins/colorize
         robbyrussell/oh-my-zsh plugins/command-not-found
-        robbyrussell/oh-my-zsh plugins/copydir
-        robbyrussell/oh-my-zsh plugins/copyfile
-        robbyrussell/oh-my-zsh plugins/cp
         robbyrussell/oh-my-zsh plugins/dircycle
+        robbyrussell/oh-my-zsh plugins/dirpersist
         robbyrussell/oh-my-zsh plugins/django
         robbyrussell/oh-my-zsh plugins/extract
-        robbyrussell/oh-my-zsh plugins/gem
-        robbyrussell/oh-my-zsh plugins/git
         robbyrussell/oh-my-zsh plugins/github
         robbyrussell/oh-my-zsh plugins/gitignore
-        robbyrussell/oh-my-zsh plugins/gradle
-        robbyrussell/oh-my-zsh plugins/history
         robbyrussell/oh-my-zsh plugins/jsontools
-        robbyrussell/oh-my-zsh plugins/node
         robbyrussell/oh-my-zsh plugins/npm
         robbyrussell/oh-my-zsh plugins/pep8
         robbyrussell/oh-my-zsh plugins/pip
         robbyrussell/oh-my-zsh plugins/python
-        robbyrussell/oh-my-zsh plugins/ruby
-        robbyrussell/oh-my-zsh plugins/rsync
         robbyrussell/oh-my-zsh plugins/sublime
         robbyrussell/oh-my-zsh plugins/sudo
-        robbyrussell/oh-my-zsh plugins/systemd
-        robbyrussell/oh-my-zsh plugins/themes
-        robbyrussell/oh-my-zsh plugins/vundle
         robbyrussell/oh-my-zsh plugins/web-search
 
         zlsun/solarized-man
@@ -149,8 +135,10 @@ zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f
 
 # Key bindings
 
+# Ctrl-Z: switch to foreground
 bindkey -s '^Z' '^q fg\n'
 
+# Ctrl+Enter: execute suggesstion provided by zsh-autosuggestions
 bindkey '^J' autosuggest-execute-suggestion
 
 bindkey -M menuselect 'h' vi-backward-char
@@ -170,7 +158,7 @@ bindkey -M menuselect ';' history-incremental-search-forward
 
 auto-add-man() {
     [[ -z $BUFFER ]] && zle up-history
-    if [[ $BUFFER == man\ * ]]; then
+    if [[ $BUFFER == "man *" ]]; then
         LBUFFER="${LBUFFER#man }"
     else
         LBUFFER="man $LBUFFER"
@@ -181,7 +169,7 @@ bindkey "\em" auto-add-man
 
 auto-add-help() {
     [[ -z $BUFFER ]] && zle up-history
-    if [[ $BUFFER == *\ --help ]]; then
+    if [[ $BUFFER == "* --help" ]]; then
         LBUFFER="${LBUFFER% --help}"
     else
         LBUFFER="$LBUFFER --help"
@@ -191,6 +179,180 @@ zle -N auto-add-help
 bindkey "\eh" auto-add-help
 
 # Aliases
+
+# systemd commands
+user_commands=(
+  list-units is-active status show help list-unit-files
+  is-enabled list-jobs show-environment cat)
+
+sudo_commands=(
+  start stop reload restart try-restart isolate kill
+  reset-failed enable disable reenable preset mask unmask
+  link load cancel set-environment unset-environment
+  edit)
+
+for c in $user_commands; do; alias sc-$c="systemctl $c"; done
+for c in $sudo_commands; do; alias sc-$c="sudo systemctl $c"; done
+for c in $sudo_commands; do; alias scu-$c="systemctl --user $c"; done
+
+# rsync
+alias rsync-copy="rsync -avz --progress -h"
+alias rsync-move="rsync -avz --progress -h --remove-source-files"
+alias rsync-update="rsync -avzu --progress -h"
+alias rsync-sync="rsync -avzu --delete --progress -h"
+alias cpv="rsync -poghb --backup-dir=/tmp/rsync -e /dev/null --progress --"
+
+# l* -> ls
+alias l='ls -lFh'     # size,show type,human readable
+alias la='ls -lAFh'   # long list,show almost all,show type,human readable
+alias lr='ls -tRFh'   # sorted by date,recursive,show type,human readable
+alias lt='ls -ltFh'   # long list,sorted by date,show type,human readable
+alias ll='ls -l'      # long list
+alias ldot='ls -ld .*'
+alias lS='ls -1FSsh'
+alias lart='ls -1Fcart'
+alias lrt='ls -1Fcrt'
+
+# k* -> k <https://github.com/rimraf/k>
+alias k='k -h'
+alias ka='k -h -A'
+
+# how* -> howdoi <https://github.com/gleitz/howdoi>
+alias howdoi='howdoi -c'
+alias how='howdoi'
+alias howc='howdoi c'
+alias howcp='howdoi c++'
+alias howcss='howdoi css'
+alias howjs='howdoi js'
+alias howjv='howdoi java'
+alias howml='howdoi html'
+alias howpy='howdoi python'
+alias howsh='howdoi shell'
+
+# py* -> python
+#
+alias py='python'
+alias py2='python2'
+alias py3='python3'
+
+alias   pyi='sudo -H pip install'
+alias  pyi2='sudo -H pip2 install'
+alias  pyi3='sudo -H pip3 install'
+alias  pyiu='pip install --user'
+alias pyiu2='pip2 install --user'
+alias pyiu3='pip3 install --user'
+alias   pyu='sudo -H pip uninstall'
+alias  pyu2='sudo -H pip2 uninstall'
+alias  pyu3='sudo -H pip3 uninstall'
+
+alias pyftp='python -m pyftpdlib'
+alias pyhttp='python3 -m http.server'
+
+alias     pypf='python -m cProfile'
+alias    pypf2='python2 -m cProfile'
+alias    pypf3='python3 -m cProfile'
+alias   pytime='python -m timeit'
+alias  pytime2='python2 -m timeit'
+alias  pytime3='python3 -m timeit'
+alias  pytrace='python -m trace'
+alias pytrace2='python2 -m trace'
+alias pytrace3='python3 -m trace'
+alias    pypdb='python -m pdb'
+alias   pypdb2='python2 -m pdb'
+alias   pypdb3='python3 -m pdb'
+
+alias  ipy='ipython'
+alias ipy2='ipython2'
+alias ipy3='ipython3'
+alias  iqt='ipython qtconsole'
+alias iqt2='ipython2 qtconsole'
+alias iqt3='ipython3 qtconsole'
+alias   nb='ipython notebook'
+alias  nb2='ipython2 notebook'
+alias  nb3='ipython3 notebook'
+
+# sg* -> apt-*
+alias sga='sudo apt-get autoremove'
+alias sgc='sudo apt-get autoclean'
+alias sgd='sudo apt-get dist-upgrade'
+alias sgg='sudo apt-get upgrade'
+alias sgi='sudo apt-get install'
+alias sgp='sudo apt-get remove --purge'
+alias sgr='sudo apt-get remove'
+alias sgu='sudo apt-get update'
+alias sgs='apt-cache search'
+alias sgf='apt-file search'
+
+# ya* -> yaourt
+alias    yaq='yaourt -Q'
+alias   yaqe='yaourt -Qe'
+alias   yaql='yaourt -Ql'
+alias   yaqi='yaourt -Qi'
+alias  yaqii='yaourt -Qii'
+alias   yaqs='yaourt -Qs'
+alias    yar='yaourt -R'
+alias   yars='yaourt -Rs'
+alias    yas='yaourt -S'
+alias   yass='yaourt -Ss'
+alias   yasy='yaourt -Sy'
+alias  yasyy='yaourt -Syy'
+alias  yasyu='yaourt -Syu'
+alias yasyyu='yaourt -Syyu'
+alias    yau='yaourt -U'
+alias    yac='yaourt -C'
+alias    yab='yaourt -B'
+alias    yag='yaourt -G'
+alias    yat='yaourt --stats'
+
+# quick access to files
+alias srcls='$EDITOR /etc/apt/sources.list'
+alias pcmcf='$EDITOR /etc/pacman.conf'
+alias tmxcf='$EDITOR ~/.tmux.conf'
+alias vimrc='$EDITOR ~/.vimrc'
+alias zshrc='$EDITOR ~/.zshrc'
+alias i3cfg='$EDITOR ~/.i3/config'
+
+# enable alias when use sudo
+# http://askubuntu.com/a/22043/399470
+alias s='sudo '
+
+# shorten frequent commands
+alias c='cat'
+alias h='history'
+alias m='make'
+alias v='vim'
+alias ec='echo'
+alias fk='eval $(thefuck $(fc -ln -1))' # https://github.com/nvbn/thefuck
+alias gg='git gui'
+alias sv='s v'
+
+# fasd
+export _FASD_VIMINFO="~/.vim/info"
+export _FASD_BACKENDS="native viminfo current"
+alias A='fasd -A'
+alias D='fasd -D'
+alias o='fasd -a -B recently-used -e $XOPEN'
+
+# meaning aliases
+alias help='man'
+alias unexport='unset'
+
+# commands with options
+alias grep='grep --color'
+alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS} '
+alias hgrep="fc -El 0 | grep"
+alias sortnr='sort -n -r'
+alias dud='du -d 1 -h'
+alias duf='du -sh *'
+alias fd='noglob find . -type d -name'
+alias ff='noglob find . -type f -name'
+
+# prompt before operating file
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+alias mmv='noglob zmv -W'
 
 EDITOR='vim'
 XOPEN='xdg-open'
@@ -233,160 +395,6 @@ alias -g CA="2>&1 | cat -A"
 alias -g NE="2> /dev/null"
 alias -g NUL="> /dev/null 2>&1"
 alias -g P="2>&1| pygmentize -l pytb"
-
-# l* -> ls
-alias l='ls -lFh'     # size,show type,human readable
-alias la='ls -lAFh'   # long list,show almost all,show type,human readable
-alias lr='ls -tRFh'   # sorted by date,recursive,show type,human readable
-alias lt='ls -ltFh'   # long list,sorted by date,show type,human readable
-alias ll='ls -l'      # long list
-alias ldot='ls -ld .*'
-alias lS='ls -1FSsh'
-alias lart='ls -1Fcart'
-alias lrt='ls -1Fcrt'
-
-# k* -> k <https://github.com/rimraf/k>
-alias k='k -h'
-alias ka='k -h -A'
-
-# how* -> howdoi <https://github.com/gleitz/howdoi>
-alias howdoi='howdoi -c'
-alias how='howdoi'
-alias howc='howdoi c'
-alias howcp='howdoi c++'
-alias howcss='howdoi css'
-alias howjs='howdoi js'
-alias howjv='howdoi java'
-alias howml='howdoi html'
-alias howpy='howdoi python'
-alias howsh='howdoi shell'
-
-# py* -> python
-#
-alias py='python'
-alias py2='python2'
-alias py3='python3'
-
-alias pyi='sudo -H pip install'
-alias pyi2='sudo -H pip2 install'
-alias pyi3='sudo -H pip3 install'
-alias pyiu='pip install --user'
-alias pyiu2='pip2 install --user'
-alias pyiu3='pip3 install --user'
-alias pyu='sudo -H pip uninstall'
-alias pyu2='sudo -H pip2 uninstall'
-alias pyu3='sudo -H pip3 uninstall'
-
-alias pyftp='python -m pyftpdlib'
-alias pyhttp='python3 -m http.server'
-
-alias pypf='python -m cProfile'
-alias pypf2='python2 -m cProfile'
-alias pypf3='python3 -m cProfile'
-alias pytime='python -m timeit'
-alias pytime2='python2 -m timeit'
-alias pytime3='python3 -m timeit'
-alias pytrace='python -m trace'
-alias pytrace2='python2 -m trace'
-alias pytrace3='python3 -m trace'
-alias pypdb='python -m pdb'
-alias pypdb2='python2 -m pdb'
-alias pypdb3='python3 -m pdb'
-
-alias ipy='ipython'
-alias ipy2='ipython2'
-alias ipy3='ipython3'
-alias iqt='ipython qtconsole'
-alias iqt2='ipython2 qtconsole'
-alias iqt3='ipython3 qtconsole'
-alias nb='ipython notebook'
-alias nb2='ipython2 notebook'
-alias nb3='ipython3 notebook'
-
-# sg* -> apt-*
-alias sga='sudo apt-get autoremove'
-alias sgc='sudo apt-get autoclean'
-alias sgd='sudo apt-get dist-upgrade'
-alias sgg='sudo apt-get upgrade'
-alias sgi='sudo apt-get install'
-alias sgp='sudo apt-get remove --purge'
-alias sgr='sudo apt-get remove'
-alias sgu='sudo apt-get update'
-alias sgs='apt-cache search'
-alias sgf='apt-file search'
-
-# sp* -> pacman
-alias spd='sudo pacman -D'
-alias spt='sudo pacman -T'
-alias spq='sudo pacman -Q'
-alias spr='sudo pacman -R'
-alias sps='sudo pacman -S'
-alias spu='sudo pacman -U'
-
-# yt* -> yaourt
-alias ytq='yaourt -Q'
-alias ytr='yaourt -R'
-alias yts='yaourt -S'
-alias ytu='yaourt -U'
-alias ytc='yaourt -C'
-alias ytb='yaourt -B'
-alias ytg='yaourt -G'
-alias ytt='yaourt --stats'
-
-# quick access to files
-alias srcls='$EDITOR /etc/apt/sources.list'
-alias pcmcf='$EDITOR /etc/pacman.conf'
-alias tmxcf='$EDITOR ~/.tmux.conf'
-alias vimrc='$EDITOR ~/.vimrc'
-alias zshrc='$EDITOR ~/.zshrc'
-alias i3cfg='$EDITOR ~/.i3/config'
-
-# enable alias when use sudo
-# http://askubuntu.com/a/22043/399470
-alias s='sudo '
-
-# shorten frequent commands
-alias c='cat'
-alias ec='echo'
-alias fk='eval $(thefuck $(fc -ln -1))' # https://github.com/nvbn/thefuck
-alias gg='git gui'
-alias h='history'
-alias m='make'
-alias sv='s v'
-alias v='vim'
-
-# fasd
-export _FASD_VIMINFO="~/.vim/info"
-export _FASD_BACKENDS="native viminfo current"
-alias A='fasd -A'
-alias D='fasd -D'
-alias o='fasd -a -B recently-used -e $XOPEN'
-
-# meaning aliases
-alias help='man'
-alias unexport='unset'
-
-# commands with options
-alias grep='grep --color'
-alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS} '
-alias hgrep="fc -El 0 | grep"
-alias sortnr='sort -n -r'
-alias dud='du -d 1 -h'
-alias duf='du -sh *'
-alias fd='noglob find . -type d -name'
-alias ff='noglob find . -type f -name'
-
-# prompt before operating file
-alias rm='rm -i'
-alias cp='cp -i'
-alias mv='mv -i'
-
-alias mmv='noglob zmv -W'
-
-# nocorrect
-if [[ "$ENABLE_CORRECTION" == "true" ]]; then
-    alias howdoi='nocorrect howdoi'
-fi
 
 # Others
 

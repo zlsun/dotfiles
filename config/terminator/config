@@ -1,0 +1,187 @@
+[global_config]
+  borderless = True
+  enabled_plugins = InactivityWatch, CustomCommandsMenu, TestPlugin, ActivityWatch, TerminalShot, LaunchpadCodeURLHandler, APTURLHandler, Logger, MavenPluginURLHandler, LaunchpadBugURLHandler
+  focus = mouse
+  geometry_hinting = False
+  title_font = WenQuanYi Micro Hei 10
+  title_receive_bg_color = "#00b3c9"
+  title_transmit_bg_color = "#285577"
+[keybindings]
+  help = None
+  hide_window = None
+  resize_down = <Shift><Alt>Down
+  resize_left = <Shift><Alt>Left
+  resize_right = <Shift><Alt>Right
+  resize_up = <Shift><Alt>Up
+  switch_to_tab_1 = <Alt>1
+  switch_to_tab_10 = <Alt>0
+  switch_to_tab_2 = <Alt>2
+  switch_to_tab_3 = <Alt>3
+  switch_to_tab_4 = <Alt>4
+  switch_to_tab_5 = <Alt>5
+  switch_to_tab_6 = <Alt>6
+  switch_to_tab_7 = <Alt>7
+  switch_to_tab_8 = <Alt>8
+  switch_to_tab_9 = <Alt>9
+  zoom_in = None
+  zoom_out = None
+[layouts]
+  [[default]]
+    [[[child1]]]
+      parent = window0
+      profile = default
+      type = Terminal
+    [[[window0]]]
+      parent = ""
+      type = Window
+  [[i3]]
+    [[[child0]]]
+      fullscreen = False
+      last_active_term = c8a119a2-f87e-4176-8f70-185632a9a3c7
+      last_active_window = True
+      maximised = False
+      order = 0
+      parent = ""
+      position = 0:0
+      size = 1366, 741
+      type = Window
+    [[[terminal1]]]
+      order = 0
+      parent = child0
+      profile = default
+      type = Terminal
+      uuid = c8a119a2-f87e-4176-8f70-185632a9a3c7
+  [[i3-bak]]
+    [[[child0]]]
+      order = 0
+      parent = ""
+      position = 0:0
+      size = 683, 747
+      type = Window
+    [[[child1]]]
+      order = 0
+      parent = child0
+      position = 340
+      type = HPaned
+    [[[terminal2]]]
+      command = exec sudo su
+      directory = ""
+      order = 0
+      parent = child1
+      profile = default
+      type = Terminal
+    [[[terminal3]]]
+      command = ""
+      order = 1
+      parent = child1
+      profile = default
+      type = Terminal
+  [[manager]]
+    [[[child0]]]
+      fullscreen = False
+      last_active_window = True
+      maximised = False
+      order = 0
+      parent = ""
+      position = 0:0
+      size = 1366, 743
+      title = htop
+      type = Window
+    [[[child1]]]
+      active_page = 0
+      labels = None, None, zlsun@sky: ~
+      last_active_term = 8cf204f5-ab74-44f3-b7d5-82de822e2261, 6aae8818-ef3e-4277-8550-0675bee07ab3, 96136644-b17b-49a5-aad2-8bde6b118a67
+      order = 0
+      parent = child0
+      type = Notebook
+    [[[child2]]]
+      order = 0
+      parent = child1
+      position = 766
+      ratio = 0.562591508053
+      type = HPaned
+    [[[child4]]]
+      order = 1
+      parent = child2
+      position = 275
+      ratio = 0.388111888112
+      type = VPaned
+    [[[child6]]]
+      order = 1
+      parent = child4
+      position = 215
+      ratio = 0.5
+      type = VPaned
+    [[[child9]]]
+      order = 1
+      parent = child1
+      position = 680
+      ratio = 0.499633967789
+      type = HPaned
+    [[[terminal10]]]
+      command = sudo iotop
+      order = 0
+      parent = child9
+      profile = default
+      type = Terminal
+      uuid = 6aae8818-ef3e-4277-8550-0675bee07ab3
+    [[[terminal11]]]
+      command = sudo iftop
+      order = 1
+      parent = child9
+      profile = default
+      type = Terminal
+      uuid = 09ddaf77-59ee-4fca-aa2e-74af345d1c10
+    [[[terminal12]]]
+      command = alsamixer
+      order = 2
+      parent = child1
+      profile = default
+      type = Terminal
+      uuid = 96136644-b17b-49a5-aad2-8bde6b118a67
+    [[[terminal3]]]
+      command = htop
+      order = 0
+      parent = child2
+      profile = default
+      type = Terminal
+      uuid = 8cf204f5-ab74-44f3-b7d5-82de822e2261
+    [[[terminal5]]]
+      command = watch -t -n 30 df
+      order = 0
+      parent = child4
+      profile = default
+      type = Terminal
+      uuid = bf29e127-1b44-484f-b161-d69ff637c042
+    [[[terminal7]]]
+      order = 0
+      parent = child6
+      profile = default
+      type = Terminal
+      uuid = 093cca0b-21b1-4d73-9da6-23c706d82c07
+    [[[terminal8]]]
+      command = watch -t -n 10 sensors
+      order = 1
+      parent = child6
+      profile = default
+      type = Terminal
+      uuid = 41696461-e378-4239-bebf-5edb76fb37d7
+[plugins]
+[profiles]
+  [[default]]
+    background_color = "#002b36"
+    background_image = None
+    font = Source Code Pro 11
+    foreground_color = "#839496"
+    palette = "#073642:#dc322f:#859900:#b58900:#268bd2:#d33682:#2aa198:#eee8d5:#002b36:#cb4b16:#586e75:#657b83:#839496:#6c71c4:#93a1a1:#fdf6e3"
+    scrollback_infinite = True
+    scrollback_lines = 10000
+    use_system_font = False
+  [[Solarized]]
+    background_color = "#002b36"
+    background_image = None
+    font = Source Code Pro 11
+    foreground_color = "#839496"
+    palette = "#073642:#dc322f:#859900:#b58900:#268bd2:#d33682:#2aa198:#eee8d5:#002b36:#cb4b16:#586e75:#657b83:#839496:#6c71c4:#93a1a1:#fdf6e3"
+    scrollback_infinite = True
+    use_system_font = False

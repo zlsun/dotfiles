@@ -1,48 +1,74 @@
-#!/usr/bin/env bash
+#!/bin/env bash
 
 CURRENT_FILE=$(readlink -f "$0")
 DOTFILES=$(dirname "$CURRENT_FILE")
 
+if [ -z $XDG_CONFIG_HOME ]; then
+    XDG_CONFIG_HOME=$HOME/.config
+fi
+
 link() {
-    # link dot -> file, if dot exists, backup it to bak
-    file=$DOTFILES/files/$1
-    dot=~/.$1
-    bak=~/.$1.bak
-    echo "[Linking] $1"
-    if [ -h $dot ]; then
-        if [ "$(readlink $dot)" != "$file" ]; then
-            echo "Different symlink, backup"
-            mv $dot $bak
+    # link $src <- $dst_prefix$basename
+    # if $src exists, backup it to $backup
+    src=$1
+    dst_prefix=$2
+    basename=$(basename $src)
+    target=${dst_prefix}${basename}
+    backup=${target}.bak
+    printf "[Linking] %-15s\t" $basename
+    if [ -h $target ]; then
+        if [ "$(readlink $target)" != "$src" ]; then
+            printf "Different symlink, backup... "
+            mv $target $backup
         else
-            echo "Already linked!"
+            printf "Already linked!\n"
             return 0
         fi
-    elif [ -e $dot ]; then
-        echo "Already exist, backup"
-        mv $dot $bak
+    elif [ -e $target ]; then
+        printf "Already exist, backup... "
+        mv $target $backup
     fi
-    ln -s $file $dot
+    ln -s $src $target
+    printf "OK!\n"
 }
 
-link_all() {
+link-all() {
+    echo "[files]"
     for each in $DOTFILES/files/*; do
         if [ -e $each ]; then
-            link `basename $each`
+            link $each "$HOME/."
+        fi
+    done
+    echo "[config]"
+    for each in $DOTFILES/config/*; do
+        if [ -e $each ]; then
+            link $each "$XDG_CONFIG_HOME/"
         fi
     done
     echo "[All linked]"
 }
 
-git_clone() {
-    if ! [[ -d ~/.zgen ]]; then
-        git clone https://github.com/zlsun/zgen.git ~/.zgen
+clone() {
+    name=$1
+    dir=$2
+    repo=$3
+    if ! [ -d $dir ]; then
+        echo "[Cloning] $name"
+        git clone $repo $dir
     fi
-    if ! [[ -d ~/.vim/bundle/vundle ]]; then
-        git clone http://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
-    fi
-    vi +VundleInstall +qall
 }
 
-link_all
-git_clone
+clone-repos() {
+    clone zgen   ~/.zgen              https://github.com/zlsun/zgen.git
+    clone vundle ~/.vim/bundle/vundle https://github.com/gmarik/vundle.git
+}
+
+install-vundles() {
+    vim +VundleInstall +qall
+}
+
+link-all
+clone-repos
+install-vundles
+echo "[Done]"
 

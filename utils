@@ -1,17 +1,47 @@
-#!/usr/bin/env bash
+#!/bin/env bash
 
-move-to-dotfiles () {
+CURRENT_FILE=$(readlink -f "$0")
+DOTFILES=$(dirname "$CURRENT_FILE")
+
+link-only() {
+    echo ln -s $2 $1
+    ln -s $2 $1
+}
+
+move-and-link() {
+    echo mv $1 $2
+    echo ln -s $2 $1
+    mv $1 $2
+    ln -s $2 $1
+}
+
+move-to-dotfiles() {
     for dotfile in "$@"; do
         target="$DOTFILES/files/${dotfile:1}"
-        mv ${dotfile} ${target}
-        ln -s ${target} ${dotfile}
+        move-and-link ${dotfile} ${target}
     done
 }
 
-link-to-dotfiles () {
+link-to-dotfiles() {
     for dotfile in "$@"; do
         target="$DOTFILES/files/${dotfile:1}"
-        ln -s ${target} ${dotfile}
+        link-only ${dotfile} ${target}
+    done
+}
+
+move-to-dotconfig() {
+    for config in "$@"; do
+        basename=$(basename $config)
+        target="$DOTFILES/config/$basename"
+        move-and-link ${config} ${target}
+    done
+}
+
+link-to-dotconfig() {
+    for config in "$@"; do
+        basename=$(basename $config)
+        target="$DOTFILES/config/$basename"
+        link-only ${config} ${target}
     done
 }
 
