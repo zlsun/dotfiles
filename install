@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 CURRENT_FILE=$(readlink -f "$0")
 DOTFILES=$(dirname "$CURRENT_FILE")

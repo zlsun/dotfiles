@@ -69,7 +69,7 @@ Plugin 'altercation/vim-colors-solarized'
 " Indicators
 Plugin 'bling/vim-airline'
 " Plugin 'bling/vim-bufferline'
-Plugin 'Yggdroot/indentLine'
+" Plugin 'Yggdroot/indentLine'
 Plugin 'kshenoy/vim-signature'
 
 " Navigators
@@ -166,10 +166,8 @@ Plugin 'tpope/vim-markdown'
 Plugin 'suan/vim-instant-markdown'
 
 "" Python
-" Plugin 'pythoncomplete'
-" Plugin 'klen/python-mode'
 Plugin 'python_match.vim'
-Plugin 'yssource/python.vim'
+Plugin 'klen/python-mode'
 
 "" HTML
 Plugin 'tpope/vim-haml'
@@ -628,7 +626,7 @@ vnoremap <A-k> :m '<-2<CR>gv
 nnoremap <silent> <leader>q gwip
 
 " Render selected text with Jinja2
-vmap <silent> <Leader>r :!envtpl<CR>
+vmap <silent> <Leader>rd :!envtpl<CR>
 
 " Easier window operation
 map <Leader>w <C-W>
@@ -1071,6 +1069,7 @@ elseif s:completer == 'youcompleteme' && s:has_bundle('YouCompleteMe')
 
     " enable completion from tags
     let g:ycm_collect_identifiers_from_tags_files = 1
+    let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
 
     " remap Ultisnips for compatibility for YCM
     let g:UltiSnipsExpandTrigger = '<C-j>'
@@ -1081,7 +1080,7 @@ elseif s:completer == 'youcompleteme' && s:has_bundle('YouCompleteMe')
     au FileType css           setlocal omnifunc=csscomplete#CompleteCSS
     au FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
     au FileType javascript    setlocal omnifunc=javascriptcomplete#CompleteJS
-    au FileType python        setlocal omnifunc=pythoncomplete#Complete
+    " au FileType python        setlocal omnifunc=pythoncomplete#Complete
     au FileType xml           setlocal omnifunc=xmlcomplete#CompleteTags
     au FileType ruby          setlocal omnifunc=rubycomplete#Complete
     au FileType haskell       setlocal omnifunc=necoghc#omnifunc
@@ -1325,10 +1324,15 @@ if s:has_bundle('python-mode')
         let g:pymode = 0
     endif
 
-    let g:pymode_lint_checkers = ['pyflakes']
+    let g:pymode_doc_bind = 'K'
+    let g:pymode_lint_checkers = ['pyflakes', 'pep8', 'mccabe']
+    let g:pymode_lint_cwindow = 0
+    let g:pymode_lint_options_pep8 =
+        \ {'max_line_length': 100}
     let g:pymode_trim_whitespaces = 0
     let g:pymode_options = 0
-    let g:pymode_rope = 1
+    let g:pymode_rope = 0
+    let g:pymode_rope_completion = 0
     let g:pymode_rope_goto_definition_bind = "<C-]>"
 endif
 

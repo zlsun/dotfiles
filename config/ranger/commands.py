@@ -1,17 +1,8 @@
-# This is a sample commands.py.  You can add your own commands here.
-#
-# Please refer to commands_full.py for all the default commands and a complete
-# documentation.  Do NOT add them all here, or you may end up with defunct
-# commands when upgrading ranger.
 
-# You always need to import ranger.api.commands here to get the Command class:
 from ranger.api.commands import *
 
-# A simple command for demonstration purposes follows.
-#------------------------------------------------------------------------------
-
-# You can import any python module as needed.
 import os
+import shutil
 
 class empty(Command):
     """:empty
@@ -20,5 +11,14 @@ class empty(Command):
     """
 
     def execute(self):
-        self.fm.run("rm -rf ~/.Trash/{*,.[^.]*}")
+        folder = os.path.expanduser('~/.Trash/')
+        for the_file in os.listdir(folder):
+            file_path = os.path.join(folder, the_file)
+            try:
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print(e)
 

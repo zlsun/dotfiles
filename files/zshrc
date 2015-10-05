@@ -13,6 +13,7 @@ if ! zgen saved; then
 
     zgen loadall <<EOBUNDLES
         robbyrussell/oh-my-zsh plugins/autopep8
+        robbyrussell/oh-my-zsh plugins/autoenv
         robbyrussell/oh-my-zsh plugins/colorize
         robbyrussell/oh-my-zsh plugins/command-not-found
         robbyrussell/oh-my-zsh plugins/dircycle
@@ -28,6 +29,8 @@ if ! zgen saved; then
         robbyrussell/oh-my-zsh plugins/python
         robbyrussell/oh-my-zsh plugins/sublime
         robbyrussell/oh-my-zsh plugins/sudo
+        robbyrussell/oh-my-zsh plugins/virtualenv
+        robbyrussell/oh-my-zsh plugins/virtualenvwrapper
         robbyrussell/oh-my-zsh plugins/web-search
 
         zlsun/solarized-man
@@ -295,8 +298,9 @@ alias   yars='yaourt -Rs'
 alias    yas='yaourt -S'
 alias   yass='yaourt -Ss'
 alias   yasy='yaourt -Sy'
-alias  yasyy='yaourt -Syy'
 alias  yasyu='yaourt -Syu'
+alias  yasyy='yaourt -Syy'
+alias yasyua='yaourt -Syua'
 alias yasyyu='yaourt -Syyu'
 alias    yau='yaourt -U'
 alias    yac='yaourt -C'
@@ -319,6 +323,7 @@ alias s='sudo '
 # shorten frequent commands
 alias c='cat'
 alias h='history'
+alias g='git'
 alias m='make'
 alias v='vim'
 alias ec='echo'
