@@ -68,8 +68,7 @@ Plugin 'altercation/vim-colors-solarized'
 
 " Indicators
 Plugin 'bling/vim-airline'
-" Plugin 'bling/vim-bufferline'
-" Plugin 'Yggdroot/indentLine'
+Plugin 'nathanaelkane/vim-indent-guides'
 Plugin 'kshenoy/vim-signature'
 
 " Navigators
@@ -89,6 +88,7 @@ Plugin 'szw/vim-g'
 Plugin 'qpkorr/vim-renamer'
 Plugin 'lilydjwg/fcitx.vim'
 Plugin 'gioele/vim-autoswap'
+Plugin 'vim-scripts/sudo.vim'
 
 " Textobjs
 Plugin 'wellle/targets.vim'
@@ -99,8 +99,10 @@ Plugin 'kana/vim-textobj-indent'
 Plugin 'kana/vim-textobj-entire'
 Plugin 'reedes/vim-textobj-quote'
 Plugin 'reedes/vim-textobj-sentence'
+Plugin 'gaving/vim-textobj-argument'
 
 " Editing
+Plugin 'vis'
 Plugin 'DrawIt'
 Plugin 'VisIncr'
 Plugin 'tpope/vim-repeat'
@@ -168,6 +170,8 @@ Plugin 'suan/vim-instant-markdown'
 "" Python
 Plugin 'python_match.vim'
 Plugin 'klen/python-mode'
+Plugin 'jmcantrell/vim-virtualenv'
+Plugin 'mjbrownie/vim-htmldjango_omnicomplete'
 
 "" HTML
 Plugin 'tpope/vim-haml'
@@ -463,7 +467,9 @@ com! -complete=file -nargs=+ Shell call s:RunShellCommand(<q-args>)
 
 " Most prefer to automatically switch to the current file directory when a new
 " buffer is opened.
-au BufEnter * if bufname("") !~ "^\[A-Za-z0-9\]*://" | lcd %:p:h | endif
+au BufEnter * if bufname("") !~ "^\[A-Za-z0-9\]*://|sudo:"
+           \|     lcd %:p:h
+           \| endif
 
 " Instead of reverting the cursor to the last position in the buffer, we
 " set it to the first line when editing a git commit message
@@ -484,15 +490,21 @@ aug resCur
 aug END
 
 " Set scripts to be executable from the shell
-func! s:chmod(file)
+func! Chmod(file)
     if getline(1) =~ "^#!.*/bin/"
         silent !chmod +x a:file
     endif
 endfunc
-" au BufWritePost * call s:chmod(<afile>)
+" au BufWritePost * call Chmod(<afile>)
+
+aug source vimrc
+    au!
+    au FileWritePost .vimrc source %
+    au FileWritePost vimrc source %
+aug END
 
 " Remove trailing whitespaces and ^M chars
-au FileType c,cpp,java,go,php,javascript,python,yml,perl,nasm
+au FileType c,cpp,elm,go,haskell,java,javascript,nasm,perl,php,python,ruby,sh,yml
     \ au BufWritePre <buffer> call StripTrailingWhitespace()
 
 au FileType txt set wrap
@@ -586,21 +598,21 @@ nnoremap gp `[v`]
 vnoremap < <gv
 vnoremap > >gv
 
+" Fullscreen mode for GVIM and Terminal, need 'wmctrl' in you PATH
+map <silent> <F11> :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
+
 " The following two lines conflict with moving to top and
 " bottom of the screen
 map <S-H> gT
 map <S-L> gt
 
-map <silent>   <F5> :w<CR>:!./%<CR>
-map <silent>   <F6> :w<CR>:<C-U>make!<CR>
-map <silent> <S-F6> :w<CR>:<C-U>make! 
-
-imap <silent>   <F5> <Esc>:w<CR>:!./%<CR>
-imap <silent>   <F6> <Esc>:w<CR>:<C-U>make!<CR>
-imap <silent> <S-F6> <Esc>:w<CR>:<C-U>make! 
-
-" Fullscreen mode for GVIM and Terminal, need 'wmctrl' in you PATH
-map <silent> <F11> :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
+" move line up and down
+nnoremap <A-j> :m .+1<CR>
+nnoremap <A-k> :m .-2<CR>
+inoremap <A-j> <Esc>:m .+1<CR>gi
+inoremap <A-k> <Esc>:m .-2<CR>gi
+vnoremap <A-j> :m '>+1<CR>gv
+vnoremap <A-k> :m '<-2<CR>gv
 
 " Easier moving in tabs and windows
 " The lines conflict with the default digraph mapping of <C-K>
@@ -614,30 +626,28 @@ inoremap <C-Z> <Esc><C-Z>i
 inoremap <C-CR> <C-O>o
 inoremap <C-S-CR> <C-O>O
 
-" move line up and down
-nnoremap <A-j> :m .+1<CR>
-nnoremap <A-k> :m .-2<CR>
-inoremap <A-j> <Esc>:m .+1<CR>gi
-inoremap <A-k> <Esc>:m .-2<CR>gi
-vnoremap <A-j> :m '>+1<CR>gv
-vnoremap <A-k> :m '<-2<CR>gv
-
 " Easier formatting
-nnoremap <silent> <leader>q gwip
-
-" Render selected text with Jinja2
-vmap <silent> <Leader>rd :!envtpl<CR>
+nnoremap <leader>q gwip
 
 " Easier window operation
 map <Leader>w <C-W>
 
 " Adjust viewports to the same size
-map <Leader>= <C-w>=
+map <Leader>= <C-W>=
 
 " Most prefer to toggle search highlighting rather than clear the current
 " search results.
 " nmap <silent> <leader>/ :nohlsearch<CR>
 nmap <silent> <leader>/ :set invhlsearch<CR>
+
+" Copy the whole file
+map <Leader>cf :<C-U>%y+<CR>
+
+" Find merge conflict markers
+map <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
+
+" Display all lines with keyword under cursor and ask which one to jump to
+nmap <Leader>ff [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
 
 " Code folding options
 nmap <leader>f0 :set foldlevel=0<CR>
@@ -651,17 +661,11 @@ nmap <leader>f7 :set foldlevel=7<CR>
 nmap <leader>f8 :set foldlevel=8<CR>
 nmap <leader>f9 :set foldlevel=9<CR>
 
-" Copy the whole file
-map <Leader>cf :<C-U>%y+<CR>
-
-" Find merge conflict markers
-map <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
-
-" Display all lines with keyword under cursor and ask which one to jump to
-nmap <Leader>ff [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
+" Render selected text with Jinja2
+vmap <Leader>rd :!envtpl<CR>
 
 " Source current file
-map <Leader>so :source %<CR>
+" map <Leader>so :source %<CR>
 
 " Some helpers to edit mode
 " http://vimcasts.org/e/14
@@ -680,6 +684,18 @@ map <Leader>tc :tabclose<CR>
 map <Leader>th :tabfirst<CR>
 map <Leader>tj :tabprevious<CR>
 
+map      <F5> :!./%<CR>
+map      <F6> :<C-U>make!<CR>
+map    <S-F6> :<C-U>make!<space>
+map <Leader>b :<C-U>make!<CR>
+map <Leader>B :<C-U>make!<space>
+
+imap    <F5> <Esc>:!./%<CR>
+imap    <F6> <Esc>:<C-U>make!<CR>
+imap  <S-F6> <Esc>:<C-U>make!<space>
+imap <C-S-B> <Esc>:<C-U>make!<space>
+imap   <C-B> <Esc>:<C-U>make!<CR>
+
 " If the current buffer has never been saved, it will have no name, call the
 " file browser to save it, otherwise just save it. see:
 " http://vim.wikia.com/wiki/Map_Ctrl-S_to_save_current_or_new_files
@@ -692,7 +708,7 @@ com! -nargs=0 -bar Update
     \|     endif
     \| endif
 noremap <silent> <C-S> :<C-U>Update<CR>
-inoremap <C-S> <Esc>:Update<CR>
+inoremap <silent> <C-S> <C-O>:Update<CR>
 
 " Spell Check
 " see: http://vim.wikia.com/wiki/Toggle_spellcheck_with_function_keys
@@ -790,7 +806,6 @@ if s:has_bundle('vim-colors-solarized')
 endif
 
 if s:has_bundle('vim-airline')
-
     let g:airline_powerline_fonts = 1
     let g:airline_theme = 'solarized'
     if !exists('g:airline_powerline_fonts')
@@ -798,10 +813,9 @@ if s:has_bundle('vim-airline')
         let g:airline_left_sep = '›'  " Slightly fancier than '>'
         let g:airline_right_sep = '‹' " Slightly fancier than '<'
     endif
-
+    let g:airline#extensions#virtualenv#enabled = 1
     let g:airline#extensions#tabline#enabled = 1
     let g:airline#extensions#tabline#buffer_idx_mode = 1
-
     if g:airline#extensions#tabline#enabled == 1
         nmap <leader>1 <Plug>AirlineSelectTab1
         nmap <leader>2 <Plug>AirlineSelectTab2
@@ -814,7 +828,8 @@ if s:has_bundle('vim-airline')
         nmap <leader>9 <Plug>AirlineSelectTab9
         nmap <leader>0 <Plug>AirlineSelectTab0
     endif
-
+    let g:airline#extensions#whitespace#trailing_format = 'trail[%s]'
+    let g:airline#extensions#whitespace#mixed_indent_format = 'mixed[%s]'
 endif
 
 if s:has_bundle('indentLine')
@@ -830,6 +845,15 @@ if s:has_bundle('indentLine')
     " disable by default
     let g:indentLine_enabled = 0
     map <silent> <Leader>i :<C-U>IndentLinesToggle<CR>
+endif
+
+if s:has_bundle('vim-indent-guides')
+    let g:indent_guides_enable_on_vim_startup = 1
+    let g:indent_guides_exclude_filetypes = ['help', 'nerdtree']
+    let g:indent_guides_start_level = 2
+    let g:indent_guides_auto_colors = 0
+    au VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#002B36 ctermbg=8
+    au VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#073642 ctermbg=0
 endif
 
 if s:has_bundle('vim-signature')
@@ -921,7 +945,7 @@ if s:has_bundle('sessionman.vim')
 endif
 
 if s:has_bundle('vim-multiple-cursors')
-    vmap // :MultipleCursorsFind 
+    vmap // :MultipleCursorsFind<space>
 endif
 
 if s:has_bundle('wildfire.vim')
@@ -969,10 +993,8 @@ if s:has_bundle('vim-autoformat')
     nnoremap <Leader>f :Autoformat<CR>
     " let g:formatdef_my_clangformat = "'clang-format -lines='.a:firstline.':'.a:lastline.' --assume-filename='.bufname('%').' -style=\"{BasedOnStyle: WebKit, AlignTrailingComments: true, '.(&textwidth ? 'ColumnLimit: '.&textwidth.', ' : '').(&expandtab ? 'UseTab: Never, IndentWidth: '.&shiftwidth : 'UseTab: Always').'}\"'"
     let g:formatdef_my_astyle_c = '"astyle --mode=c --style=java -pcH".(&expandtab ? "s".&shiftwidth : "t")'
-    let g:formatdef_my_astyle_c .= '. "| head -n -1"' " fix extra line generated by astyle 2.04
     let g:formatters_c = ['my_astyle_c']
     let g:formatdef_my_astyle_cpp = '"astyle --mode=c --style=java -pcH".(&expandtab ? "s".&shiftwidth : "t")'
-    let g:formatdef_my_astyle_cpp .= '. "| head -n -1"' "fix extra line generated by astyle 2.04
     let g:formatters_cpp = ['my_astyle_cpp']
 endif
 

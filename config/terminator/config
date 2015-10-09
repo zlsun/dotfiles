@@ -3,6 +3,7 @@
   enabled_plugins = InactivityWatch, CustomCommandsMenu, TestPlugin, ActivityWatch, TerminalShot, LaunchpadCodeURLHandler, APTURLHandler, Logger, MavenPluginURLHandler, LaunchpadBugURLHandler
   focus = mouse
   geometry_hinting = False
+  inactive_color_offset = 1.0
   title_font = WenQuanYi Micro Hei 10
   title_receive_bg_color = "#00b3c9"
   title_transmit_bg_color = "#285577"

@@ -50,6 +50,7 @@ bindsym $mod+Shift+h move left
 bindsym $mod+Shift+j move down
 bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
+bindsym $mod+c       move absolute position center
 
 # switch to workspace
 bindsym $mod+1 workspace 1
@@ -79,12 +80,13 @@ bindsym $mod+Shift+0 move container to workspace 10
 bindsym $mod+equal move scratchpad
 bindsym $mod+minus scratchpad show
 
-bindsym $mod+d   exec --no-startup-id rofi -show run
-bindsym $mod+q   exec --no-startup-id j4-dmenu-desktop --dmenu="rofi -dmenu -i -p '' "
-bindsym $mod+Tab exec --no-startup-id rofi -show window
-bindsym $mod+F1  exec --no-startup-id clerk
-bindsym $mod+F2  exec --no-startup-id rofi-surfraw
-bindsym $mod+F3  exec --no-startup-id rofi-pass
+bindsym $mod+d     exec --no-startup-id rofi -show run
+bindsym $mod+q     exec --no-startup-id j4-dmenu-desktop --dmenu="rofi -dmenu -i -p '' "
+bindsym $mod+Tab   exec --no-startup-id rofi -show window
+bindsym $mod+grave exec --no-startup-id rofi -switchers "file:$HOME/.bin/rofi-file-browser" -show file
+bindsym $mod+F1    exec --no-startup-id clerk
+bindsym $mod+F2    exec --no-startup-id rofi-surfraw
+bindsym $mod+F3    exec --no-startup-id rofi-pass
 
 # Audio controls
 set $send_signal pkill -SIGRTMIN+10 i3blocks
@@ -137,6 +139,7 @@ mode "$mode_system" {
     bindsym Escape mode "default"
 }
 bindsym $mod+Pause mode "$mode_system"
+bindsym $mod+semicolon exec --no-startup-id $Locker
 
 # Mode: resize window (you can also use the mouse for that)
 mode "resize" {
@@ -160,6 +163,7 @@ new_window 1pixel
 new_float 1pixel
 hide_edge_borders both
 
+# Solarized
 set $base03  #002b36
 set $base02  #073642
 set $base01  #586e75
@@ -198,12 +202,14 @@ bar {
     }
 }
 
-for_window [class="Gitk"]                       floating enable
-for_window [class="Git-gui"]                    floating enable
-for_window [class="FeelUOwn"]                   floating enable
 for_window [window_role="pop-up"]               floating enable
 for_window [window_role="bubble"]               floating enable
 for_window [window_role="task_dialog"]          floating enable
+for_window [class="Gitk"]                       floating enable
+for_window [class="Git-gui"]                    floating enable
+for_window [class="FeelUOwn"]                   floating enable
+for_window [class="Stardict"]                   floating enable
+for_window [class="Goldendict"]                 floating enable
 for_window [title="Terminator首选项"]           floating enable
 for_window [title="任务管理器 - Google Chrome"] floating enable
 

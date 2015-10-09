@@ -28,7 +28,6 @@ if ! zgen saved; then
         robbyrussell/oh-my-zsh plugins/pip
         robbyrussell/oh-my-zsh plugins/python
         robbyrussell/oh-my-zsh plugins/sublime
-        robbyrussell/oh-my-zsh plugins/sudo
         robbyrussell/oh-my-zsh plugins/virtualenv
         robbyrussell/oh-my-zsh plugins/virtualenvwrapper
         robbyrussell/oh-my-zsh plugins/web-search
@@ -135,6 +134,8 @@ autoload -U zmv
 # make zsh know about hosts already accessed by SSH
 zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
 
+# `Frozing' tty, so after any command terminal settings will be restored
+ttyctl -f
 
 # Key bindings
 
@@ -159,7 +160,18 @@ bindkey -M menuselect '.' undo
 bindkey -M menuselect ' ' accept-and-hold
 bindkey -M menuselect ';' history-incremental-search-forward
 
-auto-add-man() {
+toggle-sudo-command-line() {
+    [[ -z $BUFFER ]] && zle up-history
+    if [[ $BUFFER == "sudo *" ]]; then
+        LBUFFER="${LBUFFER#sudo }"
+    else
+        LBUFFER="sudo $LBUFFER"
+    fi
+}
+zle -N toggle-sudo-command-line
+bindkey "\e\e" toggle-sudo-command-line
+
+toggle-man-command-line() {
     [[ -z $BUFFER ]] && zle up-history
     if [[ $BUFFER == "man *" ]]; then
         LBUFFER="${LBUFFER#man }"
@@ -167,10 +179,10 @@ auto-add-man() {
         LBUFFER="man $LBUFFER"
     fi
 }
-zle -N auto-add-man
-bindkey "\em" auto-add-man
+zle -N toggle-man-command-line
+bindkey "\em" toggle-man-command-line
 
-auto-add-help() {
+toggle-help-command-line() {
     [[ -z $BUFFER ]] && zle up-history
     if [[ $BUFFER == "* --help" ]]; then
         LBUFFER="${LBUFFER% --help}"
@@ -178,8 +190,8 @@ auto-add-help() {
         LBUFFER="$LBUFFER --help"
     fi
 }
-zle -N auto-add-help
-bindkey "\eh" auto-add-help
+zle -N toggle-help-command-line
+bindkey "\eh" toggle-help-command-line
 
 # Aliases
 
@@ -206,15 +218,15 @@ alias rsync-sync="rsync -avzu --delete --progress -h"
 alias cpv="rsync -poghb --backup-dir=/tmp/rsync -e /dev/null --progress --"
 
 # l* -> ls
-alias l='ls -lFh'     # size,show type,human readable
-alias la='ls -lAFh'   # long list,show almost all,show type,human readable
-alias lr='ls -tRFh'   # sorted by date,recursive,show type,human readable
-alias lt='ls -ltFh'   # long list,sorted by date,show type,human readable
-alias ll='ls -l'      # long list
+alias    l='ls -lFh'     # size,show type,human readable
+alias   la='ls -lAFh'   # long list,show almost all,show type,human readable
+alias   lr='ls -tRFh'   # sorted by date,recursive,show type,human readable
+alias   lt='ls -ltFh'   # long list,sorted by date,show type,human readable
+alias   ll='ls -l'      # long list
 alias ldot='ls -ld .*'
-alias lS='ls -1FSsh'
+alias   lS='ls -1FSsh'
 alias lart='ls -1Fcart'
-alias lrt='ls -1Fcrt'
+alias  lrt='ls -1Fcrt'
 
 # k* -> k <https://github.com/rimraf/k>
 alias k='k -h'
@@ -222,19 +234,19 @@ alias ka='k -h -A'
 
 # how* -> howdoi <https://github.com/gleitz/howdoi>
 alias howdoi='howdoi -c'
-alias how='howdoi'
-alias howc='howdoi c'
-alias howcp='howdoi c++'
+alias    how='howdoi'
+alias   howc='howdoi c'
+alias  howcp='howdoi c++'
 alias howcss='howdoi css'
-alias howjs='howdoi js'
-alias howjv='howdoi java'
-alias howml='howdoi html'
-alias howpy='howdoi python'
-alias howsh='howdoi shell'
+alias  howjs='howdoi js'
+alias  howjv='howdoi java'
+alias  howml='howdoi html'
+alias  howpy='howdoi python'
+alias  howsh='howdoi shell'
 
 # py* -> python
 #
-alias py='python'
+alias  py='python'
 alias py2='python2'
 alias py3='python3'
 
@@ -248,7 +260,7 @@ alias   pyu='sudo -H pip uninstall'
 alias  pyu2='sudo -H pip2 uninstall'
 alias  pyu3='sudo -H pip3 uninstall'
 
-alias pyftp='python -m pyftpdlib'
+alias  pyftp='python -m pyftpdlib'
 alias pyhttp='python3 -m http.server'
 
 alias     pypf='python -m cProfile'
@@ -320,11 +332,13 @@ alias i3cfg='$EDITOR ~/.i3/config'
 # http://askubuntu.com/a/22043/399470
 alias s='sudo '
 
+alias vim="stty stop '' -ixoff ; vim"
 # shorten frequent commands
 alias c='cat'
 alias h='history'
 alias g='git'
 alias m='make'
+alias q='exit'
 alias v='vim'
 alias ec='echo'
 alias fk='eval $(thefuck $(fc -ln -1))' # https://github.com/nvbn/thefuck
@@ -345,7 +359,7 @@ alias unexport='unset'
 # commands with options
 alias grep='grep --color'
 alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS} '
-alias hgrep="fc -El 0 | grep"
+alias hgrep='fc -El 0 | grep'
 alias sortnr='sort -n -r'
 alias dud='du -d 1 -h'
 alias duf='du -sh *'
