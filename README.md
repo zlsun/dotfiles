@@ -11,6 +11,6 @@ My configurations for
 ## Install
 
 ```bash
-git clone https://github.com/zlsun/dotfiles.git
+git clone --recursive https://github.com/zlsun/dotfiles.git
 cd dotfiles && ./install
 ```
