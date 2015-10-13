@@ -6,6 +6,8 @@ config/*/*
 !config/clerk/config
 !config/fcitx/config
 !config/git/gitk
+!config/i3blocks/config
+!config/i3status/config
 !config/mpd/mpd.conf
 !config/psd/psd.conf
 !config/ranger/commands.py
