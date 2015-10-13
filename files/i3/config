@@ -114,7 +114,7 @@ bindsym $mod+Right            exec --no-startup-id xbacklight -inc 20 # increase
 
 # Screenshot
 set $tmp_png        '/tmp/scrot.png'
-set $formated_png   '/tmp/%Y-%m-%d_%R%M%S_$wx$h.png'
+set $formated_png   '/tmp/%Y-%m-%d_%H%M%S_$wx$h.png'
 set $to_clipboard   'xclip-set c $f'
 set $to_screenshots 'mv $f ~/Pictures/Screenshots/'
 bindsym --release            Print exec --no-startup-id scrot $tmp_png              -e $to_clipboard
@@ -210,6 +210,7 @@ for_window [class="Git-gui"]                    floating enable
 for_window [class="FeelUOwn"]                   floating enable
 for_window [class="Stardict"]                   floating enable
 for_window [class="Goldendict"]                 floating enable
+for_window [class="Gnome-alsamixer"]            floating enable
 for_window [title="Terminator首选项"]           floating enable
 for_window [title="任务管理器 - Google Chrome"] floating enable
 
