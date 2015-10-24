@@ -101,7 +101,7 @@ top-commands() {
         | head $*
 }
 
-save-rm-rf() {
+pacman-reinstall-all-packages() {
     comm -23 <(pacman -Qeq) <(pacman -Qmq) | pacman -S -
     comm -23 <(pacman -Qdq) <(pacman -Qmq) | pacman -S --asdeps -
 }
@@ -111,7 +111,17 @@ bgit() {
     local reset='\e[0m'
     local echo_cmd="echo -e '${color}[{}]$reset'"
     local git_cmd="git --git-dir={}/.git --work-tree={} $*"
-    printf "%s\n" */ | cut -d'/' -f1 | xargs -I '{}' sh -c "$echo_cmd && $git_cmd"
+    local cmd="$echo_cmd && $git_cmd"
+    printf "%s\n" */ | cut -d'/' -f1 | xargs -I '{}' sh -c $cmd
+}
+
+pgit() {
+    local color='\e[1;31m'
+    local reset='\e[0m'
+    local echo_cmd="echo -e '${color}[{}]$reset'"
+    local git_cmd="git --git-dir={}/.git --work-tree={} $*"
+    local cmd="$echo_cmd && $git_cmd"
+    printf "%s\n" */ | cut -d'/' -f1 | parallel $cmd
 }
 
 fawk() {
@@ -162,7 +172,7 @@ bindkey -M menuselect ';' history-incremental-search-forward
 
 toggle-sudo-command-line() {
     [[ -z $BUFFER ]] && zle up-history
-    if [[ $BUFFER == "sudo *" ]]; then
+    if [[ $BUFFER == sudo\ * ]]; then
         LBUFFER="${LBUFFER#sudo }"
     else
         LBUFFER="sudo $LBUFFER"
@@ -173,7 +183,7 @@ bindkey "\e\e" toggle-sudo-command-line
 
 toggle-man-command-line() {
     [[ -z $BUFFER ]] && zle up-history
-    if [[ $BUFFER == "man *" ]]; then
+    if [[ $BUFFER == man\ * ]]; then
         LBUFFER="${LBUFFER#man }"
     else
         LBUFFER="man $LBUFFER"
@@ -184,7 +194,7 @@ bindkey "\em" toggle-man-command-line
 
 toggle-help-command-line() {
     [[ -z $BUFFER ]] && zle up-history
-    if [[ $BUFFER == "* --help" ]]; then
+    if [[ $BUFFER == *\ --help ]]; then
         LBUFFER="${LBUFFER% --help}"
     else
         LBUFFER="$LBUFFER --help"
@@ -245,7 +255,6 @@ alias  howpy='howdoi python'
 alias  howsh='howdoi shell'
 
 # py* -> python
-#
 alias  py='python'
 alias py2='python2'
 alias py3='python3'
@@ -302,6 +311,7 @@ alias sgf='apt-file search'
 alias    yaq='yaourt -Q'
 alias   yaqe='yaourt -Qe'
 alias   yaql='yaourt -Ql'
+alias   yaqm='yaourt -Qm'
 alias   yaqi='yaourt -Qi'
 alias  yaqii='yaourt -Qii'
 alias   yaqs='yaourt -Qs'
@@ -333,6 +343,7 @@ alias i3cfg='$EDITOR ~/.i3/config'
 alias s='sudo '
 
 alias vim="stty stop '' -ixoff ; vim"
+
 # shorten frequent commands
 alias c='cat'
 alias h='history'
