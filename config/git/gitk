@@ -1,6 +1,6 @@
-set mainfont {{WenQuanYi Micro Hei} 10}
-set textfont {{Source Code Pro} 9}
-set uifont {{WenQuanYi Micro Hei} 10}
+set mainfont {{monospace} 10}
+set textfont {{monospace} 9}
+set uifont {{monospace} 10}
 set tabstop 8
 set findmergefiles 0
 set maxgraphpct 50

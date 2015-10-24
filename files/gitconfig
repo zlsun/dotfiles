@@ -3,8 +3,8 @@
     name = zlsun
 [gui]
     spellingdictionary = none
-    fontui = -family \"WenQuanYi Micro Hei Mono\" -size 10 -weight normal -slant roman -underline 0 -overstrike 0
-    fontdiff = -family \"Source Code Pro\" -size 10 -weight normal -slant roman -underline 0 -overstrike 0
+	fontui = -family monospace -size 10 -weight normal -slant roman -underline 0 -overstrike 0
+	fontdiff = -family monospace -size 10 -weight normal -slant roman -underline 0 -overstrike 0
 [alias]
     c = clone
     g = gui

@@ -1,5 +1,5 @@
 
-font pango:Source Code Pro 12
+font pango:monospace 12
 
 set $mod Mod4
 floating_modifier $mod
