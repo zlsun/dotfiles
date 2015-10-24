@@ -1,0 +1,98 @@
+
+set mouse
+
+set scroll=centered
+
+# set topbarclear
+# set notopbarborders
+# set topbar1.left=
+# set topbar2.left=%volume%%% Mode: %muteshort%%repeatshort%%randomshort%%manualshort%%ifcursong% %playstate% %time_elapsed% / %time_remaining%%endif%
+# set topbar2.center=%ifcursong%%artist% / %title% / %album% / %date%%else%Not playing anything%endif%
+# set topbar2.right=Queue has %livequeuesize%
+
+set xtermtitle=%playstate%%ifcursong% %artist% – %title%%endif%
+set columns=artist year album trackshort title length
+set sort=track disc album date albumartistsort
+set nonextafteraction
+
+# colour borders brightblue
+colour headers brightblue
+colour title brightblue
+colour current white blue
+colour cursor black brightgrey
+colour selection white green
+colour topbar.fields.artist brown
+colour topbar.fields.title white
+colour topbar.fields.year green
+colour topbar.fields.date green
+colour topbar.time_elapsed brightmagenta
+colour fields.year green
+colour fields.date green
+colour fields.trackshort brightgreen
+
+# Keybindings
+
+## Playback
+bind space toggle-play
+bind a add
+bind A add-to
+bind ] next
+bind [ prev
+bind } next-of albumartist
+bind { prev-of albumartist
+bind > next-of album
+bind < prev-of album
+bind h seek -3
+bind l seek 3
+bind H seek -10
+bind L seek 10
+bind = volume +3
+bind - volume -3
+bind m mute
+bind r repeat
+bind z random
+bind s single
+
+## Adding & Playing
+bind b add-album
+bind B play-album
+# bind r remove
+
+## Playlist management
+bind R clear
+bind S shuffle
+bind J move 1
+bind K move -1
+bind v toggle-select
+bind V clear-selection
+
+## Application
+bind I info
+bind ? help
+bind : command-mode
+bind ; command-mode
+bind tab next-window
+bind ` last-window
+bind ^L redraw
+bind q quit
+
+## Movement & Search
+bind j move-down
+bind k move-up
+bind d move-halfpgdn
+bind u move-halfpgup
+bind ^F move-pgdn
+bind ^B move-pgup
+bind g move-home
+bind G move-end
+bind c goto-current
+bind f filter
+bind F clear-filters
+bind / quick-find
+bind n next-result
+bind N prev-result
+
+bind y ! echo "#" | xsel
+bind ^T ! transcribe "#"
+bind ^W ! lyrics | less
+
