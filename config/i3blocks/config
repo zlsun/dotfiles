@@ -116,7 +116,7 @@ interval=30
 # The second parameter overrides the mixer selection
 # See the script for details.
 [volume]
-label=♪
+command=~/.bin/i3blocks-volume
 instance=Master
 #instance=PCM
 interval=once
