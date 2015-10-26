@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-EDITOR=xdg-open
+EDITOR=mimeo
 
 CUR_DIR=$PWD
 

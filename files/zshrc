@@ -133,6 +133,16 @@ vimrename() {
     vim -c "cd $dir|Renamer"
 }
 
+enable-proxy() {
+    export http_proxy=http://127.0.0.1:8087
+    export https_proxy=http://127.0.0.1:8087
+}
+
+disable-proxy() {
+    unset http_proxy
+    unset https_proxy
+}
+
 exists() {
     type $1 &> /dev/null
 }
@@ -141,11 +151,13 @@ exists() {
 
 autoload -U zmv
 
-# make zsh know about hosts already accessed by SSH
-zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
-
 # `Frozing' tty, so after any command terminal settings will be restored
 ttyctl -f
+
+setopt HIST_IGNORE_DUPS
+
+# make zsh know about hosts already accessed by SSH
+zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
 
 # Key bindings
 
@@ -205,27 +217,52 @@ bindkey "\eh" toggle-help-command-line
 
 # Aliases
 
-# systemd commands
-user_commands=(
-  list-units is-active status show help list-unit-files
-  is-enabled list-jobs show-environment cat)
+# enable alias when use sudo
+# http://askubuntu.com/a/22043/399470
+alias s='sudo '
 
-sudo_commands=(
-  start stop reload restart try-restart isolate kill
-  reset-failed enable disable reenable preset mask unmask
-  link load cancel set-environment unset-environment
-  edit)
+# enable <C-S> in vim
+alias vim="stty stop '' -ixoff ; vim"
 
-for c in $user_commands; do; alias sc-$c="systemctl $c"; done
-for c in $sudo_commands; do; alias sc-$c="sudo systemctl $c"; done
-for c in $sudo_commands; do; alias scu-$c="systemctl --user $c"; done
+# shorten frequent commands
+alias c='cat'
+alias h='history'
+alias g='git'
+alias q='exit'
+alias v='vim'
+alias ec='echo'
+alias fk='eval $(thefuck $(fc -ln -1))' # thefuck <https://github.com/nvbn/thefuck>
+alias gg='git gui'
+alias sv='s v'
 
-# rsync
-alias rsync-copy="rsync -avz --progress -h"
-alias rsync-move="rsync -avz --progress -h --remove-source-files"
-alias rsync-update="rsync -avzu --progress -h"
-alias rsync-sync="rsync -avzu --delete --progress -h"
-alias cpv="rsync -poghb --backup-dir=/tmp/rsync -e /dev/null --progress --"
+# meaning aliases
+alias help='man'
+alias unexport='unset'
+
+# commands with options
+alias grep='grep --color'
+alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS} '
+alias hgrep='fc -El 0 | grep'
+alias sortnr='sort -n -r'
+alias dud='du -d 1 -h'
+alias duf='du -sh *'
+alias fd='noglob find . -type d -name'
+alias ff='noglob find . -type f -name'
+
+# prompt before operating file
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+alias mmv='noglob zmv -W'
+
+# quick access to files
+alias srcls='$EDITOR /etc/apt/sources.list'
+alias pcmcf='$EDITOR /etc/pacman.conf'
+alias tmxcf='$EDITOR ~/.tmux.conf'
+alias vimrc='$EDITOR ~/.vimrc'
+alias zshrc='$EDITOR ~/.zshrc'
+alias i3cfg='$EDITOR ~/.i3/config'
 
 # l* -> ls
 alias    l='ls -lFh'     # size,show type,human readable
@@ -238,21 +275,11 @@ alias   lS='ls -1FSsh'
 alias lart='ls -1Fcart'
 alias  lrt='ls -1Fcrt'
 
-# k* -> k <https://github.com/rimraf/k>
-alias k='k -h'
-alias ka='k -h -A'
-
-# how* -> howdoi <https://github.com/gleitz/howdoi>
-alias howdoi='howdoi -c'
-alias    how='howdoi'
-alias   howc='howdoi c'
-alias  howcp='howdoi c++'
-alias howcss='howdoi css'
-alias  howjs='howdoi js'
-alias  howjv='howdoi java'
-alias  howml='howdoi html'
-alias  howpy='howdoi python'
-alias  howsh='howdoi shell'
+# m* -> make
+alias   m='make'
+alias  mr='make run'
+alias mcl='make clean'
+alias mrb='make rebuild'
 
 # py* -> python
 alias  py='python'
@@ -295,6 +322,28 @@ alias   nb='ipython notebook'
 alias  nb2='ipython2 notebook'
 alias  nb3='ipython3 notebook'
 
+# rsync-* -> rsync
+alias rsync-copy="rsync -avz --progress -h"
+alias rsync-move="rsync -avz --progress -h --remove-source-files"
+alias rsync-update="rsync -avzu --progress -h"
+alias rsync-sync="rsync -avzu --delete --progress -h"
+alias cpv="rsync -poghb --backup-dir=/tmp/rsync -e /dev/null --progress --"
+
+# sc[u]-* -> systemctl
+user_commands=(
+  list-units is-active status show help list-unit-files
+  is-enabled list-jobs show-environment cat)
+
+sudo_commands=(
+  start stop reload restart try-restart isolate kill
+  reset-failed enable disable reenable preset mask unmask
+  link load cancel set-environment unset-environment
+  edit)
+
+for c in $user_commands; do; alias sc-$c="systemctl $c"; done
+for c in $sudo_commands; do; alias sc-$c="sudo systemctl $c"; done
+for c in $sudo_commands; do; alias scu-$c="systemctl --user $c"; done
+
 # sg* -> apt-*
 alias sga='sudo apt-get autoremove'
 alias sgc='sudo apt-get autoclean'
@@ -330,63 +379,28 @@ alias    yab='yaourt -B'
 alias    yag='yaourt -G'
 alias    yat='yaourt --stats'
 
-# quick access to files
-alias srcls='$EDITOR /etc/apt/sources.list'
-alias pcmcf='$EDITOR /etc/pacman.conf'
-alias tmxcf='$EDITOR ~/.tmux.conf'
-alias vimrc='$EDITOR ~/.vimrc'
-alias zshrc='$EDITOR ~/.zshrc'
-alias i3cfg='$EDITOR ~/.i3/config'
+# how* -> howdoi <https://github.com/gleitz/howdoi>
+alias howdoi='howdoi -c'
+alias    how='howdoi'
+alias   howc='howdoi c'
+alias  howcp='howdoi c++'
+alias howcss='howdoi css'
+alias  howjs='howdoi js'
+alias  howjv='howdoi java'
+alias  howml='howdoi html'
+alias  howpy='howdoi python'
+alias  howsh='howdoi shell'
 
-# enable alias when use sudo
-# http://askubuntu.com/a/22043/399470
-alias s='sudo '
+# k* -> k <https://github.com/rimraf/k>
+alias  k='k -h'
+alias ka='k -h -A'
 
-alias vim="stty stop '' -ixoff ; vim"
-
-# shorten frequent commands
-alias c='cat'
-alias h='history'
-alias g='git'
-alias m='make'
-alias q='exit'
-alias v='vim'
-alias ec='echo'
-alias fk='eval $(thefuck $(fc -ln -1))' # https://github.com/nvbn/thefuck
-alias gg='git gui'
-alias sv='s v'
-
-# fasd
+# fasd <https://github.com/clvv/fasd>
 export _FASD_VIMINFO="~/.vim/info"
 export _FASD_BACKENDS="native viminfo current"
 alias A='fasd -A'
 alias D='fasd -D'
 alias o='fasd -a -B recently-used -e $XOPEN'
-
-# meaning aliases
-alias help='man'
-alias unexport='unset'
-
-# commands with options
-alias grep='grep --color'
-alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS} '
-alias hgrep='fc -El 0 | grep'
-alias sortnr='sort -n -r'
-alias dud='du -d 1 -h'
-alias duf='du -sh *'
-alias fd='noglob find . -type d -name'
-alias ff='noglob find . -type f -name'
-
-# prompt before operating file
-alias rm='rm -i'
-alias cp='cp -i'
-alias mv='mv -i'
-
-alias mmv='noglob zmv -W'
-
-EDITOR='vim'
-XOPEN='xdg-open'
-BROWSER='x-www-browser'
 
 # open file depends on their SUFFIX
 if [ ${ZSH_VERSION//\./} -ge 420 ]; then

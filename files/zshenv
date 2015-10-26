@@ -53,12 +53,12 @@ export MANPATH=/usr/local/man:$MANPATH
 # export ARCHFLAGS="-arch x86_64"
 export CPLUS_INCLUDE_PATH=~/proj/sunlib/include/
 
-# dotfiles
-export DOTFILES=$HOME/dotfiles
-
+# applications
 export VISUAL=vim
 export EDITOR=vim
 export PAGER=less
+export XOPEN=mimeo
+export BROWSER=google-chrome-unstable
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
