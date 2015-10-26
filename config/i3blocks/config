@@ -125,7 +125,7 @@ signal=10
 # Date Time
 #
 [time]
-command=date '+%m/%d %a %H:%M'
+command=~/.bin/i3blocks-datetime
 interval=5
 
 # Generic media player support

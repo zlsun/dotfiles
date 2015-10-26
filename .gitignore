@@ -8,6 +8,7 @@ config/*/*
 !config/fcitx/config
 !config/fontconfig/fonts.conf
 !config/git/gitk
+!config/gsimplecal/config
 !config/i3blocks/config
 !config/i3status/config
 !config/mpd/mpd.conf
