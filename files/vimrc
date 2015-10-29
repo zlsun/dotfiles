@@ -303,7 +303,7 @@ let g:skipview_files = [
     \ '\[example pattern\]'
     \ ]
 
-let g:netrw_browsex_viewer =  "x-www-browser"
+let g:netrw_browsex_viewer = "gvfs-open"
 
 " ======================================================================== "
 "                               UI Settings                                "
@@ -508,7 +508,7 @@ aug END
 au FileType c,cpp,elm,go,haskell,java,javascript,nasm,perl,php,python,ruby,sh,yml
     \ au BufWritePre <buffer> call StripTrailingWhitespace()
 
-au FileType txt set wrap
+au FileType txt,markdown set wrap
 
 au FileType haskell,puppet,ruby,yml setlocal expandtab shiftwidth=2 softtabstop=2
 " preceding line best in a plugin but here for now.
@@ -979,7 +979,7 @@ if s:has_bundle('vim-textobj-quote')
 endif
 
 if s:has_bundle('syntastic')
-    let g:syntastic_cpp_compiler_options = ' -std=c++11'
+    let g:syntastic_cpp_compiler_options = ' -std=c++1y'
 endif
 
 if s:has_bundle('vim-template')

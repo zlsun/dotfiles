@@ -12,7 +12,7 @@ bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+# bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
 # change container layout (stacked, tabbed, toggle split)
 bindsym $mod+w layout tabbed
@@ -52,6 +52,9 @@ bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
 bindsym $mod+c       move absolute position center
 
+# workspace names
+set $ws_telegram 🛪
+
 # switch to workspace
 bindsym $mod+1 workspace 1
 bindsym $mod+2 workspace 2
@@ -62,7 +65,7 @@ bindsym $mod+6 workspace 6
 bindsym $mod+7 workspace 7
 bindsym $mod+8 workspace 8
 bindsym $mod+9 workspace 9
-bindsym $mod+0 workspace 10
+bindsym $mod+0 workspace $ws_telegram
 
 # move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace 1
@@ -74,7 +77,7 @@ bindsym $mod+Shift+6 move container to workspace 6
 bindsym $mod+Shift+7 move container to workspace 7
 bindsym $mod+Shift+8 move container to workspace 8
 bindsym $mod+Shift+9 move container to workspace 9
-bindsym $mod+Shift+0 move container to workspace 10
+bindsym $mod+Shift+0 move container to workspace $ws_telegram
 
 # scratchpad
 bindsym $mod+equal move scratchpad
@@ -90,27 +93,28 @@ bindsym $mod+F3    exec --no-startup-id rofi-pass
 
 # Audio controls
 set $send_signal pkill -SIGRTMIN+10 i3blocks
-bindsym XF86AudioRaiseVolume  exec --no-startup-id pactl set-sink-volume 0 +5%  && $send_signal # increase sound volume
-bindsym XF86AudioLowerVolume  exec --no-startup-id pactl set-sink-volume 0 -5%  && $send_signal # decrease sound volume
-bindsym XF86AudioMute         exec --no-startup-id pactl set-sink-mute 0 toggle && $send_signal # mute sound
-bindsym $mod+Up               exec --no-startup-id pactl set-sink-volume 0 +5%  && $send_signal # increase sound volume
-bindsym $mod+Down             exec --no-startup-id pactl set-sink-volume 0 -5%  && $send_signal # decrease sound volume
-bindsym $mod+m                exec --no-startup-id pactl set-sink-mute 0 toggle && $send_signal # mute sound
+bindsym XF86AudioRaiseVolume  exec --no-startup-id pactl set-sink-volume 0 +5%  && $send_signal
+bindsym XF86AudioLowerVolume  exec --no-startup-id pactl set-sink-volume 0 -5%  && $send_signal
+bindsym XF86AudioMute         exec --no-startup-id pactl set-sink-mute 0 toggle && $send_signal
+bindsym $mod+Up               exec --no-startup-id pactl set-sink-volume 0 +5%  && $send_signal
+bindsym $mod+Down             exec --no-startup-id pactl set-sink-volume 0 -5%  && $send_signal
+bindsym $mod+m                exec --no-startup-id pactl set-sink-mute 0 toggle && $send_signal
 
 # Media player controls
-bindsym XF86AudioPlay         exec --no-startup-id mpc play
-bindsym XF86AudioPause        exec --no-startup-id mpc pause
-bindsym XF86AudioNext         exec --no-startup-id mpc next
-bindsym XF86AudioPrev         exec --no-startup-id mpc pre
-bindsym $mod+backslash        exec --no-startup-id mpc toggle
-bindsym $mod+braceright       exec --no-startup-id mpc next
-bindsym $mod+braceleft        exec --no-startup-id mpc pre
+bindsym XF86AudioPlay         exec --no-startup-id mpc play   && $send_signal
+bindsym XF86AudioPause        exec --no-startup-id mpc pause  && $send_signal
+bindsym XF86AudioNext         exec --no-startup-id mpc next   && $send_signal
+bindsym XF86AudioPrev         exec --no-startup-id mpc pre    && $send_signal
+bindsym $mod+backslash        exec --no-startup-id mpc toggle && $send_signal
+bindsym $mod+Shift+backslash  exec --no-startup-id mpc stop   && $send_signal
+bindsym $mod+braceright       exec --no-startup-id mpc next   && $send_signal
+bindsym $mod+braceleft        exec --no-startup-id mpc pre    && $send_signal
 
-# Sreen brightness controls
-bindsym XF86MonBrightnessDown exec --no-startup-id xbacklight -dec 20 # decrease screen brightness
-bindsym XF86MonBrightnessUp   exec --no-startup-id xbacklight -inc 20 # increase screen brightness
-bindsym $mod+Left             exec --no-startup-id xbacklight -dec 20 # decrease screen brightness
-bindsym $mod+Right            exec --no-startup-id xbacklight -inc 20 # increase screen brightness
+# Screen brightness controls
+bindsym XF86MonBrightnessDown exec --no-startup-id xbacklight -dec 10
+bindsym XF86MonBrightnessUp   exec --no-startup-id xbacklight -inc 10
+bindsym $mod+Left             exec --no-startup-id xbacklight -dec 10
+bindsym $mod+Right            exec --no-startup-id xbacklight -inc 10
 
 # Screenshot
 set $tmp_png        '/tmp/scrot.png'
@@ -124,21 +128,23 @@ bindsym --release      Shift+Print exec --no-startup-id scrot $formated_png     
 bindsym --release Ctrl+Shift+Print exec --no-startup-id scrot $formated_png      -s -e $to_screenshots
 bindsym --release Mod1+Shift+Print exec --no-startup-id scrot $formated_png -d 5 -s -e $to_screenshots
 
+bindsym --release     $mod+Shift+a exec --no-startup-id deepin-screenshot
+
 # Mode: shutdown, reboot, lock screen
 set $Locker i3lock -d -e -c 000000 && sleep 1
 set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (Shift+s) shutdown
 mode "$mode_system" {
-    bindsym l       exec --no-startup-id $Locker, mode "default"
-    bindsym e       exec --no-startup-id i3-msg exit, mode "default"
-    bindsym s       exec --no-startup-id $Locker && systemctl suspend, mode "default"
+    bindsym l       exec --no-startup-id $Locker,                        mode "default"
+    bindsym e       exec --no-startup-id i3-msg exit,                    mode "default"
+    bindsym s       exec --no-startup-id $Locker && systemctl suspend,   mode "default"
     bindsym h       exec --no-startup-id $Locker && systemctl hibernate, mode "default"
-    bindsym r       exec --no-startup-id systemctl reboot, mode "default"
-    bindsym Shift+s exec --no-startup-id systemctl poweroff -i, mode "default"
+    bindsym r       exec --no-startup-id systemctl reboot,               mode "default"
+    bindsym Shift+s exec --no-startup-id systemctl poweroff -i,          mode "default"
     # back to normal: Enter or Escape
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
-bindsym $mod+Pause mode "$mode_system"
+bindsym $mod+Shift+e mode "$mode_system"
 bindsym $mod+semicolon exec --no-startup-id $Locker
 
 # Mode: resize window (you can also use the mouse for that)
@@ -182,7 +188,7 @@ set $cyan    #2aa198
 set $green   #859900
 set $custom  #1c5766
 
-client.focused          $blue    $blue    $base03 $blue
+client.focused          $base02  $base00  $base12 $blue
 client.focused_inactive $base02  $base02  $base12 $violet
 client.unfocused        $base02  $base02  $base11 $base01
 client.urgent           $magenta $magenta $base13 $red
@@ -215,7 +221,17 @@ for_window [class="Gnome-alsamixer"]            floating enable
 for_window [title="Terminator首选项"]           floating enable
 for_window [title="任务管理器 - Google Chrome"] floating enable
 
+exec --no-startup-id ~/.i3/disable-standby-fs.py
+exec --no-startup-id ~/.i3/focus-last.py
+bindsym Mod1+Tab exec --no-startup-id ~/.i3/focus-last.py --switch
+
+# exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace 1 --command "terminator -l i3"
+exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace 2 --command google-chrome-unstable
+exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace 8 --command "terminator -e 'TERM=xterm-256color ranger'"
+exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace 9 --command zeal
+exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace $ws_telegram --command telegram
+
 exec --no-startup-id ~/.fehbg
-exec --no-startup-id i3-msg 'workspace 1; exec terminator -l i3'
 exec --no-startup-id ~/.i3/autostart.sh
+exec --no-startup-id terminator -l i3
 

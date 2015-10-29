@@ -184,10 +184,10 @@ bindkey -M menuselect ';' history-incremental-search-forward
 
 toggle-sudo-command-line() {
     [[ -z $BUFFER ]] && zle up-history
-    if [[ $BUFFER == sudo\ * ]]; then
+    if [[ $BUFFER == s\ * ]]; then
         LBUFFER="${LBUFFER#sudo }"
     else
-        LBUFFER="sudo $LBUFFER"
+        LBUFFER="s $LBUFFER"
     fi
 }
 zle -N toggle-sudo-command-line
@@ -215,6 +215,19 @@ toggle-help-command-line() {
 zle -N toggle-help-command-line
 bindkey "\eh" toggle-help-command-line
 
+if exists percol; then
+    function percol_select_history() {
+        local tac
+        exists gtac && tac="gtac" || { exists tac && tac="tac" || { tac="tail -r" } }
+        BUFFER=$(fc -l -n 1 | eval $tac | percol --query "$LBUFFER")
+        CURSOR=$#BUFFER         # move cursor
+        zle -R -c               # refresh
+    }
+
+    zle -N percol_select_history
+    bindkey '^R' percol_select_history
+fi
+
 # Aliases
 
 # enable alias when use sudo
@@ -234,8 +247,10 @@ alias ec='echo'
 alias fk='eval $(thefuck $(fc -ln -1))' # thefuck <https://github.com/nvbn/thefuck>
 alias gg='git gui'
 alias sv='s v'
+alias wh='which'
 
 # meaning aliases
+alias info='info --vi-key'
 alias help='man'
 alias unexport='unset'
 
@@ -265,7 +280,7 @@ alias zshrc='$EDITOR ~/.zshrc'
 alias i3cfg='$EDITOR ~/.i3/config'
 
 # l* -> ls
-alias    l='ls -lFh'     # size,show type,human readable
+alias    l='ls -lFh'    # size,show type,human readable
 alias   la='ls -lAFh'   # long list,show almost all,show type,human readable
 alias   lr='ls -tRFh'   # sorted by date,recursive,show type,human readable
 alias   lt='ls -ltFh'   # long list,sorted by date,show type,human readable
@@ -322,6 +337,8 @@ alias   nb='ipython notebook'
 alias  nb2='ipython2 notebook'
 alias  nb3='ipython3 notebook'
 
+alias pti='ptipython'
+
 # rsync-* -> rsync
 alias rsync-copy="rsync -avz --progress -h"
 alias rsync-move="rsync -avz --progress -h --remove-source-files"
@@ -338,6 +355,7 @@ sudo_commands=(
   start stop reload restart try-restart isolate kill
   reset-failed enable disable reenable preset mask unmask
   link load cancel set-environment unset-environment
+  hybrid-sleep hibernate
   edit)
 
 for c in $user_commands; do; alias sc-$c="systemctl $c"; done
@@ -366,7 +384,10 @@ alias  yaqii='yaourt -Qii'
 alias   yaqs='yaourt -Qs'
 alias    yar='yaourt -R'
 alias   yars='yaourt -Rs'
+alias  yarsn='yaourt -Rsn'
 alias    yas='yaourt -S'
+alias   yasi='yaourt -Si'
+alias  yasii='yaourt -Sii'
 alias   yass='yaourt -Ss'
 alias   yasy='yaourt -Sy'
 alias  yasyu='yaourt -Syu'

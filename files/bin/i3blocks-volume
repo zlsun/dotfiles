@@ -52,9 +52,8 @@ volume() {
 
 format() {
   perl_filter='if (/.*\[(\d+%)\] (\[(-?\d+.\d+dB)\] )?\[(on|off)\]/)'
+  perl_filter+='{CORE::say $4 eq "off" ? "--%" : "'
   # If dB was selected, print that instead
-  perl_filter+='{CORE::print ($4 eq "off" ? "🛇" : "♪");'
-  perl_filter+='CORE::print " '
   perl_filter+=$([[ $STEP = *dB ]] && echo '$3' || echo '$1')
   perl_filter+='"; exit}'
   perl -ne "$perl_filter"
@@ -63,8 +62,8 @@ format() {
 #------------------------------------------------------------------------
 
 case $BLOCK_BUTTON in
-  1) gnome-alsamixer ;;
-  3) pactl set-sink-mute 0 toggle     ;; # amixer -q -D $MIXER sset $SCONTROL $(capability) toggle ;;  # right click, mute/unmute
+  1) pactl set-sink-mute 0 toggle     ;; # amixer -q -D $MIXER sset $SCONTROL $(capability) toggle ;;  # right click, mute/unmute
+  3) gnome-alsamixer ;;
   4) pactl set-sink-volume 0 +${STEP} ;; # amixer -q -D $MIXER sset $SCONTROL $(capability) ${STEP}+ unmute ;; # scroll up, increase
   5) pactl set-sink-volume 0 -${STEP} ;; # amixer -q -D $MIXER sset $SCONTROL $(capability) ${STEP}- unmute ;; # scroll down, decrease
 esac

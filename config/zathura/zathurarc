@@ -1,1 +1,12 @@
 set font "sans-serif 11"
+
+map ; toggle_inputbar
+
+map _ adjust_window best-fit
+map - zoom out
+map = zoom in
+map + adjust_window width
+
+map [ jumplist previous
+map ] jumplist next
+

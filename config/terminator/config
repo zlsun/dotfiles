@@ -52,31 +52,6 @@
       profile = default
       type = Terminal
       uuid = c8a119a2-f87e-4176-8f70-185632a9a3c7
-  [[i3-bak]]
-    [[[child0]]]
-      order = 0
-      parent = ""
-      position = 0:0
-      size = 683, 747
-      type = Window
-    [[[child1]]]
-      order = 0
-      parent = child0
-      position = 340
-      type = HPaned
-    [[[terminal2]]]
-      command = exec sudo su
-      directory = ""
-      order = 0
-      parent = child1
-      profile = default
-      type = Terminal
-    [[[terminal3]]]
-      command = ""
-      order = 1
-      parent = child1
-      profile = default
-      type = Terminal
   [[manager]]
     [[[child0]]]
       fullscreen = False

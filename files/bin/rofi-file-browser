@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-EDITOR=mimeo
+EDITOR=gvfs-open
 
 CUR_DIR=$PWD
 

@@ -1,10 +1,12 @@
 
 files/i3/*
 !files/i3/config
+!files/i3/*.py
 
 config/*/*
 !config/aria2/aria2.conf
 !config/clerk/config
+!config/dunst/dunstrc
 !config/fcitx/config
 !config/fontconfig/fonts.conf
 !config/git/gitk

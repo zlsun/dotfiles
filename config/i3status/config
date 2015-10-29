@@ -67,6 +67,6 @@ volume master {
 }
 
 tztime local {
-    format = "%m/%d %w %H:%M" //📅  🗓  📆  ⏲
+    format = "%m/%d %a %H:%M" //📅  🗓  📆  ⏲
 }
 

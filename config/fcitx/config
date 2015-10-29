@@ -27,7 +27,7 @@ UseExtraTriggerKeyOnlyWhenUseItToInactivate=False
 # Super+Right Ctrl
 # Disabled
 # Custom
-SwitchKey=R_SHIFT
+SwitchKey=SHIFT Both
 # 自定义切换键
 #CustomSwitchKey=
 # 激活输入法
@@ -141,6 +141,12 @@ CandidateWordNumber=9
 # True False
 #HideInputWindowWhenOnlyPreeditString=False
 # 只有一个候选词和预编辑字符串时不显示输入窗口
+# Available Value:
+# True False
+#HideInputWindowWhenOnlyOneCandidate=False
+
+dowWhenOnlyPreeditString=False
+# Do not show input window if there is only one candidate and preedit
 # Available Value:
 # True False
 #HideInputWindowWhenOnlyOneCandidate=False

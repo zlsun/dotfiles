@@ -1,0 +1,23 @@
+#!/bin/bash
+
+exec-mpc() {
+    mpc $* &> /dev/null
+}
+
+case $BLOCK_BUTTON in
+  1) exec-mpc toggle ;;
+  2) exec-mpc stop   ;;
+  4) exec-mpc pre    ;;
+  5) exec-mpc next   ;;
+esac
+
+playing=⏵
+ paused=⏸
+stopped=♪
+
+mpc status | grep '\[playing\]' &> /dev/null && echo -n $playing
+mpc status | grep '\[paused\]'  &> /dev/null && echo -n $paused
+mpc status | grep '\[.*\]'      &> /dev/null || echo -n $stopped
+
+# mpc current | awk -F ' - ' '{print $2}'
+

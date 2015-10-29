@@ -110,6 +110,14 @@ label=⚡
 # instance=1
 interval=30
 
+# MPD indicator
+[mpd]
+command=~/.bin/i3blocks-mpd
+interval=5
+signal=10
+separator=false
+separator_block_width=3
+
 # Volume indicator
 #
 # The first parameter sets the step (and units to display)
