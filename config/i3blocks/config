@@ -46,7 +46,7 @@ interval=10
 separator=false
 
 [speed]
-command=~/.bin/measure-net-speed
+command=~/.bin/i3blocks-net-speed
 interval=5
 
 # [bandwidth]

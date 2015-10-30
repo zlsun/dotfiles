@@ -11,8 +11,8 @@ case $BLOCK_BUTTON in
   5) exec-mpc next   ;;
 esac
 
-playing=⏵
- paused=⏸
+playing=⏸
+ paused=⏵
 stopped=♪
 
 mpc status | grep '\[playing\]' &> /dev/null && echo -n $playing
