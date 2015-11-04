@@ -9,6 +9,12 @@ git clone --recursive https://github.com/zlsun/dotfiles.git
 cd dotfiles && ./install
 ```
 
+## Screenshots
+
+![](http://i.imgur.com/hqyqIHg.png)
+\* Wallpaper can be found [here](https://www.reddit.com/r/i3wm/comments/3hqkst/solarized_i3_wallpaper_1080p/).
+![](http://i.imgur.com/WkgDF10.png)
+
 ## Configurations Tree
 
 ### Shell
