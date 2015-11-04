@@ -1,6 +1,6 @@
 # dotfiles
 
-My personal configurations.
+My personal configurations for Archlinux .
 
 ## Install
 
