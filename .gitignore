@@ -20,7 +20,7 @@ config/*/*
 !config/ranger/rc.conf
 !config/ranger/rifle.conf
 !config/ranger/scope.sh
-!config/rofi-pass/rofi-pass.conf
+!config/rofi-pass/config
 !config/rofi-surfraw/config
 !config/surfraw/conf
 !config/terminator/config

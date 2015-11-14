@@ -5,7 +5,7 @@
 # keep in mind that 0.15.7 has different arguments compared to
 # latest git. for rofi-pass this means that "-i" will not work with
 # 0.15.7.
-rofiopts="-i -width 700 -no-levenshtein-sort"
+rofiopts="-i -width 850 -no-levenshtein-sort"
 
 # fields to be used
 URL_field='url'
@@ -17,10 +17,10 @@ delay=2
 
 ## Programs to be used
 # Editor
-EDITOR='vim -f'
+EDITOR='gvim -f'
 
 # Browser
-BROWSER='google-chrome-unstable'
+BROWSER='xdg-open'
 
 ## Misc settings
 
@@ -33,18 +33,18 @@ count=2
 
 # Clipboard settings
 # Possible options: primary, clipboard, both
-clip=primary
+clip=both
 
 # Custom Keybindings
 autotype="Alt+1"
 type_user="Alt+2"
 type_pass="Alt+3"
 open_url="Alt+4"
-copy_name="Alt+u"
-copy_url="Alt+l"
+copy_name="Alt+n"
+copy_url="Alt+u"
 copy_pass="Alt+p"
-edit="Alt+9"
-move="Alt+2"
-delete="Alt+3"
+edit="Alt+e"
+move="Alt+m"
+delete="Alt+d"
 copy_entry="Alt+c"
 show="Control+Return"

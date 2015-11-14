@@ -144,9 +144,9 @@ exists() {
 
 # Aliases
 
-EDITOR='vim'
-XOPEN='xdg-open'
-BROWSER='x-www-browser'
+EDITOR=vim
+XOPEN=gvfs-open
+BROWSER=$XOPEN
 
 # open file depends on their SUFFIX
 if [ ${ZSH_VERSION//\./} -ge 420 ]; then

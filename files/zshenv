@@ -58,7 +58,7 @@ export VISUAL=vim
 export EDITOR=vim
 export PAGER=less
 export XOPEN=gvfs-open
-export BROWSER=google-chrome-unstable
+export BROWSER=$XOPEN
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
@@ -78,4 +78,6 @@ export XMODIFIERS="@im=fcitx"
 # Enable Xft
 export GDK_USE_XFT=1
 export QT_XFT=true
+
+export QT_STYLE_OVERRIDE=GTK+
 

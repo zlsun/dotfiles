@@ -105,6 +105,7 @@ Plugin 'gaving/vim-textobj-argument'
 Plugin 'vis'
 Plugin 'DrawIt'
 Plugin 'VisIncr'
+Plugin 'LargeFile'
 Plugin 'tpope/vim-repeat'
 Plugin 'gcmt/wildfire.vim'
 Plugin 'tpope/vim-surround'
@@ -146,7 +147,8 @@ if s:completer == 'snipmate'
         source ~/.vim/bundle/vim-snippets/snippets/support_functions.vim
     endif
 elseif s:completer == 'youcompleteme'
-    Plugin 'Valloric/YouCompleteMe'
+    " Plugin 'Valloric/YouCompleteMe'
+    Plugin 'rdnetto/YCM-Generator'
     Plugin 'SirVer/ultisnips'
     Plugin 'honza/vim-snippets'
 elseif s:completer == 'neocomplcache'
@@ -170,7 +172,6 @@ Plugin 'suan/vim-instant-markdown'
 "" Python
 Plugin 'python_match.vim'
 Plugin 'klen/python-mode'
-Plugin 'jmcantrell/vim-virtualenv'
 Plugin 'mjbrownie/vim-htmldjango_omnicomplete'
 
 "" HTML
@@ -833,21 +834,6 @@ if s:has_bundle('vim-airline')
     let g:airline#extensions#whitespace#mixed_indent_format = 'mixed[%s]'
 endif
 
-if s:has_bundle('indentLine')
-    " Vim
-    let g:indentLine_color_term = 10
-    " GVim
-    let g:indentLine_color_gui = '#586e75'
-    " none X terminal
-    let g:indentLine_color_tty_light = 7 " (default: 4)
-    let g:indentLine_color_dark = 1 " (default: 2)
-    " Vim & GVim
-    let g:indentLine_char = '│' " ¦,┆,│
-    " disable by default
-    let g:indentLine_enabled = 0
-    map <silent> <Leader>i :<C-U>IndentLinesToggle<CR>
-endif
-
 if s:has_bundle('vim-indent-guides')
     let g:indent_guides_enable_on_vim_startup = 1
     let g:indent_guides_exclude_filetypes = ['help', 'nerdtree']
@@ -1092,7 +1078,7 @@ elseif s:completer == 'youcompleteme' && s:has_bundle('YouCompleteMe')
 
     " enable completion from tags
     let g:ycm_collect_identifiers_from_tags_files = 1
-    let g:ycm_global_ycm_extra_conf = '~/.vim/ycm_extra_conf.py'
+    let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
 
     " remap Ultisnips for compatibility for YCM
     let g:UltiSnipsExpandTrigger = '<C-j>'
@@ -1309,18 +1295,7 @@ elseif s:completer == 'neocomplcache' && s:has_bundle('neocomplcache.vim')
     let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
     let g:neocomplcache_omni_patterns.go = '\h\w*\.\?'
 
-else
-    " Enable omni-completion.
-    au FileType css           setlocal omnifunc=csscomplete#CompleteCSS
-    au FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-    au FileType javascript    setlocal omnifunc=javascriptcomplete#CompleteJS
-    au FileType python        setlocal omnifunc=pythoncomplete#Complete
-    au FileType xml           setlocal omnifunc=xmlcomplete#CompleteTags
-    au FileType ruby          setlocal omnifunc=rubycomplete#Complete
-    au FileType haskell       setlocal omnifunc=necoghc#omnifunc
-endif
-
-if s:has_bundle('neosnippet')
+elseif (s:completer = 'neocomplete' || s:completer == 'neocomplcache') &&s:has_bundle('neosnippet')
     " Use honza's snippets.
     let g:neosnippet#snippets_directory = '~/.vim/bundle/vim-snippets/snippets'
 
@@ -1339,6 +1314,16 @@ if s:has_bundle('neosnippet')
     " When enabled, there can be too much visual noise
     " especially when splits are used.
     set completeopt-=preview
+
+else
+    " Enable omni-completion.
+    au FileType css           setlocal omnifunc=csscomplete#CompleteCSS
+    au FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+    au FileType javascript    setlocal omnifunc=javascriptcomplete#CompleteJS
+    au FileType python        setlocal omnifunc=pythoncomplete#Complete
+    au FileType xml           setlocal omnifunc=xmlcomplete#CompleteTags
+    au FileType ruby          setlocal omnifunc=rubycomplete#Complete
+    au FileType haskell       setlocal omnifunc=necoghc#omnifunc
 endif
 
 if s:has_bundle('python-mode')
@@ -1348,8 +1333,9 @@ if s:has_bundle('python-mode')
     endif
 
     let g:pymode_doc_bind = 'K'
-    let g:pymode_lint_checkers = ['pyflakes', 'pep8', 'mccabe']
-    let g:pymode_lint_cwindow = 0
+    let g:pymode_lint_checkers = ['pylint', 'pep8', 'mccabe']
+    let g:pymode_lint_ignore = "E731"
+    " let g:pymode_lint_cwindow = 0
     let g:pymode_lint_options_pep8 =
         \ {'max_line_length': 100}
     let g:pymode_trim_whitespaces = 0
@@ -1357,6 +1343,7 @@ if s:has_bundle('python-mode')
     let g:pymode_rope = 0
     let g:pymode_rope_completion = 0
     let g:pymode_rope_goto_definition_bind = "<C-]>"
+    let g:pymode_virtualenv = 1
 endif
 
 if s:has_bundle('emmet-vim')
@@ -1374,10 +1361,6 @@ if s:has_bundle('HTML-AutoCloseTag')
     " Make it so AutoCloseTag works for xml and xhtml files as well
     au FileType xhtml,xml ru ftplugin/html/autoclosetag.vim
     nmap <Leader>ac <Plug>ToggleAutoCloseMappings
-endif
-
-if s:has_bundle('vim2hs')
-    let g:hpaste_author = s:your_name
 endif
 
 if s:has_bundle('haskellmode-vim')

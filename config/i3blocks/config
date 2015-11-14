@@ -41,7 +41,7 @@ separator=false
 
 [wifi]
 label=〜
-#instance=wlp3s0
+instance=wlp9s0
 interval=10
 separator=false
 

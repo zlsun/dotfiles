@@ -119,11 +119,10 @@ bindsym $mod+Right            exec --no-startup-id xbacklight -inc 10
 # Screenshot
 set $tmp_png        '/tmp/scrot.png'
 set $formated_png   '/tmp/%Y-%m-%d_%H%M%S_$wx$h.png'
-set $to_clipboard   'xclip-set c $f'
 set $to_screenshots 'mv $f ~/Pictures/Screenshots/'
-bindsym --release            Print exec --no-startup-id scrot $tmp_png              -e $to_clipboard
-bindsym --release       Ctrl+Print exec --no-startup-id scrot $tmp_png           -s -e $to_clipboard
-bindsym --release       Mod1+Print exec --no-startup-id scrot $tmp_png      -d 5 -s -e $to_clipboard
+bindsym --release            Print exec --no-startup-id scrot $tmp_png
+bindsym --release       Ctrl+Print exec --no-startup-id scrot $tmp_png -s
+bindsym --release       Mod1+Print exec --no-startup-id scrot $tmp_png -s -d 5
 bindsym --release      Shift+Print exec --no-startup-id scrot $formated_png         -e $to_screenshots
 bindsym --release Ctrl+Shift+Print exec --no-startup-id scrot $formated_png      -s -e $to_screenshots
 bindsym --release Mod1+Shift+Print exec --no-startup-id scrot $formated_png -d 5 -s -e $to_screenshots
@@ -150,15 +149,18 @@ bindsym $mod+semicolon exec --no-startup-id $Locker
 # Mode: resize window (you can also use the mouse for that)
 mode "resize" {
     # These bindings trigger as soon as you enter the resize mode
-    bindsym h     resize shrink width  10 px or 10 ppt
-    bindsym j     resize grow   height 10 px or 10 ppt
-    bindsym k     resize shrink height 10 px or 10 ppt
-    bindsym l     resize grow   width  10 px or 10 ppt
-    # same bindings, but for the arrow keys
-    bindsym Left  resize shrink width  10 px or 10 ppt
-    bindsym Down  resize grow   height 10 px or 10 ppt
-    bindsym Up    resize shrink height 10 px or 10 ppt
-    bindsym Right resize grow   width  10 px or 10 ppt
+    bindsym h       resize shrink width  10 px or 10 ppt
+    bindsym j       resize grow   height 10 px or 10 ppt
+    bindsym k       resize shrink height 10 px or 10 ppt
+    bindsym l       resize grow   width  10 px or 10 ppt
+    bindsym Ctrl+h  resize shrink width  30 px or 30 ppt
+    bindsym Ctrl+j  resize grow   height 30 px or 30 ppt
+    bindsym Ctrl+k  resize shrink height 30 px or 30 ppt
+    bindsym Ctrl+l  resize grow   width  30 px or 30 ppt
+    bindsym Shift+h resize shrink width   1 px or  1 ppt
+    bindsym Shift+j resize grow   height  1 px or  1 ppt
+    bindsym Shift+k resize shrink height  1 px or  1 ppt
+    bindsym Shift+l resize grow   width   1 px or  1 ppt
     # back to normal: Enter or Escape
     bindsym Return mode "default"
     bindsym Escape mode "default"
@@ -218,7 +220,9 @@ for_window [class="FeelUOwn"]                   floating enable
 for_window [class="Stardict"]                   floating enable
 for_window [class="Goldendict"]                 floating enable
 for_window [class="Gnome-alsamixer"]            floating enable
+for_window [class="Deepin-music-player"]        floating enable
 for_window [title="Terminator首选项"]           floating enable
+for_window [title="^chrome-extension:"]         floating enable
 for_window [title="任务管理器 - Google Chrome"] floating enable
 
 exec --no-startup-id ~/.i3/disable-standby-fs.py

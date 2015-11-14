@@ -35,15 +35,12 @@ link() {
 link-all() {
     echo "[files]"
     for each in $DOTFILES/files/*; do
-        if [ -e $each ]; then
-            link $each "$HOME/."
-        fi
+        link $each "$HOME/."
     done
     echo "[config]"
+    mkdir -p $XDG_CONFIG_HOME
     for each in $DOTFILES/config/*; do
-        if [ -e $each ]; then
-            link $each "$XDG_CONFIG_HOME/"
-        fi
+        link $each "$XDG_CONFIG_HOME/"
     done
     echo "[All linked]"
 }

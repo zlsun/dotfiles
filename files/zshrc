@@ -124,6 +124,15 @@ pgit() {
     printf "%s\n" */ | cut -d'/' -f1 | parallel $cmd
 }
 
+ptyless() {
+    zmodload zsh/zpty
+    zpty ptyless ${1+"$@"}            # ptyless, name of pty
+    zpty -r ptyless > /tmp/ptyless.$$ # Write to file, just dunno why pipeline doesn't work fine here
+    less /tmp/ptyless.$$
+    rm -f /tmp/ptyless.$$
+    zpty -d ptyless                   # remove used pty
+}
+
 fawk() {
     awk "{print \$${1}}"
 }
@@ -377,6 +386,7 @@ alias sgf='apt-file search'
 # ya* -> yaourt
 alias    yaq='yaourt -Q'
 alias   yaqe='yaourt -Qe'
+alias  yaqem='yaourt -Qem'
 alias   yaql='yaourt -Ql'
 alias   yaqm='yaourt -Qm'
 alias   yaqi='yaourt -Qi'
@@ -455,7 +465,7 @@ alias -g T='| tail'
 alias -g U='| uniq'
 alias -g W='| gawk'
 alias -g X='| xargs'
-alias -g SO='| sort'
+alias -g SS='| sort'
 alias -g WC='| wc'
 alias -g CA="2>&1 | cat -A"
 alias -g LL="2>&1 | less"
