@@ -44,7 +44,7 @@ Plugin 'gmarik/vundle'
 " Chinese documentation
 Plugin 'asins/vimcdoc'
 
-" Additional
+" Libraries
 Plugin 'tomtom/tlib_vim'
 Plugin 'mattn/webapi-vim'
 Plugin 'Shougo/vimproc.vim'
@@ -80,8 +80,9 @@ Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'tacahiroy/ctrlp-funky'
 
 " SessionManagers
-Plugin 'sessionman.vim'
 Plugin 'restore_view.vim'
+Plugin 'xolox/vim-misc'
+Plugin 'xolox/vim-session'
 
 " Utils
 Plugin 'szw/vim-g'
@@ -147,7 +148,7 @@ if s:completer == 'snipmate'
         source ~/.vim/bundle/vim-snippets/snippets/support_functions.vim
     endif
 elseif s:completer == 'youcompleteme'
-    " Plugin 'Valloric/YouCompleteMe'
+    Plugin 'Valloric/YouCompleteMe'
     Plugin 'rdnetto/YCM-Generator'
     Plugin 'SirVer/ultisnips'
     Plugin 'honza/vim-snippets'
@@ -477,20 +478,6 @@ au BufEnter * if bufname("") !~ "^\[A-Za-z0-9\]*://|sudo:"
 " set it to the first line when editing a git commit message
 au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
 
-" http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
-" Restore cursor to file position in previous editing session
-func! ResCur()
-    if line("'\"") <= line("$")
-        normal! g`"
-        return 1
-    endif
-endfunc
-
-aug resCur
-    au!
-    au BufWinEnter * call ResCur()
-aug END
-
 " Set scripts to be executable from the shell
 func! Chmod(file)
     if getline(1) =~ "^#!.*/bin/"
@@ -499,7 +486,7 @@ func! Chmod(file)
 endfunc
 " au BufWritePost * call Chmod(<afile>)
 
-aug source vimrc
+aug reload_vimrc
     au!
     au FileWritePost .vimrc source %
     au FileWritePost vimrc source %
@@ -687,12 +674,13 @@ map <Leader>th :tabfirst<CR>
 map <Leader>tj :tabprevious<CR>
 
 map      <F5> :!./%<CR>
+imap    <F5> <Esc>:!./%<CR>
+
 map      <F6> :<C-U>make!<CR>
 map    <S-F6> :<C-U>make!<space>
 map <Leader>b :<C-U>make!<CR>
 map <Leader>B :<C-U>make!<space>
 
-imap    <F5> <Esc>:!./%<CR>
 imap    <F6> <Esc>:<C-U>make!<CR>
 imap  <S-F6> <Esc>:<C-U>make!<space>
 imap <C-S-B> <Esc>:<C-U>make!<space>
@@ -925,10 +913,14 @@ if s:has_bundle('ctrlsf.vim')
     inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
 endif
 
-if s:has_bundle('sessionman.vim')
-    nmap <leader>sl :SessionList<CR>
-    nmap <leader>ss :SessionSave<CR>
-    nmap <leader>sc :SessionClose<CR>
+if s:has_bundle('vim-session')
+    nmap <leader>so :OpenSession<CR>
+    nmap <leader>ss :SaveSession 
+    nmap <leader>sd :DeleteSession<CR>
+    nmap <leader>sc :CloseSession<CR>
+    let g:session_persist_globals = ['&makeprg', '&makeef']
+    let g:session_autosave='yes'
+    let g:session_autoload='no'
 endif
 
 if s:has_bundle('vim-multiple-cursors')
@@ -983,6 +975,17 @@ if s:has_bundle('vim-autoformat')
     let g:formatters_c = ['my_astyle_c']
     let g:formatdef_my_astyle_cpp = '"astyle --mode=c --style=java -pcH".(&expandtab ? "s".&shiftwidth : "t")'
     let g:formatters_cpp = ['my_astyle_cpp']
+endif
+
+if s:has_bundle('vim-makeshift')
+    map      <F6> :<C-U>MakeshiftBuild<CR>
+    map    <S-F6> :<C-U>MakeshiftBuild<space>
+    map <Leader>b :<C-U>MakeshiftBuild<CR>
+    map <Leader>B :<C-U>MakeshiftBuild<space>
+    imap    <F6> <Esc>:<C-U>MakeshiftBuild<CR>
+    imap  <S-F6> <Esc>:<C-U>MakeshiftBuild<space>
+    imap <C-S-B> <Esc>:<C-U>MakeshiftBuild<space>
+    imap   <C-B> <Esc>:<C-U>MakeshiftBuild<CR>
 endif
 
 if s:has_bundle('tabular')
