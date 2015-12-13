@@ -65,8 +65,13 @@ export BROWSER=$XOPEN
 export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
 # Locale
-export LANG=zh_CN.UTF-8
-export LANGUAGE=zh_CN:en_US
+if [[ $(tty|grep -o '/dev/tty') = /dev/tty ]] ; then
+    export LANG=en_US.UTF-8
+    export LANGUAGE=en_US
+else
+    export LANG=zh_CN.UTF-8
+    export LANGUAGE=zh_CN:en_US
+fi
 export LC_TIME=en_US.UTF-8
 export LC_CTYPE=en_US.UTF-8
 
