@@ -31,6 +31,7 @@ if ! zgen saved; then
         robbyrussell/oh-my-zsh plugins/virtualenv
         robbyrussell/oh-my-zsh plugins/virtualenvwrapper
         robbyrussell/oh-my-zsh plugins/web-search
+        robbyrussell/oh-my-zsh plugins/zsh-navigation-tools
 
         zlsun/solarized-man
         # zlsun/umake
@@ -79,6 +80,10 @@ zle-line-init() {
     zle autosuggest-start
 }
 zle -N zle-line-init
+
+autoload znt-history-widget
+zle -N znt-history-widget
+bindkey "^R" znt-history-widget
 
 # ======================== User configuration ==========================
 
@@ -224,18 +229,18 @@ toggle-help-command-line() {
 zle -N toggle-help-command-line
 bindkey "\eh" toggle-help-command-line
 
-if exists percol; then
-    function percol_select_history() {
-        local tac
-        exists gtac && tac="gtac" || { exists tac && tac="tac" || { tac="tail -r" } }
-        BUFFER=$(fc -l -n 1 | eval $tac | percol --query "$LBUFFER")
-        CURSOR=$#BUFFER         # move cursor
-        zle -R -c               # refresh
-    }
-
-    zle -N percol_select_history
-    bindkey '^R' percol_select_history
-fi
+# if exists percol; then
+#     function percol_select_history() {
+#         local tac
+#         exists gtac && tac="gtac" || { exists tac && tac="tac" || { tac="tail -r" } }
+#         BUFFER=$(fc -l -n 1 | eval $tac | percol --query "$LBUFFER")
+#         CURSOR=$#BUFFER         # move cursor
+#         zle -R -c               # refresh
+#     }
+#
+#     zle -N percol_select_history
+#     bindkey '^R' percol_select_history
+# fi
 
 # Aliases
 
