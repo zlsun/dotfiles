@@ -3,8 +3,8 @@
     name = zlsun
 [gui]
     spellingdictionary = none
-	fontui = -family monospace -size 10 -weight normal -slant roman -underline 0 -overstrike 0
-	fontdiff = -family monospace -size 10 -weight normal -slant roman -underline 0 -overstrike 0
+    fontui = -family monospace -size 10 -weight normal -slant roman -underline 0 -overstrike 0
+    fontdiff = -family monospace -size 10 -weight normal -slant roman -underline 0 -overstrike 0
 [alias]
     c = clone
     g = gui
@@ -58,6 +58,5 @@
     default = simple
 [http]
     sslVerify = false
-
 [core]
-	pager = less -F -X
+    pager = less -F -X
