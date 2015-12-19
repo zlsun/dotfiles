@@ -1,6 +1,6 @@
 # dotfiles
 
-My personal configurations for Archlinux .
+My personal configurations for Archlinux.
 
 ## Install
 
@@ -12,7 +12,7 @@ cd dotfiles && ./install
 ## Screenshots
 
 ![](http://i.imgur.com/hqyqIHg.png)
-\* Wallpaper can be found [here](https://www.reddit.com/r/i3wm/comments/3hqkst/solarized_i3_wallpaper_1080p/).
+\* You can find wallpaper [here](https://www.reddit.com/r/i3wm/comments/3hqkst/solarized_i3_wallpaper_1080p/).
 ![](http://i.imgur.com/WkgDF10.png)
 
 ## Configurations Tree
