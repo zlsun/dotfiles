@@ -19,9 +19,7 @@ cd dotfiles && ./install
 \* You can find then wallpaper [here](https://www.reddit.com/r/i3wm/comments/3hqkst/solarized_i3_wallpaper_1080p/).
 ![](http://i.imgur.com/WkgDF10.png)
 
-## Configurations Tree
-
-Here is the structure of configurations.
+## Configurations Structure
 
 ### Shell
 
