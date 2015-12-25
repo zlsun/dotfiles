@@ -1,10 +1,14 @@
 # dotfiles
 
-My personal configurations for Archlinux.
+My personal configurations for Arch Linux.
 
-## Install
+## Installation
 
-```bash
+Your can use following script to install all configurations.
+However, because this repository contains many personal settings, installing directly may cause some problems.
+I recommend you just use this repository as a reference to create your own configurations.
+
+```shell
 git clone --recursive https://github.com/zlsun/dotfiles.git
 cd dotfiles && ./install
 ```
@@ -12,10 +16,12 @@ cd dotfiles && ./install
 ## Screenshots
 
 ![](http://i.imgur.com/hqyqIHg.png)
-\* You can find wallpaper [here](https://www.reddit.com/r/i3wm/comments/3hqkst/solarized_i3_wallpaper_1080p/).
+\* You can find then wallpaper [here](https://www.reddit.com/r/i3wm/comments/3hqkst/solarized_i3_wallpaper_1080p/).
 ![](http://i.imgur.com/WkgDF10.png)
 
 ## Configurations Tree
+
+Here is the structure of configurations.
 
 ### Shell
 
@@ -72,7 +78,7 @@ cd dotfiles && ./install
 [rofi-pass](https://github.com/carnager/rofi-pass)
 - [config/rofi-pass/](config/rofi-pass/)
 
-### X
+### X Window System
 
 [X11](http://www.x.org)
 - [files/xinitrc](files/xinitrc)
@@ -89,12 +95,12 @@ cd dotfiles && ./install
 [Terminator](http://gnometerminator.blogspot.com/p/introduction.html)
 - [config/terminator/](config/terminator/)
 
-#### Download
+#### Download utility
 
 [aria2](http://aria2.sourceforge.net)
 - [config/aria2/](config/aria2/)
 
-#### IME
+#### Input Method Editor
 
 [fcitx](https://fcitx-im.org)
 - [config/fcitx/](config/fcitx/)
@@ -112,7 +118,7 @@ cd dotfiles && ./install
 [PMS](https://ambientsound.github.io/pms/)
 - [config/pms/](config/pms/)
 
-#### PDF Reader
+#### Document Reader
 
 [zathura](https://pwmt.org/projects/zathura/)
 - [config/zathura/](config/zathura/)
@@ -121,4 +127,9 @@ cd dotfiles && ./install
 
 [gimplecal](http://dmedvinsky.github.io/gsimplecal/)
 - [config/gsimplecal/](config/gsimplecal/)
+
+### Misc
+
+[Artistic Style](http://astyle.sourceforge.net/)
+- [files/astylerc](files/astylerc)
 
