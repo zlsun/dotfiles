@@ -85,6 +85,7 @@ Plugin 'xolox/vim-misc'
 Plugin 'xolox/vim-session'
 
 " Utils
+Plugin 'Shebang'
 Plugin 'szw/vim-g'
 Plugin 'qpkorr/vim-renamer'
 Plugin 'lilydjwg/fcitx.vim'
@@ -189,6 +190,11 @@ Plugin 'elzr/vim-json'
 Plugin 'briancollins/vim-jst'
 Plugin 'pangloss/vim-javascript'
 Plugin 'kchmck/vim-coffee-script'
+
+"" Vue.js
+Plugin 'posva/vim-vue'
+Plugin 'digitaltoad/vim-jade'
+Plugin 'wavded/vim-stylus'
 
 "" Haskell
 " Plugin 'dag/vim2hs'
@@ -468,28 +474,14 @@ com! -complete=file -nargs=+ Shell call s:RunShellCommand(<q-args>)
 "                               Autocommands                               "
 " ======================================================================== "
 
-" Most prefer to automatically switch to the current file directory when a new
-" buffer is opened.
-au BufEnter * if bufname("") !~ "^\[A-Za-z0-9\]*://|sudo:"
-           \|     lcd %:p:h
-           \| endif
-
 " Instead of reverting the cursor to the last position in the buffer, we
 " set it to the first line when editing a git commit message
 au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
 
-" Set scripts to be executable from the shell
-func! Chmod(file)
-    if getline(1) =~ "^#!.*/bin/"
-        silent !chmod +x a:file
-    endif
-endfunc
-" au BufWritePost * call Chmod(<afile>)
-
-aug reload_vimrc
+aug ReloadVimrc
     au!
-    au FileWritePost .vimrc source %
-    au FileWritePost vimrc source %
+    au BufWritePost .vimrc source %
+    au BufWritePost vimrc source %
 aug END
 
 " Remove trailing whitespaces and ^M chars
@@ -501,13 +493,16 @@ au FileType txt,markdown set wrap
 au FileType haskell,puppet,ruby,yml setlocal expandtab shiftwidth=2 softtabstop=2
 " preceding line best in a plugin but here for now.
 " Workaround vim-commentary for Haskell
-au FileType haskell setlocal commentstring=--\ %s
+" au FileType haskell setlocal commentstring=--\ %s
 " Workaround broken color highlighting in Haskell
 au FileType haskell,rust setlocal nospell
 
-" Set filetypes
+au FileType python set makeprg=python\ %
+au FileType c      set makeprg=gcc\ %\ -o\ %:r\ -g\ -std=c11
+au FileType cpp    set makeprg=g++\ %\ -o\ %:r\ -g\ -std=c++1y
+
+" Set filetype
 au BufNewFile,BufRead *.html.twig set filetype=html.twig
-au BufNewFile,BufRead *.coffee    set filetype=coffee
 au BufNewFile,BufRead *.asm       set filetype=nasm
 au BufNewFile,BufRead *.inc       set filetype=nasm
 au BufNewFile,BufRead *.zsh-theme set filetype=zsh
@@ -569,8 +564,8 @@ vnoremap D y`>p`[v`]
 nnoremap Y y$
 
 " Map Q to replace
-nmap Q :%s///g<Left><Left><Left>
-vmap Q :s///g<Left><Left><Left>
+nmap Q :%s```g<Left><Left><Left>
+vmap Q :s```g<Left><Left><Left>
 
 " Allow using the repeat operator with a visual selection (!)
 " http://stackoverflow.com/a/8064607/127816
@@ -673,8 +668,8 @@ map <Leader>tc :tabclose<CR>
 map <Leader>th :tabfirst<CR>
 map <Leader>tj :tabprevious<CR>
 
-map      <F5> :!./%<CR>
-imap    <F5> <Esc>:!./%<CR>
+map  <F5> :w<CR>:call SetExecutable()<CR>:!%:p<CR>
+imap <F5> <Esc><F5>
 
 map      <F6> :<C-U>make!<CR>
 map    <S-F6> :<C-U>make!<space>
@@ -789,7 +784,7 @@ if s:has_bundle('vim-colors-solarized')
     let g:solarized_termtrans = 1
     let g:solarized_contrast = "normal"
     let g:solarized_visibility = "normal"
-    color solarized              " Load a colorscheme
+    color solarized
     hi MatchParen cterm=bold ctermbg=red ctermfg=white
     hi clear SignColumn   " SignColumn should match background
     hi clear CursorLineNr " Remove highlight color from current line number
@@ -970,10 +965,9 @@ endif
 
 if s:has_bundle('vim-autoformat')
     nnoremap <Leader>f :Autoformat<CR>
-    " let g:formatdef_my_clangformat = "'clang-format -lines='.a:firstline.':'.a:lastline.' --assume-filename='.bufname('%').' -style=\"{BasedOnStyle: WebKit, AlignTrailingComments: true, '.(&textwidth ? 'ColumnLimit: '.&textwidth.', ' : '').(&expandtab ? 'UseTab: Never, IndentWidth: '.&shiftwidth : 'UseTab: Always').'}\"'"
-    let g:formatdef_my_astyle_c = '"astyle --mode=c --style=java -pcH".(&expandtab ? "s".&shiftwidth : "t")'
+    let g:formatdef_my_astyle_c = '"astyle --mode=c -pcH".(&expandtab ? "s".&shiftwidth : "t")'
     let g:formatters_c = ['my_astyle_c']
-    let g:formatdef_my_astyle_cpp = '"astyle --mode=c --style=java -pcH".(&expandtab ? "s".&shiftwidth : "t")'
+    let g:formatdef_my_astyle_cpp = '"astyle --mode=c -pcH".(&expandtab ? "s".&shiftwidth : "t")'
     let g:formatters_cpp = ['my_astyle_cpp']
 endif
 

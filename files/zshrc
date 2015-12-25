@@ -39,6 +39,7 @@ if ! zgen saved; then
         Neki/fasd
         rimraf/k
         chrissicool/zsh-256color
+        # horosgrisa/mysql-colorize
 
         zsh-users/zsh-syntax-highlighting
         zsh-users/zsh-completions src
@@ -75,15 +76,15 @@ bindkey -M vicmd 'j' history-substring-search-down
 AUTOSUGGESTION_HIGHLIGHT_COLOR='fg=11'
 AUTOSUGGESTION_HIGHLIGHT_CURSOR=0
 
+autoload znt-history-widget
+zle -N znt-history-widget
+bindkey "^R" znt-history-widget
+
 # Enable autosuggestions automatically.
 zle-line-init() {
     zle autosuggest-start
 }
 zle -N zle-line-init
-
-autoload znt-history-widget
-zle -N znt-history-widget
-bindkey "^R" znt-history-widget
 
 # ======================== User configuration ==========================
 
@@ -228,19 +229,6 @@ toggle-help-command-line() {
 }
 zle -N toggle-help-command-line
 bindkey "\eh" toggle-help-command-line
-
-# if exists percol; then
-#     function percol_select_history() {
-#         local tac
-#         exists gtac && tac="gtac" || { exists tac && tac="tac" || { tac="tail -r" } }
-#         BUFFER=$(fc -l -n 1 | eval $tac | percol --query "$LBUFFER")
-#         CURSOR=$#BUFFER         # move cursor
-#         zle -R -c               # refresh
-#     }
-#
-#     zle -N percol_select_history
-#     bindkey '^R' percol_select_history
-# fi
 
 # Aliases
 
@@ -390,21 +378,24 @@ alias sgf='apt-file search'
 
 # ya* -> yaourt
 alias    yaq='yaourt -Q'
+alias   yadt='yaourt -Qdt'
 alias   yaqe='yaourt -Qe'
-alias  yaqem='yaourt -Qem'
+alias   yaqi='yaourt -Qi'
+alias   yaqk='yaourt -Qk'
 alias   yaql='yaourt -Ql'
 alias   yaqm='yaourt -Qm'
-alias   yaqi='yaourt -Qi'
-alias  yaqii='yaourt -Qii'
+alias   yaqo='yaourt -Qo'
 alias   yaqs='yaourt -Qs'
+alias  yaqem='yaourt -Qem'
+alias  yaqii='yaourt -Qii'
 alias    yar='yaourt -R'
 alias   yars='yaourt -Rs'
 alias  yarsn='yaourt -Rsn'
 alias    yas='yaourt -S'
 alias   yasi='yaourt -Si'
-alias  yasii='yaourt -Sii'
 alias   yass='yaourt -Ss'
 alias   yasy='yaourt -Sy'
+alias  yasii='yaourt -Sii'
 alias  yasyu='yaourt -Syu'
 alias  yasyy='yaourt -Syy'
 alias yasyua='yaourt -Syua'
