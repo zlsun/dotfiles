@@ -6,7 +6,7 @@ My personal configurations for Arch Linux.
 
 Your can use following script to install all configurations.
 However, because this repository contains many personal settings, installing directly may cause some problems.
-I recommend you just use this repository as a reference to create your own configurations.
+I recommend you to use this repository as a reference to create your own configurations.
 
 ```shell
 git clone --recursive https://github.com/zlsun/dotfiles.git
@@ -130,4 +130,8 @@ cd dotfiles && ./install
 
 [Artistic Style](http://astyle.sourceforge.net/)
 - [files/astylerc](files/astylerc)
+
+## License
+
+[MIT License](LICENSE)
 
