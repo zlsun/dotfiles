@@ -128,9 +128,8 @@ Plugin 'scrooloose/syntastic'
 Plugin 'aperezdc/vim-template'
 Plugin 'Chiel92/vim-autoformat'
 Plugin 'johnsyweb/vim-makeshift'
-if executable('ctags')
-    Plugin 'majutsushi/tagbar'
-endif
+Plugin 'editorconfig/editorconfig-vim'
+Plugin 'majutsushi/tagbar'
 
 " Git
 Plugin 'mattn/gist-vim'
@@ -202,7 +201,7 @@ Plugin 'wavded/vim-stylus'
 " Plugin 'eagletmt/neco-ghc'
 " Plugin 'bitc/vim-hdevtools'
 " Plugin 'eagletmt/ghcmod-vim'
-" Plugin 'Twinside/vim-haskellFold'
+Plugin 'Twinside/vim-haskellFold'
 " Plugin 'Twinside/vim-haskellConceal'
 Plugin 'lukerandall/haskellmode-vim'
 
@@ -221,7 +220,7 @@ call vundle#end()
 " Add an UnBundle command
 func! UnBundle(arg, ...)
     let bundle = vundle#config#init_bundle(a:arg, a:000)
-    call fiiter(g:vundle#bundles, 'v:val["name_spec"] != "' . a:arg . '"')
+    call fiiter(g:vundle#bundles, 'v:val["name_spec"] != "'.a:arg.'"')
 endfunc
 
 com! -nargs=+ UnBundle call UnBundle(<args>)
@@ -302,7 +301,7 @@ set tags=./tags;/,~/.vimtags
 " Make tags placed in .git/tags file available in all levels of a repository
 let gitroot = substitute(system('git rev-parse --show-toplevel'), '[\n\r]', '', 'g')
 if gitroot != ''
-    let &tags = &tags . ',' . gitroot . '/.git/tags'
+    let &tags = &tags.','.gitroot.'/.git/tags'
 endif
 
 " Add exclusions to mkview and loadview
@@ -332,7 +331,8 @@ set tabpagemax=15           " Only show 15 tabs
 " Custom invisibles
 set list
 set listchars=tab:›\ ,trail:•,extends:❯,precedes:❮,nbsp:.
-set showbreak=↪\ \ 
+let &showbreak='↪ '
+set breakindent
 
 if has('cmdline_info')
     set ruler   " Show the ruler
@@ -393,33 +393,33 @@ func! InitializeDirectories()
     endif
 
     if exists('g:consolidated_directory')
-        let common_dir = g:consolidated_directory . prefix
+        let common_dir = g:consolidated_directory.prefix
     else
-        let common_dir = parent . '/.' . prefix
+        let common_dir = parent.'/.'.prefix
     endif
 
     for [dirname, settingname] in items(dir_list)
-        let directory = common_dir . dirname . '/'
+        let directory = common_dir.dirname.'/'
         if exists("*mkdir")
             if !isdirectory(directory)
                 call mkdir(directory, "p")
             endif
         endif
         if !isdirectory(directory)
-            echo "Warning: Unable to create backup directory: " . directory
-            echo "Try: mkdir -p " . directory
+            echo "Warning: Unable to create backup directory: ".directory
+            echo "Try: mkdir -p ".directory
         else
             let directory = substitute(directory, " ", "\\\\ ", "g")
-            exec "set " . settingname . "=" . directory
+            exec "set ".settingname."=".directory
         endif
     endfor
 
-    let viminfo = common_dir . 'info'
-    exec "set viminfo+=n" . viminfo
+    let viminfo = common_dir.'info'
+    exec "set viminfo+=n".viminfo
 
 endfunc
 
-let g:consolidated_directory = $HOME . '/.vim/'
+let g:consolidated_directory = $HOME.'/.vim/'
 call InitializeDirectories()
 
 
@@ -462,7 +462,7 @@ func! s:RunShellCommand(cmdline)
 
     call setline(1, a:cmdline)
     call setline(2, substitute(a:cmdline, '.', '=', 'g'))
-    execute 'silent $read !' . escape(a:cmdline, '%#')
+    execute 'silent $read !'.escape(a:cmdline, '%#')
     setlocal nomodifiable
     1
 endfunc
@@ -497,9 +497,10 @@ au FileType haskell,puppet,ruby,yml setlocal expandtab shiftwidth=2 softtabstop=
 " Workaround broken color highlighting in Haskell
 au FileType haskell,rust setlocal nospell
 
-au FileType python set makeprg=python\ %
-au FileType c      set makeprg=gcc\ %\ -o\ %:r\ -g\ -std=c11
-au FileType cpp    set makeprg=g++\ %\ -o\ %:r\ -g\ -std=c++1y
+au FileType python   let &makeprg='python %'
+au FileType c        let &makeprg='gcc % -o %:r -g -std=c11 && %:p:r'
+au FileType cpp      let &makeprg='g++ % -o %:r -g -std=c++1y && %:p:r'
+au FileType haskell,lhaskell let &makeprg='runhaskell %'
 
 " Set filetype
 au BufNewFile,BufRead *.html.twig set filetype=html.twig
@@ -583,7 +584,7 @@ vnoremap < <gv
 vnoremap > >gv
 
 " Fullscreen mode for GVIM and Terminal, need 'wmctrl' in you PATH
-map <silent> <F11> :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
+map <silent> <F11> :call system("wmctrl -ir ".v:windowid." -b toggle,fullscreen")<CR>
 
 " The following two lines conflict with moving to top and
 " bottom of the screen
@@ -600,12 +601,12 @@ vnoremap <A-k> :m '<-2<CR>gv
 
 " Easier moving in tabs and windows
 " The lines conflict with the default digraph mapping of <C-K>
-map <C-J> <C-W>j
-map <C-K> <C-W>k
-map <C-L> <C-W>l
-map <C-H> <C-W>h
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-l> <C-W>l
+map <C-h> <C-W>h
 
-inoremap <C-Z> <Esc><C-Z>i
+inoremap <C-Z> <C-O><C-Z>
 
 inoremap <C-CR> <C-O>o
 inoremap <C-S-CR> <C-O>O
@@ -631,7 +632,7 @@ map <Leader>cf :<C-U>%y+<CR>
 map <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
 
 " Display all lines with keyword under cursor and ask which one to jump to
-nmap <Leader>ff [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
+nmap <Leader>ff [I:let nr = input("Which one: ")<Bar>exe "normal ".nr."[\t"<CR>
 
 " Code folding options
 nmap <leader>f0 :set foldlevel=0<CR>
@@ -647,9 +648,6 @@ nmap <leader>f9 :set foldlevel=9<CR>
 
 " Render selected text with Jinja2
 vmap <Leader>rd :!envtpl<CR>
-
-" Source current file
-" map <Leader>so :source %<CR>
 
 " Some helpers to edit mode
 " http://vimcasts.org/e/14
@@ -668,18 +666,21 @@ map <Leader>tc :tabclose<CR>
 map <Leader>th :tabfirst<CR>
 map <Leader>tj :tabprevious<CR>
 
-map  <F5> :w<CR>:call SetExecutable()<CR>:!%:p<CR>
-imap <F5> <Esc><F5>
+map   <F5> :w<CR>:call SetExecutable()<CR>:!%:p<CR>
+map <S-F5> :w<CR>:call SetExecutable()<CR>:!%:p<space>
 
-map      <F6> :<C-U>make!<CR>
-map    <S-F6> :<C-U>make!<space>
-map <Leader>b :<C-U>make!<CR>
-map <Leader>B :<C-U>make!<space>
+imap   <F5> <Esc><F5>
+imap <S-F5> <Esc><S-F5>
 
-imap    <F6> <Esc>:<C-U>make!<CR>
-imap  <S-F6> <Esc>:<C-U>make!<space>
-imap <C-S-B> <Esc>:<C-U>make!<space>
-imap   <C-B> <Esc>:<C-U>make!<CR>
+map      <F6> :w<CR>:<C-U>make!<CR>
+map    <S-F6> :w<CR>:<C-U>make!<space>
+map <Leader>b <F6>
+map <Leader>B <S-F6>
+
+imap    <F6> <Esc>
+imap  <S-F6> <Esc><S-F6>
+imap   <C-B> <Esc><Leader>b
+imap <C-S-B> <Esc><Leader>B
 
 " If the current buffer has never been saved, it will have no name, call the
 " file browser to save it, otherwise just save it. see:
@@ -709,7 +710,7 @@ func! ToggleSpell()
     if g:spell_lang_index == 0
         setlocal nospell
     else
-        execute "setlocal spell spelllang=" . get(g:spell_lang_list, g:spell_lang_index)
+        execute "setlocal spell spelllang=".get(g:spell_lang_list, g:spell_lang_index)
     endif
     echo "spell checking language:" g:spell_lang_list[g:spell_lang_index]
 endfunc
@@ -738,9 +739,9 @@ func! WrapRelativeMotion(key, ...)
         let vis_sel = "gv"
     endif
     if &wrap
-        execute "normal!" vis_sel . "g" . a:key
+        execute "normal!" vis_sel."g".a:key
     else
-        execute "normal!" vis_sel . a:key
+        execute "normal!" vis_sel.a:key
     endif
 endfunc
 
@@ -767,8 +768,8 @@ vnoremap <silent> ^      :<C-U>call WrapRelativeMotion("^", 1)<CR>
 " ======================================================================== "
 
 func! s:has_bundle(name)
-    if !isdirectory(expand("~/.vim/bundle/" . a:name))
-        echo a:name . " is not installed, run :VundleInstall to install"
+    if !isdirectory(expand("~/.vim/bundle/".a:name))
+        echo a:name." is not installed, run :VundleInstall to install"
         return 0
     endif
     return 1
@@ -845,7 +846,7 @@ if s:has_bundle('nerdtree')
     let NERDTreeMouseMode = 2
     let NERDTreeShowHidden = 1
     let NERDTreeKeepTreeInNewTab = 1
-    let NERDTreeBookmarksFile = $HOME . '/.vim/NERDTreeBookmarks'
+    let NERDTreeBookmarksFile = $HOME.'/.vim/NERDTreeBookmarks'
     let g:NERDShutUp = 1
     let g:nerdtree_tabs_open_on_gui_startup = 0
 endif
@@ -910,7 +911,7 @@ endif
 
 if s:has_bundle('vim-session')
     nmap <leader>so :OpenSession<CR>
-    nmap <leader>ss :SaveSession 
+    nmap <leader>ss :SaveSession<space>
     nmap <leader>sd :DeleteSession<CR>
     nmap <leader>sc :CloseSession<CR>
     let g:session_persist_globals = ['&makeprg', '&makeef']
@@ -964,7 +965,9 @@ if s:has_bundle('vim-template')
 endif
 
 if s:has_bundle('vim-autoformat')
-    nnoremap <Leader>f :Autoformat<CR>
+    nmap <Leader>f :Autoformat<CR>
+    vmap <Leader>f :Autoformat<CR>
+    let g:autoformat_autoindent = 0
     let g:formatdef_my_astyle_c = '"astyle --mode=c -pcH".(&expandtab ? "s".&shiftwidth : "t")'
     let g:formatters_c = ['my_astyle_c']
     let g:formatdef_my_astyle_cpp = '"astyle --mode=c -pcH".(&expandtab ? "s".&shiftwidth : "t")'
@@ -972,14 +975,10 @@ if s:has_bundle('vim-autoformat')
 endif
 
 if s:has_bundle('vim-makeshift')
-    map      <F6> :<C-U>MakeshiftBuild<CR>
-    map    <S-F6> :<C-U>MakeshiftBuild<space>
-    map <Leader>b :<C-U>MakeshiftBuild<CR>
-    map <Leader>B :<C-U>MakeshiftBuild<space>
-    imap    <F6> <Esc>:<C-U>MakeshiftBuild<CR>
-    imap  <S-F6> <Esc>:<C-U>MakeshiftBuild<space>
-    imap <C-S-B> <Esc>:<C-U>MakeshiftBuild<space>
-    imap   <C-B> <Esc>:<C-U>MakeshiftBuild<CR>
+    " map      <F6> :<C-U>MakeshiftBuild<CR>
+    " map    <S-F6> :<C-U>MakeshiftBuild<space>
+    " map <Leader>b :<C-U>MakeshiftBuild<CR>
+    " map <Leader>B :<C-U>MakeshiftBuild<space>
 endif
 
 if s:has_bundle('tabular')
@@ -991,6 +990,8 @@ if s:has_bundle('tabular')
     vmap <Leader>a=     :Tabularize /=<CR>
     nmap <Leader>a=>    :Tabularize /=><CR>
     vmap <Leader>a=>    :Tabularize /=><CR>
+    nmap <Leader>a->    :Tabularize /-><CR>
+    vmap <Leader>a->    :Tabularize /-><CR>
     nmap <Leader>a:     :Tabularize /:<CR>
     vmap <Leader>a:     :Tabularize /:<CR>
     nmap <Leader>a::    :Tabularize /:\zs<CR>
@@ -1005,6 +1006,8 @@ if s:has_bundle('tabular')
     vmap <Leader>a''    :Tabularize /'\zs<CR>
     nmap <Leader>a"     :Tabularize /"<CR>
     vmap <Leader>a"     :Tabularize /"<CR>
+    nmap <Leader>a\     :Tabularize /\<CR>
+    vmap <Leader>a\     :Tabularize /\<CR>
     nmap <Leader>a<Bar> :Tabularize /<Bar><CR>
     vmap <Leader>a<Bar> :Tabularize /<Bar><CR>
 endif
@@ -1068,7 +1071,7 @@ endif
 
 if s:completer == 'snipmate' && s:has_bundle('vim-snipmate')
     " Setting the author var
-    let g:snips_author = s:your_name . ' <' . s:your_email . '>'
+    let g:snips_author = s:your_name.' <'.s:your_email.'>'
 
 elseif s:completer == 'youcompleteme' && s:has_bundle('YouCompleteMe')
     let g:acp_enableAtStartup = 0
@@ -1112,8 +1115,8 @@ elseif s:completer == 'neocomplete' && s:has_bundle('neocomplete.vim')
     " Define dictionary.
     let g:neocomplete#sources#dictionary#dictionaries = {
                 \ 'default' : '',
-                \ 'vimshell' : $HOME . '/.vimshell_hist',
-                \ 'scheme' : $HOME . '/.gosh_completions'
+                \ 'vimshell' : $HOME.'/.vimshell_hist',
+                \ 'scheme' : $HOME.'/.gosh_completions'
                 \ }
 
     " Define keyword.
@@ -1145,7 +1148,7 @@ elseif s:completer == 'neocomplete' && s:has_bundle('neocomplete.vim')
         if pumvisible()
             if neosnippet#expandable()
                 let exp = "\<Plug>(neosnippet_expand)"
-                return exp . neocomplete#close_popup()
+                return exp.neocomplete#close_popup()
             else
                 return neocomplete#close_popup()
             endif
@@ -1220,8 +1223,8 @@ elseif s:completer == 'neocomplcache' && s:has_bundle('neocomplcache.vim')
     " Define dictionary.
     let g:neocomplcache_dictionary_filetype_lists = {
                 \ 'default' : '',
-                \ 'vimshell' : $HOME . '/.vimshell_hist',
-                \ 'scheme' : $HOME . '/.gosh_completions'
+                \ 'vimshell' : $HOME.'/.vimshell_hist',
+                \ 'scheme' : $HOME.'/.gosh_completions'
                 \ }
 
     " Define keyword.
@@ -1250,7 +1253,7 @@ elseif s:completer == 'neocomplcache' && s:has_bundle('neocomplcache.vim')
             if neosnippet#expandable()
                 echo "expandable"
                 let exp = "\<Plug>(neosnippet_expand)"
-                return exp . neocomplcache#close_popup()
+                return exp.neocomplcache#close_popup()
             else
                 return neocomplcache#close_popup()
             endif

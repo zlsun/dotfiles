@@ -27,7 +27,6 @@ if ! zgen saved; then
         robbyrussell/oh-my-zsh plugins/pep8
         robbyrussell/oh-my-zsh plugins/pip
         robbyrussell/oh-my-zsh plugins/python
-        robbyrussell/oh-my-zsh plugins/sublime
         robbyrussell/oh-my-zsh plugins/virtualenv
         robbyrussell/oh-my-zsh plugins/virtualenvwrapper
         robbyrussell/oh-my-zsh plugins/web-search
@@ -90,6 +89,10 @@ zle -N zle-line-init
 
 # Functions
 
+exists() {
+    type $1 &> /dev/null
+}
+
 find-duplicate() {
     local dir=${1:-.}
     find $dir -type f -print0                   \
@@ -107,7 +110,7 @@ top-commands() {
         | head $*
 }
 
-pacman-reinstall-all-packages() {
+reinstall-all-packages() {
     comm -23 <(pacman -Qeq) <(pacman -Qmq) | pacman -S -
     comm -23 <(pacman -Qdq) <(pacman -Qmq) | pacman -S --asdeps -
 }
@@ -143,9 +146,21 @@ fawk() {
     awk "{print \$${1}}"
 }
 
+kill-match() {
+    pgrep -f $* | xargs sudo kill -9
+}
+
 vimrename() {
     local dir=${1:-.}
     vim -c "cd $dir|Renamer"
+}
+
+who-open() {
+    xdg-mime query default `xdg-mime query filetype $1`
+}
+
+set-open() {
+    xdg-mime default `xdg-mime query filetype $1`
 }
 
 enable-proxy() {
@@ -156,10 +171,6 @@ enable-proxy() {
 disable-proxy() {
     unset http_proxy
     unset https_proxy
-}
-
-exists() {
-    type $1 &> /dev/null
 }
 
 # ZSH
@@ -255,6 +266,7 @@ alias wh='which'
 alias info='info --vi-key'
 alias help='man'
 alias unexport='unset'
+alias open='$XOPEN'
 
 # commands with options
 alias grep='grep --color'

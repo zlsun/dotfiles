@@ -238,6 +238,8 @@ for_window [title="Terminator首选项"]           floating enable
 for_window [title="^chrome-extension:"]         floating enable
 for_window [title="任务管理器 - Google Chrome"] floating enable
 
+exec --no-startup-id ~/.i3/autostart.sh
+
 exec --no-startup-id ~/.i3/disable-standby-fs.py
 exec --no-startup-id ~/.i3/focus-last.py
 bindsym Mod1+Tab exec --no-startup-id ~/.i3/focus-last.py --switch
@@ -249,6 +251,5 @@ exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace 9 --command zeal
 exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace $ws0 --command telegram
 
 exec --no-startup-id ~/.fehbg
-exec --no-startup-id ~/.i3/autostart.sh
 exec --no-startup-id terminator -l i3
 
