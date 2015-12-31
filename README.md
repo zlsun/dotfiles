@@ -16,7 +16,7 @@ cd dotfiles && ./install
 ## Screenshots
 
 ![](http://i.imgur.com/hqyqIHg.png)
-\* You can find then wallpaper [here](https://www.reddit.com/r/i3wm/comments/3hqkst/solarized_i3_wallpaper_1080p/).
+\* You can find the wallpaper [here](https://www.reddit.com/r/i3wm/comments/3hqkst/solarized_i3_wallpaper_1080p/).
 ![](http://i.imgur.com/WkgDF10.png)
 
 ## Configurations Structure
