@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+UDATA_PATH=~/.cache/UnicodeData.txt
+UDATA_URL=ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt
+
+if [ ! -f $UDATA_PATH ]; then
+    wget $UDATA_URL -O $UDATA_PATH
+fi
+
+line=$(cat $UDATA_PATH | rofi -dmenu -i -p 'Unicode:')
+if [ ! -z "$line" ]; then
+    uni=$(cut -f 1 -d ';' <<< "$line")
+    chr=$(echo -e "\u$uni")
+    xdotool type $chr
+fi

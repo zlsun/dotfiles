@@ -43,4 +43,5 @@ then
 fi
 
 echo ".."
-ls
+ls --group-directories-first --color=never --indicator-style=slash
+

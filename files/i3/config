@@ -91,13 +91,21 @@ bindsym $mod+Shift+0 move container to workspace $ws0
 bindsym $mod+equal move scratchpad
 bindsym $mod+minus scratchpad show
 
-bindsym $mod+d     exec --no-startup-id rofi -show run
-bindsym $mod+q     exec --no-startup-id SHELL=/bin/sh j4-dmenu-desktop --dmenu="rofi -dmenu -i -p '' "
-bindsym $mod+Tab   exec --no-startup-id rofi -show window
-bindsym $mod+grave exec --no-startup-id rofi -switchers "file:$HOME/.bin/rofi-file-browser" -show file
-bindsym $mod+F1    exec --no-startup-id clerk
-bindsym $mod+F2    exec --no-startup-id rofi-surfraw
-bindsym $mod+F3    exec --no-startup-id rofi-pass
+# Rofi
+bindsym $mod+d       exec --no-startup-id rofi -show run
+bindsym $mod+q       exec --no-startup-id SHELL=/bin/sh j4-dmenu-desktop --dmenu="rofi -dmenu -i -p '' "
+bindsym $mod+Tab     exec --no-startup-id rofi -show window
+
+bindsym $mod+grave   exec --no-startup-id rofi -switchers "file:$HOME/.bin/rofi-file-browser" -show file
+
+bindsym $mod+u       exec --no-startup-id ~/.bin/rofi-unicode
+
+bindsym $mod+p       exec --no-startup-id ~/.bin/rofi-monitor-layout
+bindsym $mod+Shift+p exec --no-startup-id ~/.bin/rofi-randr
+
+bindsym $mod+F1      exec --no-startup-id clerk
+bindsym $mod+F2      exec --no-startup-id rofi-surfraw
+bindsym $mod+F3      exec --no-startup-id rofi-pass
 
 # Audio controls
 set $send_signal pkill -SIGRTMIN+10 i3blocks
@@ -171,6 +179,9 @@ mode "resize" {
     bindsym Shift+j resize grow   height  1 px or  1 ppt
     bindsym Shift+k resize shrink height  1 px or  1 ppt
     bindsym Shift+l resize grow   width   1 px or  1 ppt
+
+    bindsym m       resize set 1 1
+
     # back to normal: Enter or Escape
     bindsym Return mode "default"
     bindsym Escape mode "default"

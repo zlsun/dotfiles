@@ -74,6 +74,7 @@ Plugin 'kshenoy/vim-signature'
 " Navigators
 Plugin 'mbbill/undotree'
 Plugin 'scrooloose/nerdtree'
+Plugin 't9md/vim-nerdtree_plugin_collections'
 Plugin 'jistr/vim-nerdtree-tabs'
 Plugin 'dyng/ctrlsf.vim'
 Plugin 'ctrlpvim/ctrlp.vim'
@@ -122,14 +123,15 @@ Plugin 'tpope/vim-abolish'
 Plugin 'reedes/vim-litecorrect'
 
 " Coding
+Plugin 'majutsushi/tagbar'
 Plugin 'godlygeek/tabular'
+Plugin 'thinca/vim-localrc'
 Plugin 'tomtom/tcomment_vim'
 Plugin 'scrooloose/syntastic'
 Plugin 'aperezdc/vim-template'
 Plugin 'Chiel92/vim-autoformat'
 Plugin 'johnsyweb/vim-makeshift'
 Plugin 'editorconfig/editorconfig-vim'
-Plugin 'majutsushi/tagbar'
 
 " Git
 Plugin 'mattn/gist-vim'
@@ -421,19 +423,6 @@ endfunc
 
 let g:consolidated_directory = $HOME.'/.vim/'
 call InitializeDirectories()
-
-
-func! NERDTreeInitAsNeeded()
-    redir => bufoutput
-    buffers!
-    redir END
-    let idx = stridx(bufoutput, "NERD_tree")
-    if idx > -1
-        NERDTreeMirror
-        NERDTreeFind
-        wincmd l
-    endif
-endfunc
 
 
 func! StripTrailingWhitespace()
@@ -849,6 +838,19 @@ if s:has_bundle('nerdtree')
     let NERDTreeBookmarksFile = $HOME.'/.vim/NERDTreeBookmarks'
     let g:NERDShutUp = 1
     let g:nerdtree_tabs_open_on_gui_startup = 0
+endif
+
+if s:has_bundle('vim-nerdtree_plugin_collections')
+    let g:loaded_nerdtree_plugin_local_mapping = 1
+    " let g:loaded_nerdtree_plugin_ctags = 1
+    let g:loaded_nerdtree_plugin_easymove = 1
+    " let g:loaded_nerdtree_plugin_getpath = 1
+    let g:loaded_nerdtree_plugin_gotags = 1
+    " let g:loaded_nerdtree_plugin_localrc = 1
+    " let g:loaded_nerdtree_plugin_open = 1
+    let g:loaded_nerdtree_plugin_unite = 1
+    let g:loaded_nerdtree_plugin_vimfiler = 1
+    let g:loaded_nerdtree_plugin_vimshell = 1
 endif
 
 if s:has_bundle('undotree')

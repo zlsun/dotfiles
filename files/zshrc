@@ -160,7 +160,7 @@ who-open() {
 }
 
 set-open() {
-    xdg-mime default `xdg-mime query filetype $1`
+    xdg-mime default $2 `xdg-mime query filetype $1`
 }
 
 enable-proxy() {
@@ -256,6 +256,7 @@ alias h='history'
 alias g='git'
 alias q='exit'
 alias v='vim'
+alias cx='chmod +x'
 alias ec='echo'
 alias fk='eval $(thefuck $(fc -ln -1))' # thefuck <https://github.com/nvbn/thefuck>
 alias gg='git gui'
@@ -389,6 +390,7 @@ alias sgs='apt-cache search'
 alias sgf='apt-file search'
 
 # ya* -> yaourt
+alias    yat='yaourt'
 alias    yaq='yaourt -Q'
 alias   yadt='yaourt -Qdt'
 alias   yaqe='yaourt -Qe'
@@ -416,7 +418,7 @@ alias    yau='yaourt -U'
 alias    yac='yaourt -C'
 alias    yab='yaourt -B'
 alias    yag='yaourt -G'
-alias    yat='yaourt --stats'
+alias    yaa='yaourt --stats'
 
 # how* -> howdoi <https://github.com/gleitz/howdoi>
 alias howdoi='howdoi -c'

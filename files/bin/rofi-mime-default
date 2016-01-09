@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+dmenu='rofi -dmenu -i'
+
+mimes=$(cd /usr/share/mime/; echo */*.xml | tr ' ' '\n')
+apps=$(find /usr/share/applications/ ~/.local/share/applications -name '*.desktop')
+
+mime=$(echo "$mimes" | $dmenu -p 'MIME:')
+mime=${mime%.*}
+[ -z "$mime" ] && exit
+
+app=$(echo "$apps" | $dmenu -p 'Application:')
+app=${app##*/}
+[ -z "$app" ] && exit
+
+cmd="xdg-mime default \"$app\" \"$mime\""
+sure=$(echo -e "Yes\nNo" | $dmenu -p "$cmd?")
+if [ $sure = 'Yes' ]; then
+    $cmd
+fi
+
