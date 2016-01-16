@@ -12,7 +12,7 @@ bindsym $mod+Return exec i3-sensible-terminal
 
 bindsym $mod+Shift+q kill
 # reload the configuration file
-bindsym $mod+Shift+c reload
+# bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
 
@@ -57,6 +57,7 @@ bindsym $mod+Shift+j move down
 bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
 bindsym $mod+c       move absolute position center
+bindsym $mod+Shift+c resize set 683 484, move absolute position center
 
 # workspace names
 set $ws0 🛪
@@ -95,14 +96,10 @@ bindsym $mod+minus scratchpad show
 bindsym $mod+d       exec --no-startup-id rofi -show run
 bindsym $mod+q       exec --no-startup-id SHELL=/bin/sh j4-dmenu-desktop --dmenu="rofi -dmenu -i -p '' "
 bindsym $mod+Tab     exec --no-startup-id rofi -show window
-
 bindsym $mod+grave   exec --no-startup-id rofi -switchers "file:$HOME/.bin/rofi-file-browser" -show file
-
 bindsym $mod+u       exec --no-startup-id ~/.bin/rofi-unicode
-
 bindsym $mod+p       exec --no-startup-id ~/.bin/rofi-monitor-layout
 bindsym $mod+Shift+p exec --no-startup-id ~/.bin/rofi-randr
-
 bindsym $mod+F1      exec --no-startup-id clerk
 bindsym $mod+F2      exec --no-startup-id rofi-surfraw
 bindsym $mod+F3      exec --no-startup-id rofi-pass
@@ -147,14 +144,14 @@ bindsym --release Mod1+Shift+Print exec --no-startup-id scrot $formated_png -d 5
 
 bindsym --release     $mod+Shift+a exec --no-startup-id deepin-screenshot
 
-# Mode: shutdown, reboot, lock screen
-set $Locker i3lock -d -e -c 000000 && sleep 1
+# System Mode: shutdown, reboot, lock screen
+set $locker i3lock -d -e -c 000000 && sleep 1
 set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (p) Poweroff
 mode "$mode_system" {
-    bindsym l exec --no-startup-id $Locker,                        mode "default"
+    bindsym l exec --no-startup-id $locker,                        mode "default"
     bindsym e exec --no-startup-id i3-msg exit,                    mode "default"
-    bindsym s exec --no-startup-id $Locker && systemctl suspend,   mode "default"
-    bindsym h exec --no-startup-id $Locker && systemctl hibernate, mode "default"
+    bindsym s exec --no-startup-id $locker && systemctl suspend,   mode "default"
+    bindsym h exec --no-startup-id $locker && systemctl hibernate, mode "default"
     bindsym r exec --no-startup-id systemctl reboot,               mode "default"
     bindsym p exec --no-startup-id systemctl poweroff -i,          mode "default"
     # back to normal: Enter or Escape
@@ -164,30 +161,39 @@ mode "$mode_system" {
 bindsym $mod+Shift+e mode "$mode_system"
 bindsym $mod+semicolon exec --no-startup-id $Locker
 
-# Mode: resize window (you can also use the mouse for that)
+# Resize Mode: resize float window
 mode "resize" {
-    # These bindings trigger as soon as you enter the resize mode
     bindsym h       resize shrink width  10 px or 10 ppt
     bindsym j       resize grow   height 10 px or 10 ppt
     bindsym k       resize shrink height 10 px or 10 ppt
     bindsym l       resize grow   width  10 px or 10 ppt
-    bindsym Ctrl+h  resize shrink width  30 px or 30 ppt
-    bindsym Ctrl+j  resize grow   height 30 px or 30 ppt
-    bindsym Ctrl+k  resize shrink height 30 px or 30 ppt
-    bindsym Ctrl+l  resize grow   width  30 px or 30 ppt
-    bindsym Shift+h resize shrink width   1 px or  1 ppt
-    bindsym Shift+j resize grow   height  1 px or  1 ppt
-    bindsym Shift+k resize shrink height  1 px or  1 ppt
-    bindsym Shift+l resize grow   width   1 px or  1 ppt
+    bindsym Shift+h resize shrink width  30 px or 30 ppt
+    bindsym Shift+j resize grow   height 30 px or 30 ppt
+    bindsym Shift+k resize shrink height 30 px or 30 ppt
+    bindsym Shift+l resize grow   width  30 px or 30 ppt
+    bindsym Ctrl+h  resize shrink width   1 px or  1 ppt
+    bindsym Ctrl+j  resize grow   height  1 px or  1 ppt
+    bindsym Ctrl+k  resize shrink height  1 px or  1 ppt
+    bindsym Ctrl+l  resize grow   width   1 px or  1 ppt
 
-    bindsym m       resize set 1 1
+    bindsym m resize set    1   1, move absolute position center
+    bindsym 1 resize set  136  76, move absolute position center
+    bindsym 2 resize set  273 153, move absolute position center
+    bindsym 3 resize set  409 230, move absolute position center
+    bindsym 4 resize set  546 307, move absolute position center
+    bindsym 5 resize set  683 384, move absolute position center
+    bindsym 6 resize set  819 460, move absolute position center
+    bindsym 7 resize set  956 537, move absolute position center
+    bindsym 8 resize set 1092 614, move absolute position center
+    bindsym 9 resize set 1229 691, move absolute position center
+    bindsym 0 resize set 1366 768, move absolute position center
 
-    # back to normal: Enter or Escape
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
 bindsym $mod+r mode "resize"
 
+# Escape Mode: disable all shortcut except $mod+Escape
 mode "escape" {
     bindsym $mod+Escape mode "default"
 }

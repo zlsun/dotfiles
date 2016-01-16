@@ -2,20 +2,25 @@
 
 dmenu='rofi -dmenu -i'
 
-mimes=$(cd /usr/share/mime/; echo */*.xml | tr ' ' '\n')
+mimes=$(cat /usr/share/mime/types)
 apps=$(find /usr/share/applications/ ~/.local/share/applications -name '*.desktop')
 
-mime=$(echo "$mimes" | $dmenu -p 'MIME:')
-mime=${mime%.*}
-[ -z "$mime" ] && exit
+while true; do
+    mime=$(echo "$mimes" | $dmenu -p 'MIME:')
+    [ -z "$mime" ] && exit
 
-app=$(echo "$apps" | $dmenu -p 'Application:')
-app=${app##*/}
-[ -z "$app" ] && exit
+    orig=$(xdg-mime query default $mime)
 
-cmd="xdg-mime default \"$app\" \"$mime\""
-sure=$(echo -e "Yes\nNo" | $dmenu -p "$cmd?")
-if [ $sure = 'Yes' ]; then
-    $cmd
-fi
+    app=$(echo "$apps" | $dmenu -filter "$orig" -p 'Application:')
+    app=${app##*/}
+    [ -z "$app" ] && exit
+
+    cmd="xdg-mime default $app $mime"
+    sure=$(echo -e "No\nYes\nExit" | $dmenu -p "$cmd?")
+    if [ $sure = 'Exit' ]; then
+        exit
+    elif [ $sure = 'Yes' ]; then
+        $cmd
+    fi
+done
 

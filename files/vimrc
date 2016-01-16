@@ -377,6 +377,15 @@ else
     endif
 endif
 
+" let g:solarized_termcolors = 256
+let g:solarized_termtrans = 1
+let g:solarized_contrast = "normal"
+let g:solarized_visibility = "normal"
+color solarized
+hi MatchParen cterm=bold ctermbg=red ctermfg=white
+hi clear SignColumn   " SignColumn should match background
+hi clear CursorLineNr " Remove highlight color from current line number
+
 " ======================================================================== "
 "                                Functions                                 "
 " ======================================================================== "
@@ -389,17 +398,14 @@ func! InitializeDirectories()
                 \ 'views': 'viewdir',
                 \ 'swap': 'directory',
                 \ }
-
     if has('persistent_undo')
         let dir_list['undo'] = 'undodir'
     endif
-
     if exists('g:consolidated_directory')
         let common_dir = g:consolidated_directory.prefix
     else
         let common_dir = parent.'/.'.prefix
     endif
-
     for [dirname, settingname] in items(dir_list)
         let directory = common_dir.dirname.'/'
         if exists("*mkdir")
@@ -415,12 +421,9 @@ func! InitializeDirectories()
             exec "set ".settingname."=".directory
         endif
     endfor
-
     let viminfo = common_dir.'info'
     exec "set viminfo+=n".viminfo
-
 endfunc
-
 let g:consolidated_directory = $HOME.'/.vim/'
 call InitializeDirectories()
 
@@ -572,13 +575,16 @@ nnoremap gp `[v`]
 vnoremap < <gv
 vnoremap > >gv
 
+noremap / ms/
+noremap ? ms?
+
 " Fullscreen mode for GVIM and Terminal, need 'wmctrl' in you PATH
 map <silent> <F11> :call system("wmctrl -ir ".v:windowid." -b toggle,fullscreen")<CR>
 
 " The following two lines conflict with moving to top and
 " bottom of the screen
-map <S-H> gT
-map <S-L> gt
+map <silent> <S-H> :bnext<CR>
+map <silent> <S-L> :bprevious<CR>
 
 " move line up and down
 nnoremap <A-j> :m .+1<CR>
@@ -590,12 +596,18 @@ vnoremap <A-k> :m '<-2<CR>gv
 
 " Easier moving in tabs and windows
 " The lines conflict with the default digraph mapping of <C-K>
-map <C-j> <C-W>j
-map <C-k> <C-W>k
-map <C-l> <C-W>l
-map <C-h> <C-W>h
+noremap <C-J> <C-W>j
+noremap <C-K> <C-W>k
+noremap <C-L> <C-W>l
+noremap <C-H> <C-W>h
+
+noremap <C-Q> ZZ
+inoremap <C-Q> <C-O>ZZ
 
 inoremap <C-Z> <C-O><C-Z>
+
+inoremap <C-A> <Esc>I
+inoremap <C-E> <Esc>A
 
 inoremap <C-CR> <C-O>o
 inoremap <C-S-CR> <C-O>O
@@ -620,8 +632,45 @@ map <Leader>cf :<C-U>%y+<CR>
 " Find merge conflict markers
 map <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
 
-" Display all lines with keyword under cursor and ask which one to jump to
-nmap <Leader>ff [I:let nr = input("Which one: ")<Bar>exe "normal ".nr."[\t"<CR>
+nmap <Leader>ff :execute "vimgrep /".@/."/g %"<CR>:copen<CR>
+
+" q to close quickfix
+autocmd BufReadPost quickfix nnoremap q :bd<CR><C-O>
+
+function! HiInterestingWord(n)
+    " Save our location.
+    normal! mz
+    " Yank the current word into the z register.
+    normal! "zyiw
+    " Calculate an arbitrary match ID.  Hopefully nothing else is using it.
+    let mid = 86750 + a:n
+    " Clear existing matches, but don't worry if they don't exist.
+    silent! call matchdelete(mid)
+    " Construct a literal pattern that has to match at boundaries.
+    let pat = '\V\<' . escape(@z, '\') . '\>'
+    " Actually match the words.
+    call matchadd("InterestingWord" . a:n, pat, 1, mid)
+    " Move back to our original location.
+    normal! `z
+endfunction
+
+" Add highlighting
+nnoremap <silent> <leader>h1 :call HiInterestingWord(1)<CR>
+nnoremap <silent> <leader>h2 :call HiInterestingWord(2)<CR>
+nnoremap <silent> <leader>h3 :call HiInterestingWord(3)<CR>
+nnoremap <silent> <leader>h4 :call HiInterestingWord(4)<CR>
+nnoremap <silent> <leader>d3 :call matchdelete(86753)<CR>
+nnoremap <silent> <leader>d4 :call matchdelete(86754)<CR>
+nnoremap <silent> <leader>d5 :call matchdelete(86755)<CR>
+nnoremap <silent> <leader>d6 :call matchdelete(86756)<CR>
+nnoremap <silent> <leader>hd :call clearmatches()<CR>
+
+hi def InterestingWord1 guifg=#000000 ctermfg=16 guibg=#ffa724 ctermbg=214
+hi def InterestingWord2 guifg=#000000 ctermfg=16 guibg=#aeee00 ctermbg=154
+hi def InterestingWord3 guifg=#000000 ctermfg=16 guibg=#8cffba ctermbg=121
+hi def InterestingWord4 guifg=#000000 ctermfg=16 guibg=#b88853 ctermbg=137
+hi def InterestingWord5 guifg=#000000 ctermfg=16 guibg=#ff9eb8 ctermbg=211
+hi def InterestingWord6 guifg=#000000 ctermfg=16 guibg=#ff2c4b ctermbg=195
 
 " Code folding options
 nmap <leader>f0 :set foldlevel=0<CR>
@@ -687,10 +736,8 @@ inoremap <silent> <C-S> <C-O>:Update<CR>
 
 " Spell Check
 " see: http://vim.wikia.com/wiki/Toggle_spellcheck_with_function_keys
-
 let g:spell_lang_index = 0
 let g:spell_lang_list = ["nospell","en"]
-
 func! ToggleSpell()
     let g:spell_lang_index = g:spell_lang_index + 1
     if g:spell_lang_index >= len(g:spell_lang_list)
@@ -703,7 +750,6 @@ func! ToggleSpell()
     endif
     echo "spell checking language:" g:spell_lang_list[g:spell_lang_index]
 endfunc
-
 nmap <silent> <F7> :call ToggleSpell()<CR>
 imap <silent> <F7> <C-O>: call ToggleSpell()<CR>
 
@@ -716,7 +762,6 @@ func! ToggleHexView()
     endif
     let b:in_hex_view = !b:in_hex_view
 endfunc
-
 nmap <silent> <F8> :call ToggleHexView()<CR>
 
 " End/Start of line motion keys act relative to row/wrap width in the presence
@@ -733,7 +778,6 @@ func! WrapRelativeMotion(key, ...)
         execute "normal!" vis_sel.a:key
     endif
 endfunc
-
 " Map g* keys in Normal, Operator-pending, and Visual+select
 noremap <silent> $       :call WrapRelativeMotion("$")<CR>
 noremap <silent> <End>   :call WrapRelativeMotion("$")<CR>
@@ -767,17 +811,6 @@ endfunc
 if s:has_bundle('ack.vim')
     cmap ack Ack
     let g:ackhighlight = 1
-endif
-
-if s:has_bundle('vim-colors-solarized')
-    " let g:solarized_termcolors = 256
-    let g:solarized_termtrans = 1
-    let g:solarized_contrast = "normal"
-    let g:solarized_visibility = "normal"
-    color solarized
-    hi MatchParen cterm=bold ctermbg=red ctermfg=white
-    hi clear SignColumn   " SignColumn should match background
-    hi clear CursorLineNr " Remove highlight color from current line number
 endif
 
 if s:has_bundle('vim-airline')
@@ -922,7 +955,7 @@ if s:has_bundle('vim-session')
 endif
 
 if s:has_bundle('vim-multiple-cursors')
-    vmap // :MultipleCursorsFind<space>
+    map // :MultipleCursorsFind<space>
 endif
 
 if s:has_bundle('wildfire.vim')

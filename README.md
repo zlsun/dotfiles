@@ -93,16 +93,6 @@ cd dotfiles && ./install
 [Terminator](http://gnometerminator.blogspot.com/p/introduction.html)
 - [config/terminator/](config/terminator/)
 
-#### Download utility
-
-[aria2](http://aria2.sourceforge.net)
-- [config/aria2/](config/aria2/)
-
-#### Input Method Editor
-
-[fcitx](https://fcitx-im.org)
-- [config/fcitx/](config/fcitx/)
-
 #### File Manager
 
 [ranger](http://ranger.nongnu.org)

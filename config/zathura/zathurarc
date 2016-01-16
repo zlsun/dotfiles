@@ -1,5 +1,13 @@
 set font "sans-serif 11"
 
+map u navigate previous
+map d navigate next
+
+map c recolor
+
+map x toggle_page_mode
+
+map n toggle_statusbar
 map ; toggle_inputbar
 
 map _ adjust_window best-fit

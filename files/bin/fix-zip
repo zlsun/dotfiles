@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 zip-file-to-fix"
+    exit
+fi
+
+log() {
+    printf "\e[1;31m[%s]\e[0m\t%s\n" "$1" "$2"
+}
+
+check_error() {
+    if [ "$?" != "0" ]; then
+        echo "$1" 1>&2
+        exit 1
+    fi
+}
+
+fix() {
+    tmp=/tmp/fz$RANDOM
+    path=$(realpath "$1")
+    dir=$(dirname "$path")
+    file=$(basename "$path")
+
+    log "mkdir" "$tmp"
+    mkdir -p "$tmp"
+    check_error "Cannot create directory: $tmp"
+
+    log "unzip" "$path"
+    unzip -qq -O GBK "$path" -d "$tmp"
+    check_error "Cannot unzip $path"
+
+    (
+        cd "$tmp"
+
+        log "zip" "$file"
+        zip -q -r "$file" *
+        check_error "Cannot create $file in $tmp"
+
+        log "mv" "$file -> $dir"
+        mv -f "$file" "$dir"
+        check_error "Cannot move $file -> $dir"
+    )
+
+    log "rm" "$tmp"
+    rm "$tmp" -rf
+    check_error "Cannot remove directory $tmp"
+}
+
+while (( "$#" )); do
+    fix "$1"
+    shift
+done
+

@@ -190,6 +190,9 @@ zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f
 # Ctrl-Z: switch to foreground
 bindkey -s '^Z' '^q fg\n'
 
+# Ctrl+O: open ranger
+bindkey -s '^O' '^q ranger\n'
+
 # Ctrl+Enter: execute suggesstion provided by zsh-autosuggestions
 bindkey '^J' autosuggest-execute-suggestion
 
@@ -260,6 +263,7 @@ alias cx='chmod +x'
 alias ec='echo'
 alias fk='eval $(thefuck $(fc -ln -1))' # thefuck <https://github.com/nvbn/thefuck>
 alias gg='git gui'
+alias rg='ranger'
 alias sv='s v'
 alias wh='which'
 
