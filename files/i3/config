@@ -238,6 +238,8 @@ bar {
     }
 }
 
+for_window [class="Terminator"] border pixel 1
+
 for_window [window_role="pop-up"]               floating enable
 for_window [window_role="bubble"]               floating enable
 for_window [window_role="task_dialog"]          floating enable
@@ -262,7 +264,7 @@ exec --no-startup-id ~/.i3/focus-last.py
 bindsym Mod1+Tab exec --no-startup-id ~/.i3/focus-last.py --switch
 
 # exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace 1 --command "terminator -l i3"
-exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace 2 --command google-chrome-unstable
+exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace 2 --command google-chrome-stable
 exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace 8 --command "terminator -e 'TERM=xterm-256color ranger'"
 exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace 9 --command zeal
 exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace $ws0 --command telegram

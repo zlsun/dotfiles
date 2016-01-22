@@ -1,9 +1,16 @@
+
+Xft.antialias: 1
+Xft.autohint: 0
+Xft.hinting: 1
+Xft.hintstyle: hintfull
+Xft.lcdfilter: lcdlight
+Xft.rgba: rgb
+
 ! Solarized color scheme for the X Window System
 !
 ! http://ethanschoonover.com/solarized
 
 ! Common
-
 #define S_yellow  #b58900
 #define S_orange  #cb4b16
 #define S_red     #dc322f
@@ -14,7 +21,6 @@
 #define S_green   #859900
 
 ! Dark
-
 #define S_base03  #002b36
 #define S_base02  #073642
 #define S_base01  #586e75

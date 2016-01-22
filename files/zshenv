@@ -10,6 +10,7 @@ export PATH=${JAVA_HOME}:${JAVA_HOME}/bin:${JAVA_HOME}/lib:${JRE_HOME}/bin:$PATH
 
 # Android SDK
 export ANDROID_SDK_ROOT=$DEV_HOME/android/sdk
+export ANDROID_HOME=$ANDROID_SDK_ROOT
 export PATH=$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/tools:$PATH
 
 # Android NDK
@@ -59,6 +60,7 @@ export EDITOR=vim
 export PAGER=less
 export XOPEN=gvfs-open
 export BROWSER=$XOPEN
+export LESS='-FX'
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"

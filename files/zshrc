@@ -119,7 +119,7 @@ bgit() {
     local color='\e[1;31m'
     local reset='\e[0m'
     local echo_cmd="echo -e '${color}[{}]$reset'"
-    local git_cmd="git --git-dir={}/.git --work-tree={} $*"
+    local git_cmd="git --git-dir={}/.git --work-tree={} -c color.ui=always $*"
     local cmd="$echo_cmd && $git_cmd"
     printf "%s\n" */ | cut -d'/' -f1 | xargs -I '{}' sh -c $cmd
 }
@@ -128,18 +128,24 @@ pgit() {
     local color='\e[1;31m'
     local reset='\e[0m'
     local echo_cmd="echo -e '${color}[{}]$reset'"
-    local git_cmd="git --git-dir={}/.git --work-tree={} $*"
+    local git_cmd="git --git-dir={}/.git --work-tree={} -c color.ui=always $*"
     local cmd="$echo_cmd && $git_cmd"
     printf "%s\n" */ | cut -d'/' -f1 | parallel $cmd
 }
 
-ptyless() {
-    zmodload zsh/zpty
-    zpty ptyless ${1+"$@"}            # ptyless, name of pty
-    zpty -r ptyless > /tmp/ptyless.$$ # Write to file, just dunno why pipeline doesn't work fine here
-    less /tmp/ptyless.$$
-    rm -f /tmp/ptyless.$$
-    zpty -d ptyless                   # remove used pty
+ptyrun () {
+  local ptyname=pty-$$
+  zmodload zsh/zpty
+  zpty $ptyname ${1+"$@"}
+  if [[ ! -t 1 ]]; then
+    setopt local_traps
+    trap '' INT
+  fi
+  zpty -r $ptyname
+  zpty -d $ptyname
+}
+ptyless () {
+  ptyrun $@ | less
 }
 
 fawk() {

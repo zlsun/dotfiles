@@ -1,2 +1,2 @@
-SURFRAW_graphical_browser=/usr/bin/google-chrome-unstable
+SURFRAW_graphical_browser=/usr/bin/gvfs-open
 SURFRAW_graphical=yes
