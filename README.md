@@ -121,7 +121,3 @@ cd dotfiles && ./install
 [Artistic Style](http://astyle.sourceforge.net/)
 - [files/astylerc](files/astylerc)
 
-## License
-
-[MIT License](LICENSE)
-
