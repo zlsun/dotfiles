@@ -1,0 +1,338 @@
+#!/usr/bin/env python
+
+import subprocess
+import json
+
+from path import Path
+import sh
+from sh import xdg_mime
+
+from lib.log import *
+disable_log()
+
+from lib.rofi import *
+from lib.config import config
+
+ROFM_RC = '~/.config/rofm/rc'
+BACK = '<<<'
+UP = '..'
+
+USER_HOME = Path('~').expanduser()
+
+
+@config(ROFM_RC)
+class Config:
+    open_cmd = 'xdg-open'
+    terminal_cmd = 'i3-sensible-terminal'
+    last_path = '~'
+    last_idx = 0
+    show_hidden = False
+    bookmarks = []
+    width = 800
+    key_bindings = {
+        'show_bookmarks': 'SuperL+b',
+        'up_folder': 'SuperL+BackSpace',
+        'toggle_mark': 'Control+m',
+        'toggle_hidden': 'Alt+h',
+        'toggle_bookmark': 'Alt+b',
+        'exec_item': 'Control+Return',
+        'quit': 'SuperL+grave',
+        'delete': 'Delete',
+        'touch': 'Alt+f',
+        'mkdir': 'Alt+n',
+        'show_context_menu': 'Shift+Return',
+    }
+    applications_folders = [
+        '/usr/share/applications/',
+        '~/.local/share/applications'
+    ]
+
+
+def listdir(p):
+    ds = p.dirs()
+    fs = p.files()
+    ds.sort()
+    fs.sort()
+    return ds + fs
+
+
+def is_executable(p):
+    return p.stat().st_mode & 0o100 > 0
+
+
+def shorten(path, max_length=30):
+    postfix = '/' if path.isdir() and not path == '/' else ''
+    if path.startswith(USER_HOME):
+        path = Path('~' + path[len(USER_HOME):])
+    short = path + postfix
+    # if too long, shorten it
+    if len(short) > max_length:
+        root, *ps = path.splitall()
+        # if more than one part, try to shorten previous parts
+        if len(ps) > 1:
+            # try to shorten each part except last to one character
+            for i in range(len(ps) - 1):
+                ps[i] = ps[i][0]
+                short = root.joinpath(*ps) + postfix
+                # if short enough, stop
+                if len(short) < max_length:
+                    break
+        # if still longer than max_length, cut it
+        if len(short) > max_length:
+            short = '…' + short[-max_length + 1:]
+    assert len(short) <= max_length
+    return short
+
+
+def p_open(p):
+    # sh.Command(Config.open_cmd)(p) # FIXME: not work
+    subprocess.call([Config.open_cmd, p])
+
+
+def p_exec(p):
+    # sh.Command(Config.open_cmd)(p) # FIXME: not work
+    subprocess.call([p])
+
+
+def p_delete(p):
+    if p.isdir():
+        p.rmtree()
+    elif p.isfile():
+        p.remove()
+    return True
+
+
+class Entry(Item):
+
+    def __init__(self):
+        super().__init__()
+
+
+class Main(View):
+
+    def __init__(self):
+        super().__init__()
+        self.path = Path(Config.last_path).expand()
+        self.width = Config.width
+        self.selected_row = Config.last_idx
+        self.active = []
+
+    def _get_paths(self):
+        paths = [] if self.path == '/' else [self.path]
+        try:
+            for p in listdir(self.path):
+                if p.basename().startswith('.') and not Config.show_hidden:
+                    continue
+                paths.append(p)
+        except PermissionError:
+            pass
+        return paths
+
+    def _to_str(self, path):
+        if path == self.path:
+            return UP
+        s = path.basename()
+        if path.isdir():
+            s += "/"
+        return s
+
+    def get_list(self):
+        return list(map(self._to_str, self._get_paths()))
+
+    def up(self, p):
+        prev_path = self.path
+        self.path = p
+        for i, d in enumerate(self.get_list()):
+            if (p / d).normpath() == prev_path:
+                self.selected_row = i
+
+    def get_selected_path(self, sel):
+        p = self.path
+        if sel != UP:
+            p = (p / sel).normpath()
+        return p
+
+    @View.bind('close')
+    def on_close(self):
+        Config.last_path = self.path
+        Config.last_idx = self.selected_row
+
+    @View.bind('show')
+    def on_show(self):
+        self.prompt = shorten(self.path)
+        if self.path in Config.bookmarks:
+            self.prompt = '🔖 ' + self.prompt
+
+    @View.bind('select')
+    def on_select(self, idx, sel):
+        p = (self.path / sel).normpath()
+        if p.isdir():
+            if sel == UP:
+                self.up(p)
+            else:
+                self.selected_row = 0
+                self.path = p
+            self.active = []
+        else:
+            p_open(p)
+            self.close()
+
+    @View.bind(Config.key_bindings['show_bookmarks'])
+    def show_bookmarks(self, idx, sel):
+        def collapse(p):
+            # if p.startswith(USER_HOME):
+            #     p = '~' + p[len(USER_HOME):]
+            return p
+        lst = [BACK] + [collapse(p) for p in Config.bookmarks]
+        sel, code = rofi(lst, 'Bookmarks:')
+        if code == Code.SELECT:
+            if sel != BACK:
+                self.path = Path(sel)
+                self.selected_row = 0
+
+    @View.bind(Config.key_bindings['up_folder'])
+    def up_folder(self, idx, sel):
+        pp = (self.path / UP).normpath()
+        self.up(pp)
+
+    @View.bind(Config.key_bindings['toggle_mark'])
+    def toggle_mark(self, idx, sel):
+        if idx == 0:
+            return
+        if idx in self.active:
+            self.active.remove(idx)
+        else:
+            self.active.append(idx)
+        self.selected_row = idx + 1
+
+    @View.bind(Config.key_bindings['toggle_hidden'])
+    def toggle_hidden(self, idx, sel):
+        Config.show_hidden = not Config.show_hidden
+
+    @View.bind(Config.key_bindings['toggle_bookmark'])
+    def toggle_bookmark(self, idx, sel):
+        p = str(self.path)
+        if self.path in Config.bookmarks:
+            Config.bookmarks.remove(p)
+        else:
+            Config.bookmarks.append(p)
+
+    @View.bind(Config.key_bindings['exec_item'])
+    def exec_item(self, idx, sel):
+        p = self.get_selected_path(sel)
+        if p.isdir():
+            p_open(p)
+        elif is_executable(p):
+            p_exec(p)
+        self.close()
+
+    @View.bind(Config.key_bindings['quit'])
+    def action_quit(self, idx, sel):
+        self.close()
+
+    @View.bind(Config.key_bindings['delete'])
+    def action_delete(self, idx, sel):
+        p = self.get_selected_path(sel)
+        if rofi.yesno('Delete {}?'.format(shorten(p))):
+            if p_delete(p) and self.path == p:
+                self.path = self.path.parent
+
+    @View.bind(Config.key_bindings['mkdir'])
+    def action_mkdir(self, idx, sel):
+        name = ''
+        msg = ''
+        while 1:
+            prompt = 'New folder: {}'.format(shorten(self.path))
+            name = rofi.input(prompt, name, msg=msg)
+            if not name:
+                break
+            pp = (self.path / name).normpath()
+            if pp.exists():
+                msg = '{} already exists!'.format(shorten(pp))
+                continue
+            pp.mkdir_p()
+            break
+
+    @View.bind(Config.key_bindings['touch'])
+    def action_touch(self, idx, sel):
+        name = ''
+        msg = ''
+        while 1:
+            prompt = 'Touch file: {}'.format(shorten(self.path))
+            name = rofi.input(prompt, name, msg=msg)
+            if not name:
+                break
+            pp = (self.path / name).normpath()
+            if pp.exists():
+                msg = '{} already exists!'.format(shorten(pp))
+                continue
+            pp.touch()
+            break
+
+    @View.bind(Config.key_bindings['show_context_menu'])
+    def show_context_menu(self, idx, sel):
+        p = self.get_selected_path(sel)
+        texts = {
+            'back': BACK,
+            'open': 'Open',
+            'openw': 'Open With...',
+            'rename': 'Rename...',
+            'delete': 'Delete...',
+            'mkdir': 'New Folder...',
+            'touch': 'Touch File...',
+            'term': 'Open Terminal Here'
+        }
+        menu = 'back|open,openw,rename,delete|mkdir,touch,term'
+        act = rofi.menu(menu, texts, '{}:'.format(shorten(p)))
+        if act == 'open':
+            p_open(p)
+        elif act == 'openw':
+            mime = xdg_mime.query.filetype(p).splitlines()[0]
+            app = xdg_mime.query.default(mime).splitlines()[0]
+            apps = sum((Path(d).expand().files('*.desktop')
+                        for d in Config.applications_folders), [])
+            apps = [d.basename() for d in apps]
+            set_as_def = False
+            while 1:
+                options = {
+                    'kb1': 'Alt+s',
+                    'msg': R'<span color=\"{}\"><tt>{}</tt></span> '
+                           R'<u>S</u>et as default appliction'.format(
+                               'green' if set_as_def else 'red',
+                               '✓' if set_as_def else '❌'),
+                    'selected_row': apps.index(app) if app in apps else 0,
+                }
+                app, code = rofi(apps, 'Open With:', **options)
+                if code == Code.CANCEL:
+                    break
+                if code == Code.SELECT:
+                    if set_as_def:
+                        xdg_mime.default(app, mime)
+                    # gtk_launch(app, p) # FIXME: not work
+                    subprocess.call(['gtk-launch', app, p])
+                    self.close()
+                    break
+                elif code == Code.KB[0]:
+                    set_as_def = not set_as_def
+        elif act == 'rename':
+            name = rofi.input('Rename To:', p.basename())
+            if name:
+                p.rename(p.parent / name)
+        elif act == 'delete':
+            action_delete(self, idx, sel)
+        elif act == 'mkdir':
+            action_mkdir(self, idx, sel)
+        elif act == 'touch':
+            action_touch(self, idx, sel)
+        elif act == 'term':
+            with sh.pushd(self.path):
+                sh.Command(Config.terminal_cmd)()
+            self.close()
+
+
+def main():
+    m = Main()
+    m.run()
+
+if __name__ == "__main__":
+    main()

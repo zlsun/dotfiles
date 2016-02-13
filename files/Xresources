@@ -31,11 +31,24 @@ Xft.rgba: rgb
 #define S_base3   #fdf6e3
 
 ! rofi
-rofi.foreground:  S_base0
-rofi.background:  S_base03
-rofi.highlightfg: S_base2
-rofi.highlightbg: S_blue
-rofi.bordercolor: S_base0
-rofi.font: monospace 12
-rofi.opacity: 90
+
+rofi.fg:            S_base0
+rofi.bg:            S_base03
+rofi.bgalt:         S_base03
+rofi.hlfg:          S_base2
+rofi.hlbg:          S_blue
+
+rofi.fg-active:     S_yellow
+rofi.bg-active:     S_base03
+rofi.hlfg-active:   S_base2
+rofi.hlbg-active:   S_yellow
+
+rofi.fg-urgent:     S_red
+rofi.bg-urgent:     S_base03
+rofi.hlfg-urgent:   S_base2
+rofi.hlbg-urgent:   S_red
+
+rofi.bc:            S_base1
+rofi.font:          monospace 12
+rofi.opacity:       90
 

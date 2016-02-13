@@ -494,6 +494,8 @@ au FileType c        let &makeprg='gcc % -o %:r -g -std=c11 && %:p:r'
 au FileType cpp      let &makeprg='g++ % -o %:r -g -std=c++1y && %:p:r'
 au FileType haskell,lhaskell let &makeprg='runhaskell %'
 
+au FileType xdefaults let &makeprg='xrdb %'
+
 " Set filetype
 au BufNewFile,BufRead *.html.twig set filetype=html.twig
 au BufNewFile,BufRead *.asm       set filetype=nasm
@@ -1116,9 +1118,9 @@ elseif s:completer == 'youcompleteme' && s:has_bundle('YouCompleteMe')
     let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
 
     " remap Ultisnips for compatibility for YCM
-    let g:UltiSnipsExpandTrigger = '<C-j>'
-    let g:UltiSnipsJumpForwardTrigger = '<C-j>'
-    let g:UltiSnipsJumpBackwardTrigger = '<C-k>'
+    let g:UltiSnipsExpandTrigger = '<C-J>'
+    let g:UltiSnipsJumpForwardTrigger = '<C-J>'
+    let g:UltiSnipsJumpBackwardTrigger = '<C-K>'
 
     " Enable omni completion.
     au FileType css           setlocal omnifunc=csscomplete#CompleteCSS

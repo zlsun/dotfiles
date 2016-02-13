@@ -4,26 +4,34 @@
     format = "<b>%s %p</b>\n%b"
     sort = yes
     indicate_hidden = true
-    # geometry = "x5"
-    idle_threshold = 0
-    geometry = "300x5-20+20"
     alignment = center
-    show_age_threshold = 30
-    sticky_history = yes
-    follow = mouse
+    bounce_freq = 0
+    show_age_threshold = 60
     word_wrap = yes
+    ignore_newline = no
+    geometry = "300x5-20+20"
+    shrink = no
+    transparency = 0
+    idle_threshold = 120
+    monitor = 0
+    follow = mouse
+    sticky_history = yes
+    history_length = 20
+    show_indicators = yes
+    line_height = 0
     separator_height = 2
     padding = 10
     horizontal_padding = 10
     separator_color = frame
     startup_notification = false
-    dmenu = "/usr/bin/rofi -p dunst: -nb #FFFFFF -nf #000000 -sb #94DBFF -sf #000000"
+    dmenu = /usr/bin/rofi -dmenu -i -p dunst:
     browser = xdg-open
-
+    icon_position = off
+    icon_folders = /usr/share/icons/gnome/16x16/status/:/usr/share/icons/gnome/16x16/devices/
 
 [frame]
-    width = 3
-    color = "#000000"
+    width = 1
+    color = "#EEEEEE"
 
 [shortcuts]
     close = ctrl+space
@@ -32,17 +40,17 @@
     context =
 
 [urgency_low]
-    background = "#ffffff"
-    foreground = "#000000"
-    timeout = 30
+    background = "#485F6E"
+    foreground = "#EEEEEE"
+    timeout = 10
 
 [urgency_normal]
-    background = "#94DBFF"
-    foreground = "#000000"
-    timeout = 45
+    background = "#4C9698"
+    foreground = "#EEEEEE"
+    timeout = 10
 
 [urgency_critical]
-    background = "#ff9999"
+    background = "#ffAAAA"
     foreground = "#000000"
     timeout = 0
 

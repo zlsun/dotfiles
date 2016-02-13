@@ -1,4 +1,7 @@
 
+__pycache__/
+*.pyc
+
 files/i3/*
 !files/i3/config
 !files/i3/*.py

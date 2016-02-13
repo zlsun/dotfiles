@@ -1,15 +1,93 @@
-#!/usr/bin/env bash
+#!/usr/bin/env python
 
-UDATA_PATH=~/.cache/UnicodeData.txt
-UDATA_URL=ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt
+from os import system
+from subprocess import *
+from path import Path
+from sh import wget, xdotool
 
-if [ ! -f $UDATA_PATH ]; then
-    wget $UDATA_URL -O $UDATA_PATH
-fi
+from lib.log import *
+disable_log()
 
-line=$(cat $UDATA_PATH | rofi -dmenu -i -p 'Unicode:')
-if [ ! -z "$line" ]; then
-    uni=$(cut -f 1 -d ';' <<< "$line")
-    chr=$(echo -e "\u$uni")
-    xdotool type $chr
-fi
+from lib.rofi import *
+from lib.config import config
+
+UDATA_URL = 'ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt'
+UDATA_PATH = '~/.cache/UnicodeData.txt'
+PROCESSED_PATH = '~/.cache/UnicodeDataProcessed.txt'
+UNICODE_RC = '~/.config/rofi-unicode/rc'
+SEP = '│'
+
+
+@config(UNICODE_RC)
+class Config:
+    last_idx = 0
+    last_input = ''
+    width = 800
+    key_bindings = {
+        'type_whole_line': 'Control+Return',
+        'close': 'SuperL+u'
+    }
+
+
+udata = Path(UDATA_PATH).expanduser()
+processed = Path(PROCESSED_PATH).expanduser()
+
+if not udata.exists():
+    wget(UDATA_URL, O=UDATA_PATH)
+
+if not processed.exists():
+    with udata.open('r') as d, processed.open('w') as p:
+        for l in d:
+            s = l.split(';')
+            u = s[0]
+            c = chr(int(u, 16))
+            c = c.encode('u8', 'ignore').decode('u8')
+            c = c.translate(str.maketrans('\0\r\n', '␀␍␊'))
+            p.write('{}{}{}'.format(c, SEP, l.replace(';', SEP)))
+
+
+def main():
+    v = View(processed.text().split('\n'), 'Unicode:')
+    v.width = Config.width
+    v.selected_row = Config.last_idx
+    v.filter = Config.last_input
+
+    @v.bind('select')
+    def on_select(v, idx, sel):
+        Config.last_idx = idx
+        Config.last_input = ''
+        if sel[0] == SEP:
+            ch = SEP
+        else:
+            u = sel.split(SEP)[1]
+            ch = chr(int(u, 16))
+        xdotool.type(ch)
+        v.close()
+
+    @v.bind('input')
+    def on_input(v, inp):
+        Config.last_idx = -1
+        Config.last_input = inp
+        ch = chr(int(sel.strip(), 16))
+        xdotool.type(ch)
+        v.close()
+
+    @v.bind(Config.key_bindings['type_whole_line'])
+    def type_whole_line(v, idx, sel):
+        xdotool.type(sel)
+        v.close()
+
+    @v.bind(Config.key_bindings['close'])
+    def close(v, idx, sel):
+        if idx == -1:
+            Config.last_idx = -1
+            Config.last_input = sel
+        else:
+            Config.last_idx = idx
+            Config.last_input = ''
+        v.close()
+
+    v.run()
+
+if __name__ == "__main__":
+    main()

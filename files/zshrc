@@ -134,18 +134,18 @@ pgit() {
 }
 
 ptyrun () {
-  local ptyname=pty-$$
-  zmodload zsh/zpty
-  zpty $ptyname ${1+"$@"}
-  if [[ ! -t 1 ]]; then
-    setopt local_traps
-    trap '' INT
-  fi
-  zpty -r $ptyname
-  zpty -d $ptyname
+    local ptyname=pty-$$
+    zmodload zsh/zpty
+    zpty $ptyname ${1+"$@"}
+    if [[ ! -t 1 ]]; then
+        setopt local_traps
+        trap '' INT
+    fi
+    zpty -r $ptyname
+    zpty -d $ptyname
 }
 ptyless () {
-  ptyrun $@ | less
+    ptyrun $@ | less
 }
 
 fawk() {
@@ -167,6 +167,25 @@ who-open() {
 
 set-open() {
     xdg-mime default $2 `xdg-mime query filetype $1`
+}
+
+color-table() {
+    echo -ne "\e[4m │"
+    for j ($(seq 30 37)) echo -ne "$j "
+    echo
+    for i ($(seq 0 7)) do
+        echo -n "\e[0m$i│"
+        for j ($(seq 30 37)) do
+            echo -ne "\e[$i;${j}maB "
+        done
+        echo
+    done
+}
+
+watchon() {
+    local cmd=$1
+    shift
+    ls $* | entr sh -c $cmd
 }
 
 enable-proxy() {
@@ -196,10 +215,10 @@ zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f
 # Ctrl-Z: switch to foreground
 bindkey -s '^Z' '^q fg\n'
 
-# Ctrl+O: open ranger
+# Ctrl-O: open ranger
 bindkey -s '^O' '^q ranger\n'
 
-# Ctrl+Enter: execute suggesstion provided by zsh-autosuggestions
+# Ctrl-Enter: execute suggesstion provided by zsh-autosuggestions
 bindkey '^J' autosuggest-execute-suggestion
 
 bindkey -M menuselect 'h' vi-backward-char
@@ -319,9 +338,36 @@ alias  lrt='ls -1Fcrt'
 alias   m='make'
 alias  mr='make run'
 alias mcl='make clean'
-alias mrb='make rebuild'
+alias mrb='make clean && make'
+
+# cm* -> cmake
+_cm() {
+    root=$(pwd)
+    build_type=$1
+    shift
+    dir=build/$build_type
+    if [[ ! -e $dir ]]; then
+        mkdir -p $dir
+        (
+            cd $dir
+            cmake -DCMAKE_BUILD_TYPE=$build_type $root
+        )
+    fi
+    cmake --build $dir --target $*
+}
+
+alias   cm='_cm debug'
+alias  cmr='cm run'
+alias cmcl='cm clean'
+alias cmrb='cm clean && cm'
+
+alias   rcm='_cm release'
+alias  rcmr='rcm run'
+alias rcmcl='rcm clean'
+alias rcmrb='rcm clean && rcm'
 
 # py* -> python
+
 alias  py='python'
 alias py2='python2'
 alias py3='python3'
@@ -383,9 +429,9 @@ sudo_commands=(
   hybrid-sleep hibernate poweroff
   edit)
 
-for c in $user_commands; do; alias sc-$c="systemctl $c"; done
-for c in $sudo_commands; do; alias sc-$c="sudo systemctl $c"; done
-for c in $sudo_commands; do; alias scu-$c="systemctl --user $c"; done
+for c ($user_commands) alias sc-$c="systemctl $c"
+for c ($sudo_commands) alias sc-$c="sudo systemctl $c"
+for c ($sudo_commands) alias scu-$c="systemctl --user $c"
 
 # sg* -> apt-*
 alias sga='sudo apt-get autoremove'
@@ -457,15 +503,15 @@ alias o='fasd -a -B recently-used -e $XOPEN'
 if [ ${ZSH_VERSION//\./} -ge 420 ]; then
     # open browser on urls
     _browser_fts=(htm html de org net com at cx nl se dk dk php)
-    for ft in $_browser_fts ; do alias -s $ft=$XOPEN ; done
+    for ft ($_browser_fts) alias -s $ft=$XOPEN
 
     _editor_fts=(asc c cc cpp cxx h hh ini tex txt TXT)
-    for ft in $_editor_fts ; do alias -s $ft=$EDITOR ; done
+    for ft ($_editor_fts) alias -s $ft=$EDITOR
 
     _image_fts=(bmp gif jpg jpeg mng png tif tiff xpm)
     _media_fts=(ape avi flv mkv mov mp3 mpeg mpg ogg ogm rm wav webm)
     _doc_fts=(pdf doc docx xls xlsx ppt ps dvi chm djvu)
-    for ft in $_image_fts $_media_fts $_doc_fts ; do alias -s $ft=$XOPEN ; done
+    for ft ($_image_fts $_media_fts $_doc_fts) alias -s $ft=$XOPEN
 
     # list whats inside packed file
     alias -s zip="unzip -l"

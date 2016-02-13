@@ -8,41 +8,28 @@ hide_edge_borders both
 set $mod Mod4
 floating_modifier $mod
 
-bindsym $mod+Return exec i3-sensible-terminal
+bindsym --release button2 kill
 
 bindsym $mod+Shift+q kill
-# reload the configuration file
 # bindsym $mod+Shift+c reload
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
 
-# change container layout (stacked, tabbed, toggle split)
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 bindsym $mod+s layout stacking
 
-# split in horizontal orientation
 bindsym $mod+g split h
-# split in vertical orientation
 bindsym $mod+v split v
 
-bindsym $mod+t sticky toggle
-
-# enter fullscreen mode for the focused container
+bindsym $mod+t sticky     toggle
 bindsym $mod+f fullscreen toggle
+bindsym $mod+b border     toggle
 
-bindsym $mod+b border toggle
-
-# focus the parent container
 bindsym $mod+a focus parent
-# focus the child container
 bindsym $mod+z focus child
-# Jump to urgent window
 bindsym $mod+x [urgent=latest] focus
 
-# change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle
-# toggle tiling / floating
+bindsym $mod+space       focus mode_toggle
 bindsym $mod+Shift+space floating toggle
 
 # change focus
@@ -88,21 +75,25 @@ bindsym $mod+Shift+8 move container to workspace 8
 bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace $ws0
 
+bindsym $mod+Return exec i3-sensible-terminal
+
 # scratchpad
 bindsym $mod+equal move scratchpad
 bindsym $mod+minus scratchpad show
 
 # Rofi
-bindsym $mod+d       exec --no-startup-id rofi -show run
-bindsym $mod+q       exec --no-startup-id SHELL=/bin/sh j4-dmenu-desktop --dmenu="rofi -dmenu -i -p '' "
-bindsym $mod+Tab     exec --no-startup-id rofi -show window
-bindsym $mod+grave   exec --no-startup-id rofi -switchers "file:$HOME/.bin/rofi-file-browser" -show file
+exec --no-startup-id rofi -key-run SuperL+d -key-window SuperL+Tab
+bindsym $mod+q       exec --no-startup-id SHELL=/bin/sh j4-dmenu-desktop --dmenu="rofi -dmenu -i -p ''"
+bindsym $mod+grave   exec --no-startup-id ~/.bin/rofi-fileman
 bindsym $mod+u       exec --no-startup-id ~/.bin/rofi-unicode
 bindsym $mod+p       exec --no-startup-id ~/.bin/rofi-monitor-layout
 bindsym $mod+Shift+p exec --no-startup-id ~/.bin/rofi-randr
 bindsym $mod+F1      exec --no-startup-id clerk
 bindsym $mod+F2      exec --no-startup-id rofi-surfraw
 bindsym $mod+F3      exec --no-startup-id rofi-pass
+
+bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
+bindsym --release Num_Lock  exec pkill -SIGRTMIN+11 i3blocks
 
 # Audio controls
 set $send_signal pkill -SIGRTMIN+10 i3blocks
@@ -240,22 +231,25 @@ bar {
 
 for_window [class="Terminator"] border pixel 1
 
-for_window [window_role="pop-up"]               floating enable
-for_window [window_role="bubble"]               floating enable
-for_window [window_role="task_dialog"]          floating enable
-for_window [class="Gitk"]                       floating enable
-for_window [class="Git-gui"]                    floating enable
-for_window [class="Toplevel"]                   floating enable
-for_window [class="FeelUOwn"]                   floating enable
-for_window [class="Stardict"]                   floating enable
-for_window [class="Goldendict"]                 floating enable
-for_window [class="Gnome-alsamixer"]            floating enable
-for_window [class="Deepin-music-player"]        floating enable
-for_window [title="多个页面无响应"]             floating enable
-for_window [title="网络操作管理器"]             floating enable
-for_window [title="Terminator首选项"]           floating enable
-for_window [title="^chrome-extension:"]         floating enable
-for_window [title="任务管理器 - Google Chrome"] floating enable
+set $set_float floating enable, border normal 1
+
+for_window [window_role="pop-up"]               $set_float
+for_window [window_role="bubble"]               $set_float
+for_window [window_role="task_dialog"]          $set_float
+for_window [class="Gitk"]                       $set_float
+for_window [class="Git-gui"]                    $set_float
+for_window [class="Toplevel"]                   $set_float
+for_window [class="FeelUOwn"]                   $set_float
+for_window [class="Stardict"]                   $set_float
+for_window [class="Goldendict"]                 $set_float
+for_window [title="Wicd 网络管理器"]            $set_float, move position 720 310
+for_window [class="Gnome-alsamixer"]            $set_float
+for_window [class="Deepin-music-player"]        $set_float
+for_window [title="多个页面无响应"]             $set_float
+for_window [title="网络操作管理器"]             $set_float
+for_window [title="Terminator首选项"]           $set_float
+for_window [title="^chrome-extension:"]         $set_float
+for_window [title="任务管理器 - Google Chrome"] $set_float
 
 exec --no-startup-id ~/.i3/autostart.sh
 

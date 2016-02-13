@@ -40,7 +40,7 @@ interval=10
 separator=false
 
 [wifi]
-label=〜
+# label=〜
 instance=wlp9s0
 interval=10
 separator=false
@@ -50,7 +50,7 @@ command=~/.bin/i3blocks-net-speed
 interval=5
 
 # [bandwidth]
-# instance=eth0
+# instance=enp4s0f2
 # interval=5
 
 # Disk usage
@@ -131,9 +131,9 @@ interval=once
 signal=10
 
 # Date Time
-#
-[time]
+[datetime]
 command=~/.bin/i3blocks-datetime
+instance=%m/%d %a %H:%M
 interval=5
 
 # Generic media player support
@@ -157,12 +157,19 @@ interval=5
 #
 # bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
 # bindsym --release Num_Lock  exec pkill -SIGRTMIN+11 i3blocks
-#[keyindicator]
-#instance=CAPS
-#interval=once
-#signal=11
+[keyindicator]
+command=~/.bin/i3blocks-keyindicator
+label=🔒
+instance=CAPS
+interval=once
+signal=11
+separator=false
+separator_block_width=0
 
-#[keyindicator]
-#instance=NUM
-#interval=once
-#signal=11
+[keyindicator]
+command=~/.bin/i3blocks-keyindicator
+label=⏺
+instance=NUM
+interval=once
+signal=11
+

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ $# -eq 0 ]; then
-    echo "Usage: $0 zip-file-to-fix"
+    echo "Usage: $0 file..."
     exit
 fi
 

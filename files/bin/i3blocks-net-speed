@@ -3,11 +3,11 @@
 # path to store the old results in
 path="/dev/shm/measure-net-speed"
 
-# grabbing data for each adapter. 
+# grabbing data for each adapter.
 # You can find the paths to your adapters using
 #  find /sys/devices -name statistics
 # If you have more (or less) than two adapters, simply adjust the script here
-# and in the next block. 
+# and in the next block.
 enp4s0f2="/sys/devices/pci0000:00/0000:00:1c.2/0000:04:00.2/net/enp4s0f2/statistics"
 wlp9s0="/sys/devices/pci0000:00/0000:00:1c.7/0000:09:00.0/net/wlp9s0/statistics"
 read enp4s0f2_rx < "${enp4s0f2}/rx_bytes"
@@ -44,8 +44,8 @@ if [[ "${time_diff}" -gt 0 ]]; then
   tx_rate=$(( $tx_diff/$time_diff ))
 
   # shift by 10 bytes to get KiB/s. If the value is larger than
-  # 1024^2 = 1048576, then display MiB/s instead (simply cut off  
-  # the last two digits of KiB/s). Since the values only give an  
+  # 1024^2 = 1048576, then display MiB/s instead (simply cut off
+  # the last two digits of KiB/s). Since the values only give an
   # rough estimate anyway, this improper rounding is negligible.
 
   # incoming

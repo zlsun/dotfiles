@@ -3,7 +3,7 @@
 export DEV_HOME=~/dev
 
 # JDK
-export JAVA_HOME=/usr/lib/jvm/java-7-openjdk
+export JAVA_HOME=/usr/lib/jvm/default
 export JRE_HOME=${JAVA_HOME}/jre
 export CLASSPATH=$CLASSPATH:.:${JAVA_HOME}/lib:${JRE_HOME}/lib
 export PATH=${JAVA_HOME}:${JAVA_HOME}/bin:${JAVA_HOME}/lib:${JRE_HOME}/bin:$PATH
@@ -44,7 +44,7 @@ export PATH=$HOME/.cabal/bin:$PATH
 
 # ccache
 # export PATH=/usr/lib/ccache/bin/:$PATH
-export PATH=/usr/lib/colorgcc/bin/:$PATH
+export PATH=/usr/lib/colorgcc/bin:$PATH
 export CCACHE_PATH=/usr/bin
 export CCACHE_DIR=/tmp/ccache
 
