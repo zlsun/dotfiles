@@ -68,7 +68,7 @@ def main():
     def on_input(v, inp):
         Config.last_idx = -1
         Config.last_input = inp
-        ch = chr(int(sel.strip(), 16))
+        ch = chr(int(inp.strip(), 16))
         xdotool.type(ch)
         v.close()
 
