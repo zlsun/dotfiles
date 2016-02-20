@@ -1,6 +1,7 @@
 
 # ============================= Plugins ===============================
 
+DISABLE_AUTO_UPDATE="true"
 DISABLE_UNTRACKED_FILES_DIRTY="true"
 HIST_STAMPS="yyyy-mm-dd"
 
@@ -72,18 +73,20 @@ bindkey -M emacs '^N' history-substring-search-down
 bindkey -M vicmd 'k' history-substring-search-up
 bindkey -M vicmd 'j' history-substring-search-down
 
-AUTOSUGGESTION_HIGHLIGHT_COLOR='fg=11'
-AUTOSUGGESTION_HIGHLIGHT_CURSOR=0
-
 autoload znt-history-widget
 zle -N znt-history-widget
 bindkey "^R" znt-history-widget
 
-# Enable autosuggestions automatically.
-zle-line-init() {
-    zle autosuggest-start
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=11'
+ZSH_AUTOSUGGEST_HIGHLIGHT_CURSOR=0
+
+# Ctrl-Enter: execute suggesstion provided by zsh-autosuggestions
+autosuggest-execute-suggestion() {
+    zle end-of-line
+    zle accept-line
 }
-zle -N zle-line-init
+zle -N autosuggest-execute-suggestion
+bindkey '^J' autosuggest-execute-suggestion
 
 # ======================== User configuration ==========================
 
@@ -217,9 +220,6 @@ bindkey -s '^Z' '^q fg\n'
 
 # Ctrl-O: open ranger
 bindkey -s '^O' '^q ranger\n'
-
-# Ctrl-Enter: execute suggesstion provided by zsh-autosuggestions
-bindkey '^J' autosuggest-execute-suggestion
 
 bindkey -M menuselect 'h' vi-backward-char
 bindkey -M menuselect 'j' vi-down-line-or-history

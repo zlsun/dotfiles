@@ -67,7 +67,8 @@ Plugin 'altercation/vim-colors-solarized'
 " Plugin 'flazz/vim-colorschemes'
 
 " Indicators
-Plugin 'bling/vim-airline'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 Plugin 'nathanaelkane/vim-indent-guides'
 Plugin 'kshenoy/vim-signature'
 

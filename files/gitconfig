@@ -14,12 +14,14 @@
     aa = add --all
     br = branch
     bd = branch -d
+    bD = branch -D
     cf = config
     cg = config --global
     cl = clean
     cm = commit -v
     ca = commit -v -a
     co = checkout
+    cb = checkout -b
     cp = cherry-pick
     df = diff
     dc = diff --cached
@@ -43,6 +45,7 @@
     rs = reset
     rf = reset --soft
     rh = reset --hard
+    sh = show
     sa = stash
     sl = stash list
     sp = stash apply

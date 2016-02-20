@@ -60,7 +60,9 @@ export EDITOR=vim
 export PAGER=less
 export XOPEN=gvfs-open
 export BROWSER=$XOPEN
+
 export LESS='-FX'
+export QUOTING_STYLE=literal
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"

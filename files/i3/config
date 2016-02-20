@@ -242,13 +242,14 @@ for_window [class="Toplevel"]                   $set_float
 for_window [class="FeelUOwn"]                   $set_float
 for_window [class="Stardict"]                   $set_float
 for_window [class="Goldendict"]                 $set_float
-for_window [title="Wicd 网络管理器"]            $set_float, move position 720 310
+for_window [class="Pavucontrol"]                $set_float
+for_window [title="Wicd 网络管理器"]            $set_float, resize set 630 426, move position 720 310
 for_window [class="Gnome-alsamixer"]            $set_float
 for_window [class="Deepin-music-player"]        $set_float
 for_window [title="多个页面无响应"]             $set_float
 for_window [title="网络操作管理器"]             $set_float
 for_window [title="Terminator首选项"]           $set_float
-for_window [title="^chrome-extension:"]         $set_float
+for_window [title="chrome-extension:"]          $set_float
 for_window [title="任务管理器 - Google Chrome"] $set_float
 
 exec --no-startup-id ~/.i3/autostart.sh
@@ -259,7 +260,7 @@ bindsym Mod1+Tab exec --no-startup-id ~/.i3/focus-last.py --switch
 
 # exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace 1 --command "terminator -l i3"
 exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace 2 --command google-chrome-stable
-exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace 8 --command "terminator -e 'TERM=xterm-256color ranger'"
+exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace 8 --command WizNote
 exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace 9 --command zeal
 exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace $ws0 --command telegram
 
