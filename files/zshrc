@@ -78,9 +78,12 @@ zle -N znt-history-widget
 bindkey "^R" znt-history-widget
 
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=11'
-ZSH_AUTOSUGGEST_HIGHLIGHT_CURSOR=0
 
-# Ctrl-Enter: execute suggesstion provided by zsh-autosuggestions
+# Widgets that accept the entire suggestion
+ZSH_AUTOSUGGEST_ACCEPT_WIDGETS=(end-of-line vi-end-of-line)
+ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS+=(forward-char vi-forward-char)
+ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(history-substring-search-up history-substring-search-down)
+
 autosuggest-execute-suggestion() {
     zle end-of-line
     zle accept-line
@@ -189,6 +192,13 @@ watchon() {
     local cmd=$1
     shift
     ls $* | entr sh -c $cmd
+}
+
+for-subdir() {
+    for d (./*/) (
+        cd $d
+        $*
+    )
 }
 
 enable-proxy() {

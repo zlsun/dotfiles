@@ -217,7 +217,8 @@ client.urgent           $magenta $magenta $base13 $red
 bar {
     status_command i3blocks
     position       bottom
-    height         25
+    font           pango:monospace 12
+    height         24
     colors {
         separator  $base00
         background $base03
@@ -239,9 +240,10 @@ for_window [window_role="task_dialog"]          $set_float
 for_window [class="Gitk"]                       $set_float
 for_window [class="Git-gui"]                    $set_float
 for_window [class="Toplevel"]                   $set_float
-for_window [class="FeelUOwn"]                   $set_float
+for_window [class="FeelUOwn"]                   $set_float, border toggle
 for_window [class="Stardict"]                   $set_float
 for_window [class="Goldendict"]                 $set_float
+for_window [class="Youdao Dict"]                $set_float, border toggle
 for_window [class="Pavucontrol"]                $set_float
 for_window [title="Wicd 网络管理器"]            $set_float, resize set 630 426, move position 720 310
 for_window [class="Gnome-alsamixer"]            $set_float
