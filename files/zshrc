@@ -195,10 +195,14 @@ watchon() {
 }
 
 for-subdir() {
-    for d (./*/) (
+    for d (*/) (
         cd $d
         $*
     )
+}
+
+prepend() {
+    cat - "$1" | sponge "$1"
 }
 
 enable-proxy() {
@@ -458,7 +462,6 @@ alias sgf='apt-file search'
 # ya* -> yaourt
 alias    yat='yaourt'
 alias    yaq='yaourt -Q'
-alias   yadt='yaourt -Qdt'
 alias   yaqe='yaourt -Qe'
 alias   yaqi='yaourt -Qi'
 alias   yaqk='yaourt -Qk'
@@ -468,6 +471,7 @@ alias   yaqo='yaourt -Qo'
 alias   yaqs='yaourt -Qs'
 alias  yaqem='yaourt -Qem'
 alias  yaqii='yaourt -Qii'
+alias  yaqtd='yaourt -Qtd'
 alias    yar='yaourt -R'
 alias   yars='yaourt -Rs'
 alias  yarsn='yaourt -Rsn'

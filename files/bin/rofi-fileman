@@ -44,6 +44,7 @@ class Config:
     }
     applications_folders = [
         '/usr/share/applications/',
+        '/usr/share/applications/kde4',
         '~/.local/share/applications'
     ]
 
@@ -116,6 +117,7 @@ class Main(View):
         self.width = Config.width
         self.selected_row = Config.last_idx
         self.active = []
+        self.marked_paths = []
 
     def _get_paths(self):
         paths = [] if self.path == '/' else [self.path]
@@ -197,12 +199,13 @@ class Main(View):
 
     @View.bind(Config.key_bindings['toggle_mark'])
     def toggle_mark(self, idx, sel):
-        if idx == 0:
-            return
-        if idx in self.active:
-            self.active.remove(idx)
-        else:
-            self.active.append(idx)
+        if idx:
+            if idx in self.active:
+                self.active.remove(idx)
+                self.marked_paths.remove(self.get_selected_path(sel))
+            else:
+                self.active.append(idx)
+                self.marked_paths.append(self.get_selected_path(sel))
         self.selected_row = idx + 1
 
     @View.bind(Config.key_bindings['toggle_hidden'])
@@ -230,19 +233,21 @@ class Main(View):
     def action_quit(self, idx, sel):
         self.close()
 
-    @View.bind(Config.key_bindings['delete'])
-    def action_delete(self, idx, sel):
-        p = self.get_selected_path(sel)
+    def delete(self, p):
         if rofi.yesno('Delete {}?'.format(shorten(p))):
             if p_delete(p) and self.path == p:
                 self.path = self.path.parent
 
-    @View.bind(Config.key_bindings['mkdir'])
-    def action_mkdir(self, idx, sel):
+    @View.bind(Config.key_bindings['delete'])
+    def action_delete(self, idx, sel):
+        p = self.get_selected_path(sel)
+        self.delete(p)
+
+    def mkdir(self, p):
         name = ''
         msg = ''
         while 1:
-            prompt = 'New folder: {}'.format(shorten(self.path))
+            prompt = 'New folder: {}'.format(shorten(p))
             name = rofi.input(prompt, name, msg=msg)
             if not name:
                 break
@@ -253,12 +258,15 @@ class Main(View):
             pp.mkdir_p()
             break
 
-    @View.bind(Config.key_bindings['touch'])
-    def action_touch(self, idx, sel):
+    @View.bind(Config.key_bindings['mkdir'])
+    def action_mkdir(self, idx, sel):
+        self.mkdir(self.path)
+
+    def touch(self, p):
         name = ''
         msg = ''
         while 1:
-            prompt = 'Touch file: {}'.format(shorten(self.path))
+            prompt = 'Touch file: {}'.format(shorten(p))
             name = rofi.input(prompt, name, msg=msg)
             if not name:
                 break
@@ -269,9 +277,12 @@ class Main(View):
             pp.touch()
             break
 
+    @View.bind(Config.key_bindings['touch'])
+    def action_touch(self, idx, sel):
+        self.touch(self.path)
+
     @View.bind(Config.key_bindings['show_context_menu'])
     def show_context_menu(self, idx, sel):
-        p = self.get_selected_path(sel)
         texts = {
             'back': BACK,
             'open': 'Open',
@@ -282,8 +293,21 @@ class Main(View):
             'touch': 'Touch File...',
             'term': 'Open Terminal Here'
         }
-        menu = 'back|open,openw,rename,delete|mkdir,touch,term'
-        act = rofi.menu(menu, texts, '{}:'.format(shorten(p)))
+        if self.marked_paths:
+            ps = self.marked_paths
+            menu = 'back|open,openw,rename,delete'
+            prompt = "{} Items".format(len(ps))
+            act = rofi.menu(menu, texts, '{}:'.format(prompt))
+            for p in ps:
+                self.act_to(act, p)
+        else:
+            p = self.get_selected_path(sel)
+            menu = 'back|open,openw,rename,delete|mkdir,touch,term'
+            prompt = shorten(p)
+            act = rofi.menu(menu, texts, '{}:'.format(prompt))
+            self.act_to(act, p)
+
+    def act_to(self, act, p):
         if act == 'open':
             p_open(p)
         elif act == 'openw':
@@ -297,9 +321,9 @@ class Main(View):
                 options = {
                     'kb1': 'Alt+s',
                     'msg': R'<span color=\"{}\"><tt>{}</tt></span> '
-                           R'<u>S</u>et as default appliction'.format(
-                               'green' if set_as_def else 'red',
-                               '✓' if set_as_def else '❌'),
+                        R'<u>S</u>et as default appliction'.format(
+                            'green' if set_as_def else 'red',
+                            '✓' if set_as_def else '❌'),
                     'selected_row': apps.index(app) if app in apps else 0,
                 }
                 app, code = rofi(apps, 'Open With:', **options)
@@ -319,11 +343,11 @@ class Main(View):
             if name:
                 p.rename(p.parent / name)
         elif act == 'delete':
-            action_delete(self, idx, sel)
+            self.delete(p)
         elif act == 'mkdir':
-            action_mkdir(self, idx, sel)
+            self.mkdir(self.path)
         elif act == 'touch':
-            action_touch(self, idx, sel)
+            self.touch(self.path)
         elif act == 'term':
             with sh.pushd(self.path):
                 sh.Command(Config.terminal_cmd)()

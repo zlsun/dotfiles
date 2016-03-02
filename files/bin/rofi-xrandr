@@ -25,11 +25,11 @@ function main() {
     if (( iteration++ )); then
       select_output 'Select next output:' 'unconfigured' | read output
       select_position "${output}" | read position
-      [[ "${position}" != '--off' ]] && select_mode "${output}" | read mode
+      [[ "${position}" != '--off' ]] && select_property "${output}" | read mode
       OUTPUT_CONFIGURED[${output}]='true'
     else
       select_output 'Select primary output:' 'all' | read output
-      select_mode "${output}" | read mode
+      select_property "${output}" | read mode
       OUTPUT_CONFIGURED[${output}]='true'
       position='--primary'
     fi
@@ -138,7 +138,7 @@ off" | rofi -dmenu -i -p "Select position of $1:" | read selection
 #  257=bad arguements; given output ($1) not found/connected (TODO)
 #  258=bad selection
 ################################################################################
-function select_mode() {
+function select_property() {
   local menu
   local selection
   local -ir err_bad_args=257
@@ -149,17 +149,31 @@ function select_mode() {
   # TODO: make this not ugly. A better sed should negate the need for cut/grep
   # Should probably parse (sed) seperately then assign to the array. Or not
   # use an array at all.
-  menu="$(echo \"${XRANDR_TXT}\" \
+  sep='------'
+  menu="normal
+$sep Rotate $sep
+left
+right
+inverted
+$sep Reflect $sep
+x
+y
+xy
+$sep Size $sep"
+  menu=$(echo \"${XRANDR_TXT}\" \
     | sed -n '/^'$1' /,/^[^ ]/ s/ * //p' \
     | cut -d ' ' -f 1 \
     | grep x \
-    | cat <(echo auto) -)"
+    | cat <(echo -e "$menu") -)
 
-  echo "${menu}" | rofi -dmenu -i -p "Select mode for $1:" | read selection
+  echo "${menu}" | rofi -dmenu -i -p "Set property of $1:" | read selection
 
   case "${selection}" in
-    'auto') echo '--auto' ;;
+    'normal') echo '--auto --rotate normal --reflect normal' ;;
+    'left'|'right'|'inverted') echo "--rotate ${selection}" ;;
+    'x'|'y'|'xy') echo "--reflect ${selection}" ;;
     *x*) echo "--mode ${selection}" ;;
+    $sep*) select_property $1 ;;
     *) return "${err_bad_selection}" ;;
   esac
 }

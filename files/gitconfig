@@ -15,6 +15,7 @@
     br = branch
     bd = branch -d
     bD = branch -D
+    bu = branch -u
     cf = config
     cg = config --global
     cl = clean
@@ -39,6 +40,8 @@
     pr = pull -v --recurse-submodules
     ps = push -v
     pf = push -v -f
+    pu = push -v -u
+    rb = rebase
     rc = rm --cached
     rd = rm --dry-run
     re = remote

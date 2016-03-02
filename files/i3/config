@@ -82,12 +82,13 @@ bindsym $mod+equal move scratchpad
 bindsym $mod+minus scratchpad show
 
 # Rofi
-exec --no-startup-id rofi -key-run SuperL+d -key-window SuperL+Tab
+exec --no-startup-id rofi -key-run SuperL+d
+exec --no-startup-id rofi -key-window SuperL+Tab -auto-select
 bindsym $mod+q       exec --no-startup-id SHELL=/bin/sh j4-dmenu-desktop --dmenu="rofi -dmenu -i -p ''"
 bindsym $mod+grave   exec --no-startup-id ~/.bin/rofi-fileman
 bindsym $mod+u       exec --no-startup-id ~/.bin/rofi-unicode
 bindsym $mod+p       exec --no-startup-id ~/.bin/rofi-monitor-layout
-bindsym $mod+Shift+p exec --no-startup-id ~/.bin/rofi-randr
+bindsym $mod+Shift+p exec --no-startup-id ~/.bin/rofi-xrandr
 bindsym $mod+F1      exec --no-startup-id clerk
 bindsym $mod+F2      exec --no-startup-id rofi-surfraw
 bindsym $mod+F3      exec --no-startup-id rofi-pass

@@ -15,9 +15,9 @@ cd dotfiles && ./install
 
 ## Screenshots
 
-![](http://i.imgur.com/hqyqIHg.png)
+![](https://raw.githubusercontent.com/zlsun/screenshots/master/dotfiles/1.png)
 \* You can find the wallpaper [here](https://www.reddit.com/r/i3wm/comments/3hqkst/solarized_i3_wallpaper_1080p/).
-![](http://i.imgur.com/WkgDF10.png)
+![](https://raw.githubusercontent.com/zlsun/screenshots/master/dotfiles/2.png)
 
 ## Configurations Structure
 
