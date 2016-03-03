@@ -5,7 +5,7 @@ My personal configurations for Arch Linux.
 ## Installation
 
 Your can use following script to install all configurations.
-However, because this repository contains many personal settings, installing directly may cause some problems.
+However, because this repository contains my personal preference, it may not suitable for you.
 I recommend you to use this repository as a reference to create your own configurations.
 
 ```shell
@@ -18,6 +18,7 @@ cd dotfiles && ./install
 ![](https://raw.githubusercontent.com/zlsun/screenshots/master/dotfiles/1.png)
 \* You can find the wallpaper [here](https://www.reddit.com/r/i3wm/comments/3hqkst/solarized_i3_wallpaper_1080p/).
 ![](https://raw.githubusercontent.com/zlsun/screenshots/master/dotfiles/2.png)
+![](https://raw.githubusercontent.com/zlsun/screenshots/master/dotfiles/3.png)
 
 ## Configurations Structure
 
