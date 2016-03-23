@@ -5,7 +5,7 @@ import json
 
 from path import Path
 import sh
-from sh import xdg_mime
+from sh import xdg_mime, xclip
 
 from lib.log import *
 disable_log()
@@ -114,6 +114,8 @@ class Main(View):
     def __init__(self):
         super().__init__()
         self.path = Path(Config.last_path).expand()
+        while not self.path.exists():
+            self.path = self.path.parent
         self.width = Config.width
         self.selected_row = Config.last_idx
         self.active = []
@@ -289,6 +291,7 @@ class Main(View):
             'openw': 'Open With...',
             'rename': 'Rename...',
             'delete': 'Delete...',
+            'cppath': 'Copy Path',
             'mkdir': 'New Folder...',
             'touch': 'Touch File...',
             'term': 'Open Terminal Here'
@@ -302,7 +305,7 @@ class Main(View):
                 self.act_to(act, p)
         else:
             p = self.get_selected_path(sel)
-            menu = 'back|open,openw,rename,delete|mkdir,touch,term'
+            menu = 'back|open,openw,rename,delete,cppath|mkdir,touch,term'
             prompt = shorten(p)
             act = rofi.menu(menu, texts, '{}:'.format(prompt))
             self.act_to(act, p)
@@ -344,6 +347,10 @@ class Main(View):
                 p.rename(p.parent / name)
         elif act == 'delete':
             self.delete(p)
+        elif act == 'cppath':
+            s = subprocess.Popen(['xclip', '-selection', 'c'],
+                stdin=subprocess.PIPE, close_fds=True)
+            s.communicate(input=p.encode('utf-8'))
         elif act == 'mkdir':
             self.mkdir(self.path)
         elif act == 'touch':

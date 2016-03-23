@@ -32,23 +32,14 @@ Xft.rgba: rgb
 
 ! rofi
 
-rofi.fg:            S_base0
-rofi.bg:            S_base03
-rofi.bgalt:         S_base03
-rofi.hlfg:          S_base2
-rofi.hlbg:          S_blue
+rofi.color-enabled: true
+!                  bg        border    sep
+rofi.color-window: S_base03, S_base1 , S_base1
+!                  bg        fg        bgalt     hlbg      hlfg
+rofi.color-normal: S_base03, S_base0 , S_base03, S_blue  , S_base2
+rofi.color-active: S_base03, S_yellow, S_base03, S_yellow, S_base2
+rofi.color-urgent: S_base03, S_red   , S_base03, S_red   , S_base2
 
-rofi.fg-active:     S_yellow
-rofi.bg-active:     S_base03
-rofi.hlfg-active:   S_base2
-rofi.hlbg-active:   S_yellow
-
-rofi.fg-urgent:     S_red
-rofi.bg-urgent:     S_base03
-rofi.hlfg-urgent:   S_base2
-rofi.hlbg-urgent:   S_red
-
-rofi.bc:            S_base1
-rofi.font:          monospace 12
-rofi.opacity:       90
+rofi.font:    monospace 12
+rofi.opacity: 90
 

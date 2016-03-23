@@ -66,3 +66,4 @@
     sslVerify = false
 [core]
     pager = less -FX
+	quotepath = false

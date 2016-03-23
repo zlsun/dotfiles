@@ -440,7 +440,7 @@ sudo_commands=(
   start stop reload restart try-restart isolate kill
   reset-failed enable disable reenable preset mask unmask
   link load cancel set-environment unset-environment
-  hybrid-sleep hibernate poweroff
+  halt hybrid-sleep hibernate poweroff
   edit)
 
 for c ($user_commands) alias sc-$c="systemctl $c"

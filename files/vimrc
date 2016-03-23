@@ -212,7 +212,8 @@ Plugin 'lukerandall/haskellmode-vim'
 Plugin 'udalov/kotlin-vim'
 
 "" elm
-Plugin 'lambdatoast/elm.vim'
+" Plugin 'lambdatoast/elm.vim'
+Plugin 'ElmCast/elm-vim'
 
 "" Configuration files
 Plugin 'PotatoesMaster/i3-vim-syntax'
@@ -490,10 +491,11 @@ au FileType haskell,puppet,ruby,yml setlocal expandtab shiftwidth=2 softtabstop=
 " Workaround broken color highlighting in Haskell
 au FileType haskell,rust setlocal nospell
 
-au FileType python   let &makeprg='python %'
-au FileType c        let &makeprg='gcc % -o %:r -g -std=c11 && %:p:r'
-au FileType cpp      let &makeprg='g++ % -o %:r -g -std=c++1y && %:p:r'
-au FileType haskell,lhaskell let &makeprg='runhaskell %'
+au FileType python   let &makeprg='python "%"'
+au FileType c        let &makeprg='gcc "%" -o "%:r" -g -std=c11 && "%:p:r"'
+au FileType cpp      let &makeprg='g++ "%" -o "%:r" -g -std=c++1y && "%:p:r"'
+au FileType lua      let &makeprg='lua "%"'
+au FileType haskell,lhaskell let &makeprg='runhaskell "%"'
 
 au FileType xdefaults let &makeprg='xrdb %'
 

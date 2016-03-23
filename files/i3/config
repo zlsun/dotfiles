@@ -82,8 +82,8 @@ bindsym $mod+equal move scratchpad
 bindsym $mod+minus scratchpad show
 
 # Rofi
-exec --no-startup-id rofi -key-run SuperL+d
-exec --no-startup-id rofi -key-window SuperL+Tab -auto-select
+bindsym $mod+d       exec --no-startup-id rofi -show run
+bindsym $mod+Tab     exec --no-startup-id rofi -show window -auto-select
 bindsym $mod+q       exec --no-startup-id SHELL=/bin/sh j4-dmenu-desktop --dmenu="rofi -dmenu -i -p ''"
 bindsym $mod+grave   exec --no-startup-id ~/.bin/rofi-fileman
 bindsym $mod+u       exec --no-startup-id ~/.bin/rofi-unicode
@@ -265,7 +265,7 @@ bindsym Mod1+Tab exec --no-startup-id ~/.i3/focus-last.py --switch
 exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace 2 --command google-chrome-stable
 exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace 8 --command WizNote
 exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace 9 --command zeal
-exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace $ws0 --command telegram
+exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace $ws0 --command telegram-desktop
 
 exec --no-startup-id ~/.fehbg
 exec --no-startup-id terminator -l i3
