@@ -11,7 +11,8 @@
     i = init
     s = submodule
     ad = add
-    aa = add --all
+    aa = add -A
+    au = add -u
     br = branch
     bd = branch -d
     bD = branch -D
@@ -21,6 +22,8 @@
     cl = clean
     cm = commit -v
     ca = commit -v -a
+    ce = commit -v -m
+    cn = commit -v --amend
     co = checkout
     cb = checkout -b
     cp = cherry-pick
@@ -66,4 +69,4 @@
     sslVerify = false
 [core]
     pager = less -FX
-	quotepath = false
+    quotepath = false

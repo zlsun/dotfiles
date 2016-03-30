@@ -289,8 +289,8 @@ bindkey "\eh" toggle-help-command-line
 # http://askubuntu.com/a/22043/399470
 alias s='sudo '
 
-# enable <C-S> in vim
-alias vim="stty stop '' -ixoff ; vim"
+# enable <C-S> <C-Q> <C-J> in vim
+alias vim="stty stop '' start '' -ixon; vim"
 
 # shorten frequent commands
 alias c='cat'
@@ -460,6 +460,7 @@ alias sgs='apt-cache search'
 alias sgf='apt-file search'
 
 # ya* -> yaourt
+alias      y='yaourt'
 alias    yat='yaourt'
 alias    yaq='yaourt -Q'
 alias   yaqe='yaourt -Qe'

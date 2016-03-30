@@ -175,8 +175,11 @@ Plugin 'suan/vim-instant-markdown'
 
 "" Python
 Plugin 'python_match.vim'
-Plugin 'klen/python-mode'
+" Plugin 'klen/python-mode'
 Plugin 'mjbrownie/vim-htmldjango_omnicomplete'
+
+"" Go
+Plugin 'fatih/vim-go'
 
 "" HTML
 Plugin 'tpope/vim-haml'
@@ -199,11 +202,11 @@ Plugin 'digitaltoad/vim-jade'
 Plugin 'wavded/vim-stylus'
 
 "" Haskell
-" Plugin 'dag/vim2hs'
+Plugin 'dag/vim2hs'
 " Plugin 'travitch/hasksyn'
-" Plugin 'eagletmt/neco-ghc'
-" Plugin 'bitc/vim-hdevtools'
-" Plugin 'eagletmt/ghcmod-vim'
+Plugin 'eagletmt/neco-ghc'
+Plugin 'bitc/vim-hdevtools'
+Plugin 'eagletmt/ghcmod-vim'
 Plugin 'Twinside/vim-haskellFold'
 " Plugin 'Twinside/vim-haskellConceal'
 Plugin 'lukerandall/haskellmode-vim'
@@ -336,7 +339,9 @@ set tabpagemax=15           " Only show 15 tabs
 set list
 set listchars=tab:›\ ,trail:•,extends:❯,precedes:❮,nbsp:.
 let &showbreak='↪ '
-set breakindent
+if has('linebreak')
+    set breakindent
+end
 
 if has('cmdline_info')
     set ruler   " Show the ruler
@@ -491,13 +496,14 @@ au FileType haskell,puppet,ruby,yml setlocal expandtab shiftwidth=2 softtabstop=
 " Workaround broken color highlighting in Haskell
 au FileType haskell,rust setlocal nospell
 
-au FileType python   let &makeprg='python "%"'
-au FileType c        let &makeprg='gcc "%" -o "%:r" -g -std=c11 && "%:p:r"'
-au FileType cpp      let &makeprg='g++ "%" -o "%:r" -g -std=c++1y && "%:p:r"'
-au FileType lua      let &makeprg='lua "%"'
+au FileType python           let &makeprg='python "%"'
+au FileType c                let &makeprg='gcc "%" -o "%:r" -g -std=c11 && "%:p:r"'
+au FileType cpp              let &makeprg='g++ "%" -o "%:r" -g -std=c++1y && "%:p:r"'
+au FileType lua              let &makeprg='lua "%"'
+au FileType xdefaults        let &makeprg='xrdb %'
 au FileType haskell,lhaskell let &makeprg='runhaskell "%"'
 
-au FileType xdefaults let &makeprg='xrdb %'
+autocmd FileType haskell let &formatprg='pointfree --stdin'
 
 " Set filetype
 au BufNewFile,BufRead *.html.twig set filetype=html.twig
@@ -534,13 +540,10 @@ cmap Tabe tabe
 
 " The default leader is '\', but many people prefer ',' as it's in a standard
 " location.
-let mapleader = ','
+let mapleader = ' '
 let maplocalleader = '_'
 
-" Map space as leader.
-" see: http://redd.it/1vdrxg
-nmap <Space> <Leader>
-nmap <Space><Space> <Leader><Leader>
+nmap , <Leader><Leader>
 
 " map ; to :
 " see: http://vim.wikia.com/wiki/Map_semicolon_to_colon
@@ -601,10 +604,10 @@ vnoremap <A-k> :m '<-2<CR>gv
 
 " Easier moving in tabs and windows
 " The lines conflict with the default digraph mapping of <C-K>
-noremap <C-J> <C-W>j
-noremap <C-K> <C-W>k
-noremap <C-L> <C-W>l
-noremap <C-H> <C-W>h
+nnoremap <C-J> <C-W>j
+nnoremap <C-K> <C-W>k
+nnoremap <C-L> <C-W>l
+nnoremap <C-H> <C-W>h
 
 noremap <C-Q> ZZ
 inoremap <C-Q> <C-O>ZZ
@@ -899,12 +902,15 @@ endif
 
 if s:has_bundle('ctrlp.vim')
     let g:ctrlp_working_path_mode = 'ra'
-    let g:ctrlp_extensions = ['quickfix']
+    let g:ctrlp_extensions = ['tag', 'quickfix']
     let g:ctrlp_custom_ignore = {
                 \ 'dir':  '\.git$\|\.hg$\|\.svn$',
                 \ 'file': '\.exe$\|\.so$\|\.dll$\|\.pyc$' }
 
-    nnoremap <silent> <Leader>m :CtrlPMRU<CR>
+    nnoremap <silent> <Leader>fm :CtrlPMRU<CR>
+    nnoremap <silent> <Leader>fb :CtrlPBuffer<CR>
+
+    nnoremap <silent> <Leader>fq :CtrlPQuickfix<CR>
 
     " On Windows use "dir" as fallback command.
     if WINDOWS()
@@ -928,7 +934,7 @@ if s:has_bundle('ctrlp.vim')
 
     if s:has_bundle('ctrlp-funky')
         " CtrlP extensions
-        let g:ctrlp_extensions = ['funky']
+        let g:ctrlp_extensions += ['funky']
 
         "funky
         nnoremap <Leader>fu :CtrlPFunky<Cr>
@@ -939,14 +945,15 @@ endif
 if s:has_bundle('ctrlsf.vim')
     let g:ctrlsf_auto_close = 0
     let g:ctrlsf_default_root = 'project'
-    nmap     <C-F>f <Plug>CtrlSFPrompt
-    vmap     <C-F>f <Plug>CtrlSFVwordPath
-    vmap     <C-F>F <Plug>CtrlSFVwordExec
-    nmap     <C-F>n <Plug>CtrlSFCwordPath
-    nmap     <C-F>p <Plug>CtrlSFPwordPath
-    nnoremap <C-F>o :CtrlSFOpen<CR>
-    nnoremap <C-F>t :CtrlSFToggle<CR>
-    inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
+    let g:ctrlsf_winsize = '30%'
+    nmap <C-F>f <Plug>CtrlSFPrompt
+    vmap <C-F>f <Plug>CtrlSFVwordPath
+    vmap <C-F>F <Plug>CtrlSFVwordExec
+    nmap <C-F>n <Plug>CtrlSFCwordPath
+    nmap <C-F>o <Plug>CtrlSFOpen
+    nmap <C-F>p <Plug>CtrlSFPwordPath
+    nmap <C-F>t <Plug>CtrlSFToggle
+    nmap <C-F>u <Plug>CtrlSFUpdate
 endif
 
 if s:has_bundle('vim-session')
@@ -957,6 +964,10 @@ if s:has_bundle('vim-session')
     let g:session_persist_globals = ['&makeprg', '&makeef']
     let g:session_autosave='yes'
     let g:session_autoload='no'
+endif
+
+if s:has_bundle('vim-easymotion')
+    map , <Plug>(easymotion-prefix)
 endif
 
 if s:has_bundle('vim-multiple-cursors')
@@ -994,6 +1005,8 @@ endif
 
 if s:has_bundle('syntastic')
     let g:syntastic_cpp_compiler_options = ' -std=c++1y'
+    let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
+    let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
 endif
 
 if s:has_bundle('vim-template')
@@ -1116,20 +1129,30 @@ if s:completer == 'snipmate' && s:has_bundle('vim-snipmate')
 elseif s:completer == 'youcompleteme' && s:has_bundle('YouCompleteMe')
     let g:acp_enableAtStartup = 0
 
-    " enable completion from tags
-    let g:ycm_collect_identifiers_from_tags_files = 1
+    let g:ycm_collect_identifiers_from_tags_files = 1 " enable completion from tags
     let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
+    let g:ycm_seed_identifiers_with_syntax = 1
+    let g:ycm_semantic_triggers = {
+        \   'css': ['re!^\s{2-4}', 're!:\s+'],
+        \   'haskell': ['.', 'import '],
+        \   'python': ['import ', 'from '],
+        \ }
 
     " remap Ultisnips for compatibility for YCM
     let g:UltiSnipsExpandTrigger = '<C-J>'
     let g:UltiSnipsJumpForwardTrigger = '<C-J>'
     let g:UltiSnipsJumpBackwardTrigger = '<C-K>'
+    let g:UltiSnipsSnippetDirectories = [$HOME.'/.vim/UltiSnips']
+
+    au Filetype c,cpp,python,go map <C-]>      :YcmCompleter GoTo<CR>
+    au Filetype python          map <C-]><C-]> :YcmCompleter GoToReferences<CR>
+    au Filetype c,cpp,python    map K          :YcmCompleter GetDoc<CR>
 
     " Enable omni completion.
     au FileType css           setlocal omnifunc=csscomplete#CompleteCSS
     au FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
     au FileType javascript    setlocal omnifunc=javascriptcomplete#CompleteJS
-    " au FileType python        setlocal omnifunc=pythoncomplete#Complete
+    au FileType python        setlocal omnifunc=pythoncomplete#Complete
     au FileType xml           setlocal omnifunc=xmlcomplete#CompleteTags
     au FileType ruby          setlocal omnifunc=rubycomplete#Complete
     au FileType haskell       setlocal omnifunc=necoghc#omnifunc
@@ -1139,9 +1162,6 @@ elseif s:completer == 'youcompleteme' && s:has_bundle('YouCompleteMe')
         set conceallevel=2 concealcursor=i
     endif
 
-    " Disable the neosnippet preview candidate window
-    " When enabled, there can be too much visual noise
-    " especially when splits are used.
     set completeopt-=preview
 
 elseif s:completer == 'neocomplete' && s:has_bundle('neocomplete.vim')
@@ -1386,6 +1406,35 @@ if s:has_bundle('python-mode')
     let g:pymode_virtualenv = 1
 endif
 
+if s:has_bundle('vim-go')
+    let g:go_highlight_functions = 1
+    let g:go_highlight_methods = 1
+    let g:go_highlight_structs = 1
+    let g:go_highlight_interfaces = 1
+    let g:go_highlight_operators = 1
+    let g:go_highlight_build_constraints = 1
+
+    let g:go_fmt_command = "goimports"
+    let g:go_fmt_fail_silently = 1
+
+    au FileType go nmap <leader>r <Plug>(go-run)
+    au FileType go nmap <leader>b <Plug>(go-build)
+    au FileType go nmap <leader>t <Plug>(go-test)
+    au FileType go nmap <leader>c <Plug>(go-coverage)
+
+    au FileType go nmap <Leader>ds <Plug>(go-def-split)
+    au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
+    au FileType go nmap <Leader>dt <Plug>(go-def-tab)
+
+    au FileType go nmap <Leader>gd <Plug>(go-doc)
+    au FileType go nmap <Leader>gv <Plug>(go-doc-vertical)
+    au FileType go nmap <Leader>gb <Plug>(go-doc-browser)
+
+    au FileType go nmap <Leader>s <Plug>(go-implements)
+    au FileType go nmap <Leader>i <Plug>(go-info)
+    au FileType go nmap <Leader>e <Plug>(go-rename)
+endif
+
 if s:has_bundle('emmet-vim')
     let g:user_emmet_install_global = 0
     let g:user_emmet_install_global = 0
@@ -1403,9 +1452,16 @@ if s:has_bundle('HTML-AutoCloseTag')
     nmap <Leader>ac <Plug>ToggleAutoCloseMappings
 endif
 
+if s:has_bundle('vim-hdevtools')
+    au FileType haskell nnoremap <buffer> <F1> :HdevtoolsType<CR>
+    au FileType haskell nnoremap <buffer> <silent> <F2> :HdevtoolsClear<CR>
+    au FileType haskell nnoremap <buffer> <silent> <F3> :HdevtoolsInfo<CR>
+endif
+
 if s:has_bundle('haskellmode-vim')
     let g:haddock_browser = "open"
     let g:haddock_docdir  = "/usr/share/doc/ghc/html/"
+    let g:haskellmode_completion_ghc = 0
 endif
 
 if s:has_bundle('vim-renamer')

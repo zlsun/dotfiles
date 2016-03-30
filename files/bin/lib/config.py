@@ -14,18 +14,37 @@ __all__ = ['config']
 
 class Config:
 
-    def __init__(self, p, cfg, auto):
+    def __init__(self, p, proto, auto, dev):
         self._path = Path(p).expand()
-        for k, v in cfg.__dict__.items():
+        for k, v in proto.__dict__.items():
             if not k.startswith('_'):
                 self.__setattr__(k, v)
+        self._dev = dev
         self._loaded = False
         if auto:
             self._load()
             import atexit
             atexit.register(self._save)
 
+    def _from_dict(self, d):
+        for k, v in d.items():
+            if k in self.__dict__:
+                o = self.__dict__[k]
+                if isinstance(o, dict):
+                    o.update(v)
+                else:
+                    self.__dict__[k] = v
+
+    def _to_dict(self):
+        d = {}
+        for k, v in self.__dict__.items():
+            if not k.startswith('_') and not hasattr(v, '__call__'):
+                d[k] = v
+        return d
+
     def _load(self):
+        if self._dev:
+            return
         log('loading')
         p = self._path
         if not p.exists():
@@ -36,27 +55,19 @@ class Config:
             except json.decoder.JSONDecodeError:
                 print('Cannot load config from {}'.format(p))
                 return
-        for k, v in d.items():
-            if k in self.__dict__:
-                o = self.__dict__[k]
-                if isinstance(o, dict):
-                    o.update(v)
-                else:
-                    self.__dict__[k] = v
+        self._from_dict(d)
         self._loaded = True
 
     def _save(self):
+        if self._dev:
+            return
         log('saving')
         p = self._path
-        d = {}
-        for k, v in self.__dict__.items():
-            if not k.startswith('_') and not hasattr(v, '__call__'):
-                d[k] = v
         if not p.exists():
             p.parent.mkdir_p()
             p.touch()
         with p.open('w') as f:
-            json.dump(d, f, indent=4)
+            json.dump(self._to_dict(), f, indent=4)
 
     def __enter__(self):
         if not self._loaded:
@@ -67,9 +78,9 @@ class Config:
         self._save()
 
 
-def config(path, auto=True):
+def config(path, auto=True, dev=False):
     def decorator(cls):
-        return Config(path, cls, auto)
+        return Config(path, cls, auto, dev)
     return decorator
 
 
