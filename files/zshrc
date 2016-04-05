@@ -125,7 +125,8 @@ bgit() {
     local color='\e[1;31m'
     local reset='\e[0m'
     local echo_cmd="echo -e '${color}[{}]$reset'"
-    local git_cmd="git --git-dir={}/.git --work-tree={} -c color.ui=always $*"
+    local git_config="-c color.ui=always -c color.status=always -c color.branch=always -c color.diff=always"
+    local git_cmd="git $git_config --git-dir={}/.git --work-tree={} $*"
     local cmd="$echo_cmd && $git_cmd"
     printf "%s\n" */ | cut -d'/' -f1 | xargs -I '{}' sh -c $cmd
 }
@@ -134,7 +135,8 @@ pgit() {
     local color='\e[1;31m'
     local reset='\e[0m'
     local echo_cmd="echo -e '${color}[{}]$reset'"
-    local git_cmd="git --git-dir={}/.git --work-tree={} -c color.ui=always $*"
+    local git_config="-c color.ui=always -c color.status=always -c color.branch=always -c color.diff=always"
+    local git_cmd="git $git_config --git-dir={}/.git --work-tree={} $*"
     local cmd="$echo_cmd && $git_cmd"
     printf "%s\n" */ | cut -d'/' -f1 | parallel $cmd
 }
@@ -203,6 +205,10 @@ for-subdir() {
 
 prepend() {
     cat - "$1" | sponge "$1"
+}
+
+bak() {
+    mv "$1" "$1.bak"
 }
 
 enable-proxy() {
@@ -440,7 +446,7 @@ sudo_commands=(
   start stop reload restart try-restart isolate kill
   reset-failed enable disable reenable preset mask unmask
   link load cancel set-environment unset-environment
-  halt hybrid-sleep hibernate poweroff
+  halt hybrid-sleep hibernate suspend poweroff
   edit)
 
 for c ($user_commands) alias sc-$c="systemctl $c"
@@ -546,7 +552,9 @@ alias -g T='| tail'
 alias -g U='| uniq'
 alias -g W='| gawk'
 alias -g X='| xargs'
+alias -g GV='| grep -v'
 alias -g SS='| sort'
+alias -g TW='| pr -TW$COLUMNS'
 alias -g WC='| wc'
 alias -g CA="2>&1 | cat -A"
 alias -g LL="2>&1 | less"

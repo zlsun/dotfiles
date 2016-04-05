@@ -13,6 +13,7 @@
     ad = add
     aa = add -A
     au = add -u
+    bl = blame
     br = branch
     bd = branch -d
     bD = branch -D
@@ -69,4 +70,4 @@
     sslVerify = false
 [core]
     pager = less -FX
-    quotepath = false
+	quotepath = false

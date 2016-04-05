@@ -52,7 +52,7 @@ export MANPATH=/usr/local/man:$MANPATH
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
-export CPLUS_INCLUDE_PATH=~/proj/sunlib/include/
+export CPLUS_INCLUDE_PATH=~/proj/sunshine/include/
 
 # applications
 export VISUAL=vim

@@ -74,9 +74,10 @@ Plugin 'kshenoy/vim-signature'
 
 " Navigators
 Plugin 'mbbill/undotree'
+" Plugin 'simnalamburt/vim-mundo'
 Plugin 'scrooloose/nerdtree'
-Plugin 't9md/vim-nerdtree_plugin_collections'
 Plugin 'jistr/vim-nerdtree-tabs'
+Plugin 't9md/vim-nerdtree_plugin_collections'
 Plugin 'dyng/ctrlsf.vim'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'tacahiroy/ctrlp-funky'
@@ -89,6 +90,7 @@ Plugin 'xolox/vim-session'
 " Utils
 Plugin 'Shebang'
 Plugin 'szw/vim-g'
+Plugin 'iamcco/dict.vim'
 Plugin 'qpkorr/vim-renamer'
 Plugin 'lilydjwg/fcitx.vim'
 Plugin 'gioele/vim-autoswap'
@@ -203,11 +205,11 @@ Plugin 'wavded/vim-stylus'
 
 "" Haskell
 Plugin 'dag/vim2hs'
-" Plugin 'travitch/hasksyn'
+Plugin 'travitch/hasksyn'
 Plugin 'eagletmt/neco-ghc'
 Plugin 'bitc/vim-hdevtools'
 Plugin 'eagletmt/ghcmod-vim'
-Plugin 'Twinside/vim-haskellFold'
+" Plugin 'Twinside/vim-haskellFold'
 " Plugin 'Twinside/vim-haskellConceal'
 Plugin 'lukerandall/haskellmode-vim'
 
@@ -621,7 +623,7 @@ inoremap <C-CR> <C-O>o
 inoremap <C-S-CR> <C-O>O
 
 " Easier formatting
-nnoremap <leader>q gwip
+nnoremap <Leader>q gwip
 
 " Easier window operation
 map <Leader>w <C-W>
@@ -629,21 +631,17 @@ map <Leader>w <C-W>
 " Adjust viewports to the same size
 map <Leader>= <C-W>=
 
-" Most prefer to toggle search highlighting rather than clear the current
-" search results.
-" nmap <silent> <leader>/ :nohlsearch<CR>
-nmap <silent> <leader>/ :set invhlsearch<CR>
-
-" Copy the whole file
-map <Leader>cf :<C-U>%y+<CR>
+" Most prefer to toggle search highlighting rather than clear the current search results.
+" nmap <silent> <Leader>/ :nohlsearch<CR>
+nmap <silent> <Leader>/ :set invhlsearch<CR>
 
 " Find merge conflict markers
-map <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
+map <Leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
 
 nmap <Leader>ff :execute "vimgrep /".@/."/g %"<CR>:copen<CR>
 
 " q to close quickfix
-autocmd BufReadPost quickfix nnoremap q :bd<CR><C-O>
+autocmd BufReadPost quickfix nnoremap q :bd<CR>
 
 function! HiInterestingWord(n)
     " Save our location.
@@ -663,15 +661,15 @@ function! HiInterestingWord(n)
 endfunction
 
 " Add highlighting
-nnoremap <silent> <leader>h1 :call HiInterestingWord(1)<CR>
-nnoremap <silent> <leader>h2 :call HiInterestingWord(2)<CR>
-nnoremap <silent> <leader>h3 :call HiInterestingWord(3)<CR>
-nnoremap <silent> <leader>h4 :call HiInterestingWord(4)<CR>
-nnoremap <silent> <leader>d3 :call matchdelete(86753)<CR>
-nnoremap <silent> <leader>d4 :call matchdelete(86754)<CR>
-nnoremap <silent> <leader>d5 :call matchdelete(86755)<CR>
-nnoremap <silent> <leader>d6 :call matchdelete(86756)<CR>
-nnoremap <silent> <leader>hd :call clearmatches()<CR>
+nnoremap <silent> <Leader>h1 :call HiInterestingWord(1)<CR>
+nnoremap <silent> <Leader>h2 :call HiInterestingWord(2)<CR>
+nnoremap <silent> <Leader>h3 :call HiInterestingWord(3)<CR>
+nnoremap <silent> <Leader>h4 :call HiInterestingWord(4)<CR>
+nnoremap <silent> <Leader>d3 :call matchdelete(86753)<CR>
+nnoremap <silent> <Leader>d4 :call matchdelete(86754)<CR>
+nnoremap <silent> <Leader>d5 :call matchdelete(86755)<CR>
+nnoremap <silent> <Leader>d6 :call matchdelete(86756)<CR>
+nnoremap <silent> <Leader>hd :call clearmatches()<CR>
 
 hi def InterestingWord1 guifg=#000000 ctermfg=16 guibg=#ffa724 ctermbg=214
 hi def InterestingWord2 guifg=#000000 ctermfg=16 guibg=#aeee00 ctermbg=154
@@ -681,16 +679,16 @@ hi def InterestingWord5 guifg=#000000 ctermfg=16 guibg=#ff9eb8 ctermbg=211
 hi def InterestingWord6 guifg=#000000 ctermfg=16 guibg=#ff2c4b ctermbg=195
 
 " Code folding options
-nmap <leader>f0 :set foldlevel=0<CR>
-nmap <leader>f1 :set foldlevel=1<CR>
-nmap <leader>f2 :set foldlevel=2<CR>
-nmap <leader>f3 :set foldlevel=3<CR>
-nmap <leader>f4 :set foldlevel=4<CR>
-nmap <leader>f5 :set foldlevel=5<CR>
-nmap <leader>f6 :set foldlevel=6<CR>
-nmap <leader>f7 :set foldlevel=7<CR>
-nmap <leader>f8 :set foldlevel=8<CR>
-nmap <leader>f9 :set foldlevel=9<CR>
+nmap <Leader>f0 :set foldlevel=0<CR>
+nmap <Leader>f1 :set foldlevel=1<CR>
+nmap <Leader>f2 :set foldlevel=2<CR>
+nmap <Leader>f3 :set foldlevel=3<CR>
+nmap <Leader>f4 :set foldlevel=4<CR>
+nmap <Leader>f5 :set foldlevel=5<CR>
+nmap <Leader>f6 :set foldlevel=6<CR>
+nmap <Leader>f7 :set foldlevel=7<CR>
+nmap <Leader>f8 :set foldlevel=8<CR>
+nmap <Leader>f9 :set foldlevel=9<CR>
 
 " Render selected text with Jinja2
 vmap <Leader>rd :!envtpl<CR>
@@ -698,10 +696,10 @@ vmap <Leader>rd :!envtpl<CR>
 " Some helpers to edit mode
 " http://vimcasts.org/e/14
 cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
-map <leader>ew :e %%
-map <leader>es :sp %%
-map <leader>ev :vsp %%
-map <leader>et :tabe %%
+map <Leader>ew :e %%
+map <Leader>es :sp %%
+map <Leader>ev :vsp %%
+map <Leader>et :tabe %%
 
 " For tab
 map <Leader>tn :tabnew<CR>
@@ -833,16 +831,16 @@ if s:has_bundle('vim-airline')
     let g:airline#extensions#tabline#enabled = 1
     let g:airline#extensions#tabline#buffer_idx_mode = 1
     if g:airline#extensions#tabline#enabled == 1
-        nmap <leader>1 <Plug>AirlineSelectTab1
-        nmap <leader>2 <Plug>AirlineSelectTab2
-        nmap <leader>3 <Plug>AirlineSelectTab3
-        nmap <leader>4 <Plug>AirlineSelectTab4
-        nmap <leader>5 <Plug>AirlineSelectTab5
-        nmap <leader>6 <Plug>AirlineSelectTab6
-        nmap <leader>7 <Plug>AirlineSelectTab7
-        nmap <leader>8 <Plug>AirlineSelectTab8
-        nmap <leader>9 <Plug>AirlineSelectTab9
-        nmap <leader>0 <Plug>AirlineSelectTab0
+        nmap <Leader>1 <Plug>AirlineSelectTab1
+        nmap <Leader>2 <Plug>AirlineSelectTab2
+        nmap <Leader>3 <Plug>AirlineSelectTab3
+        nmap <Leader>4 <Plug>AirlineSelectTab4
+        nmap <Leader>5 <Plug>AirlineSelectTab5
+        nmap <Leader>6 <Plug>AirlineSelectTab6
+        nmap <Leader>7 <Plug>AirlineSelectTab7
+        nmap <Leader>8 <Plug>AirlineSelectTab8
+        nmap <Leader>9 <Plug>AirlineSelectTab9
+        nmap <Leader>0 <Plug>AirlineSelectTab0
     endif
     let g:airline#extensions#whitespace#trailing_format = 'trail[%s]'
     let g:airline#extensions#whitespace#mixed_indent_format = 'mixed[%s]'
@@ -864,7 +862,7 @@ endif
 
 if s:has_bundle('nerdtree')
     map <C-e> <plug>NERDTreeTabsToggle<CR>
-    map <leader>e :NERDTreeFind<CR>
+    map <Leader>e :NERDTreeFind<CR>
 
     let NERDTreeShowBookmarks = 1
     let NERDTreeIgnore = [
@@ -909,7 +907,6 @@ if s:has_bundle('ctrlp.vim')
 
     nnoremap <silent> <Leader>fm :CtrlPMRU<CR>
     nnoremap <silent> <Leader>fb :CtrlPBuffer<CR>
-
     nnoremap <silent> <Leader>fq :CtrlPQuickfix<CR>
 
     " On Windows use "dir" as fallback command.
@@ -933,10 +930,7 @@ if s:has_bundle('ctrlp.vim')
                 \ }
 
     if s:has_bundle('ctrlp-funky')
-        " CtrlP extensions
         let g:ctrlp_extensions += ['funky']
-
-        "funky
         nnoremap <Leader>fu :CtrlPFunky<Cr>
     endif
 
@@ -957,13 +951,26 @@ if s:has_bundle('ctrlsf.vim')
 endif
 
 if s:has_bundle('vim-session')
-    nmap <leader>so :OpenSession<CR>
-    nmap <leader>ss :SaveSession<space>
-    nmap <leader>sd :DeleteSession<CR>
-    nmap <leader>sc :CloseSession<CR>
+    nmap <Leader>so :OpenSession<CR>
+    nmap <Leader>ss :SaveSession<space>
+    nmap <Leader>sd :DeleteSession<CR>
+    nmap <Leader>sc :CloseSession<CR>
     let g:session_persist_globals = ['&makeprg', '&makeef']
     let g:session_autosave='yes'
     let g:session_autoload='no'
+endif
+
+if s:has_bundle('dict.vim')
+    nmap <silent> <Leader>d <Plug>DictSearch
+    vmap <silent> <Leader>d <Plug>DictVSearch
+    nmap <silent> <Leader><Leader>d <Plug>DictWSearch
+    vmap <silent> <Leader><Leader>d <Plug>DictWVSearch
+    nmap <silent> <Leader><Leader>r <Plug>DictRSearch
+    vmap <silent> <Leader><Leader>r <Plug>DictRVSearch
+endif
+
+if s:has_bundle('vim-renamer')
+    let g:RenamerSupportColonWToRename = 1
 endif
 
 if s:has_bundle('vim-easymotion')
@@ -975,7 +982,7 @@ if s:has_bundle('vim-multiple-cursors')
 endif
 
 if s:has_bundle('wildfire.vim')
-    nmap <leader>s <Plug>(wildfire-quick-select)
+    nmap <Leader>s <Plug>(wildfire-quick-select)
     let g:wildfire_objects = {
                 \ "*" : split("i' i\" i) i] i} ip"),
                 \ "json" : split("i\" a\" i] a] a, i} a} a, ip"),
@@ -1066,7 +1073,7 @@ if s:has_bundle('tabular')
 endif
 
 if s:has_bundle('tagbar')
-    nnoremap <silent> <leader>tt :TagbarToggle<CR>
+    nnoremap <silent> <Leader>tt :TagbarToggle<CR>
     " If using go please install the gotags program using the following
     " go install github.com/jstemmer/gotags
     " And make sure gotags is in your path
@@ -1086,17 +1093,19 @@ if s:has_bundle('tagbar')
 endif
 
 if s:has_bundle('vim-fugitive')
-    nnoremap <silent> <leader>gs :Gstatus<CR>
-    nnoremap <silent> <leader>gd :Gdiff<CR>
-    nnoremap <silent> <leader>gc :Gcommit<CR>
-    nnoremap <silent> <leader>gb :Gblame<CR>
-    nnoremap <silent> <leader>gl :Glog<CR>
-    nnoremap <silent> <leader>gp :Git push<CR>
-    nnoremap <silent> <leader>gr :Gread<CR>
-    nnoremap <silent> <leader>gw :Gwrite<CR>
-    nnoremap <silent> <leader>ge :Gedit<CR>
-    nnoremap <silent> <leader>gi :Git add -p %<CR>
-    nnoremap <silent> <leader>gg :SignifyToggle<CR>
+    nnoremap <silent> <Leader>g  :Git<Space>
+    nnoremap <silent> <Leader>ga :Git add -p %<CR>
+    nnoremap <silent> <Leader>gb :Gblame<CR>
+    nnoremap <silent> <Leader>gc :Gcommit<CR>
+    nnoremap <silent> <Leader>gd :Gdiff<CR>
+    nnoremap <silent> <Leader>ge :Gedit<CR>
+    nnoremap <silent> <Leader>gg :SignifyToggle<CR>
+    nnoremap <silent> <Leader>gl :Glog<CR>
+    nnoremap <silent> <Leader>gm :Gmerge<CR>
+    nnoremap <silent> <Leader>gp :Gpush<CR>
+    nnoremap <silent> <Leader>gr :Gread<CR>
+    nnoremap <silent> <Leader>gs :Gstatus<CR>
+    nnoremap <silent> <Leader>gw :Gwrite<CR>
 endif
 
 if exists("+omnifunc")
@@ -1135,7 +1144,8 @@ elseif s:completer == 'youcompleteme' && s:has_bundle('YouCompleteMe')
     let g:ycm_semantic_triggers = {
         \   'css': ['re!^\s{2-4}', 're!:\s+'],
         \   'haskell': ['.', 'import '],
-        \   'python': ['import ', 'from '],
+        \   'python': ['.', 'import ', 'from '],
+        \   'elm' : ['.'],
         \ }
 
     " remap Ultisnips for compatibility for YCM
@@ -1417,10 +1427,10 @@ if s:has_bundle('vim-go')
     let g:go_fmt_command = "goimports"
     let g:go_fmt_fail_silently = 1
 
-    au FileType go nmap <leader>r <Plug>(go-run)
-    au FileType go nmap <leader>b <Plug>(go-build)
-    au FileType go nmap <leader>t <Plug>(go-test)
-    au FileType go nmap <leader>c <Plug>(go-coverage)
+    au FileType go nmap <Leader>r <Plug>(go-run)
+    au FileType go nmap <Leader>b <Plug>(go-build)
+    au FileType go nmap <Leader>t <Plug>(go-test)
+    au FileType go nmap <Leader>c <Plug>(go-coverage)
 
     au FileType go nmap <Leader>ds <Plug>(go-def-split)
     au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
@@ -1442,7 +1452,7 @@ if s:has_bundle('emmet-vim')
 endif
 
 if s:has_bundle('vim-json')
-    nmap <leader>jt <Esc>:%!python -m json.tool<CR><Esc>:set filetype=json<CR>
+    nmap <Leader>jt <Esc>:%!python -m json.tool<CR><Esc>:set filetype=json<CR>
     let g:vim_json_syntax_conceal = 0
 endif
 
@@ -1450,6 +1460,10 @@ if s:has_bundle('HTML-AutoCloseTag')
     " Make it so AutoCloseTag works for xml and xhtml files as well
     au FileType xhtml,xml ru ftplugin/html/autoclosetag.vim
     nmap <Leader>ac <Plug>ToggleAutoCloseMappings
+endif
+
+if s:has_bundle('vim2hs')
+    let g:haskell_conceal = 0
 endif
 
 if s:has_bundle('vim-hdevtools')
@@ -1462,9 +1476,5 @@ if s:has_bundle('haskellmode-vim')
     let g:haddock_browser = "open"
     let g:haddock_docdir  = "/usr/share/doc/ghc/html/"
     let g:haskellmode_completion_ghc = 0
-endif
-
-if s:has_bundle('vim-renamer')
-    let g:RenamerSupportColonWToRename = 1
 endif
 

@@ -14,4 +14,7 @@ fi
 [[ -f $HOME/.Xmodmap ]] && xmodmap $HOME/.Xmodmap
 [[ -f $HOME/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
 
+# Swap Caps-Lock and Escape
+setxkbmap -option caps:swapescape
+
 exec i3
