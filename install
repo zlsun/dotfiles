@@ -56,7 +56,7 @@ clone() {
 }
 
 clone-repos() {
-    clone zgen   ~/.zgen              https://github.com/zlsun/zgen.git
+    clone zgen   ~/.zgen              https://github.com/tarjoilija/zgen.git
     clone vundle ~/.vim/bundle/vundle https://github.com/gmarik/vundle.git
 }
 
