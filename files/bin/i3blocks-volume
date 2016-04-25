@@ -64,8 +64,8 @@ format() {
 
 case $BLOCK_BUTTON in
   1) pactl set-sink-mute 0 toggle     ;; # amixer -q -D $MIXER sset $SCONTROL $(capability) toggle ;;  # right click, mute/unmute
-  2) pavucontrol ;;
-  3) gnome-alsamixer ;;
+  2) pavucontrol& ;;
+  3) gnome-alsamixer& ;;
   4) pactl set-sink-volume 0 +${STEP} ;; # amixer -q -D $MIXER sset $SCONTROL $(capability) ${STEP}+ unmute ;; # scroll up, increase
   5) pactl set-sink-volume 0 -${STEP} ;; # amixer -q -D $MIXER sset $SCONTROL $(capability) ${STEP}- unmute ;; # scroll down, decrease
 esac

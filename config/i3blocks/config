@@ -105,7 +105,6 @@ interval=10
 #
 # The battery instance defaults to 0.
 [battery]
-label=BAT
 label=⚡
 # instance=1
 interval=30

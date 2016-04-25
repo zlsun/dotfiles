@@ -1002,6 +1002,7 @@ if s:has_bundle('vim-textobj-sentence')
 endif
 
 if s:has_bundle('vim-textobj-quote')
+    let g:textobj#quote#educate = 0
     augroup textobj_quote
         au!
         au FileType markdown call textobj#quote#init()

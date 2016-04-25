@@ -159,6 +159,11 @@ $sep Reflect $sep
 x
 y
 xy
+$sep brightness $sep
+0.2
+0.5
+1.5
+2.0
 $sep Size $sep"
   menu=$(echo \"${XRANDR_TXT}\" \
     | sed -n '/^'$1' /,/^[^ ]/ s/ * //p' \
@@ -169,9 +174,10 @@ $sep Size $sep"
   echo "${menu}" | rofi -dmenu -i -p "Set property of $1:" | read selection
 
   case "${selection}" in
-    'normal') echo '--auto --rotate normal --reflect normal' ;;
+    'normal') echo '--auto --rotate normal --reflect normal --brightness 1' ;;
     'left'|'right'|'inverted') echo "--rotate ${selection}" ;;
     'x'|'y'|'xy') echo "--reflect ${selection}" ;;
+    ?.?) echo "--brightness ${selection}" ;;
     *x*) echo "--mode ${selection}" ;;
     $sep*) select_property $1 ;;
     *) return "${err_bad_selection}" ;;

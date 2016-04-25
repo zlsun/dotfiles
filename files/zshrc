@@ -160,8 +160,24 @@ fawk() {
     awk "{print \$${1}}"
 }
 
+# http://stackoverflow.com/a/3232082
+confirm() {
+    # echo a prompt string or use a default
+    echo -n "${1:-Are you sure? [y/N]} "
+    read -r response
+    case $response in
+        [yY][eE][sS]|[yY]) true  ;;
+        *)                 false ;;
+    esac
+}
+
 kill-match() {
-    pgrep -f $* | xargs sudo kill -9
+    local match=`pgrep -f $*`
+    echo "Find matches:"
+    echo $match | xargs ps
+    confirm "Do you want to kill them all? [y/N] " && (
+        echo $match | xargs sudo kill -9
+    )
 }
 
 vimrename() {
