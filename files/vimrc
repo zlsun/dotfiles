@@ -960,6 +960,10 @@ if s:has_bundle('vim-session')
     let g:session_autoload='no'
 endif
 
+if s:has_bundle('vim-g')
+    let g:vim_g_query_url = "https://www.google.com/search?q="
+endif
+
 if s:has_bundle('dict.vim')
     nmap <silent> <Leader>d <Plug>DictSearch
     vmap <silent> <Leader>d <Plug>DictVSearch
@@ -1009,6 +1013,10 @@ if s:has_bundle('vim-textobj-quote')
         au FileType textile  call textobj#quote#init()
         au FileType text     call textobj#quote#init({'educate': 0})
     augroup END
+endif
+
+if s:has_bundle('tcomment_vim')
+    call tcomment#DefineType('gohtmltmpl', '<!-- %s -->')
 endif
 
 if s:has_bundle('syntastic')

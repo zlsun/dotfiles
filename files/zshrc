@@ -237,6 +237,13 @@ disable-proxy() {
     unset https_proxy
 }
 
+alarm() {
+    speaker-test --frequency $1 --test sine &> /dev/null &
+    local pid=$!
+    sleep $(( $2 / 1000))s
+    kill -9 $pid
+}
+
 # ZSH
 
 autoload -U zmv

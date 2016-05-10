@@ -231,7 +231,7 @@ bar {
     }
 }
 
-for_window [class="Gsimplecal"] move position 983 490
+for_window [class="Gsimplecal"] move position 983 500
 for_window [class="Terminator"] border pixel 1
 
 set $set_float floating enable, border normal 1

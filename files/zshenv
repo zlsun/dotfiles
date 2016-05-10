@@ -29,7 +29,7 @@ export COCOS_TEMPLATES_ROOT=$COCOS_X_ROOT/templates
 export PATH=$COCOS_TEMPLATES_ROOT:$PATH
 
 # Go
-export GOROOT=/usr/lib/go
+# export GOROOT=/usr/lib/go
 export GOARCH=amd64
 export GOOS=linux
 export GOPATH=$DEV_HOME/go
