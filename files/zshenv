@@ -4,9 +4,11 @@ export DEV_HOME=~/dev
 
 # JDK
 export JAVA_HOME=/usr/lib/jvm/default
-export JRE_HOME=${JAVA_HOME}/jre
-export CLASSPATH=$CLASSPATH:.:${JAVA_HOME}/lib:${JRE_HOME}/lib
-export PATH=${JAVA_HOME}:${JAVA_HOME}/bin:${JAVA_HOME}/lib:${JRE_HOME}/bin:$PATH
+export JRE_HOME=$JAVA_HOME/jre
+export CLASSPATH=$CLASSPATH:.:$JAVA_HOME/lib:$JRE_HOME/lib
+export PATH=$JAVA_HOME:$JAVA_HOME/bin:$JAVA_HOME/lib:$JRE_HOME/bin:$PATH
+
+export _JAVA_OPTIONS='-Dawt.useSytemAAFontSettings=on'
 
 # Android SDK
 export ANDROID_SDK_ROOT=$DEV_HOME/android/sdk
@@ -36,9 +38,6 @@ export GOPATH=$DEV_HOME/go
 export GOBIN=$GOPATH/bin
 export PATH=$GOBIN:$PATH
 
-export PATH=~/.bin:$PATH
-export PATH=~/.local/bin:$PATH
-
 # cabal
 export PATH=$HOME/.cabal/bin:$PATH
 
@@ -48,15 +47,19 @@ export PATH=/usr/lib/colorgcc/bin:$PATH
 export CCACHE_PATH=/usr/bin
 export CCACHE_DIR=/tmp/ccache
 
+export PATH=~/.bin:$PATH
+export PATH=~/.local/bin:$PATH
+
 export MANPATH=/usr/local/man:$MANPATH
+export MANPATH=~/.local/man:$MANPATH
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 export CPLUS_INCLUDE_PATH=~/proj/sunshine/include/
 
 # applications
-export VISUAL=vim
-export EDITOR=vim
+export VISUAL=nvim
+export EDITOR=nvim
 export PAGER=less
 export XOPEN=gvfs-open
 export BROWSER=$XOPEN

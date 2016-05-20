@@ -1,9 +1,5 @@
 
-font pango:monospace 12
-
-new_window pixel 1
-new_float normal 1
-hide_edge_borders both
+################################## Keybinding #################################
 
 set $mod Mod4
 floating_modifier $mod
@@ -21,9 +17,10 @@ bindsym $mod+s layout stacking
 bindsym $mod+g split h
 bindsym $mod+v split v
 
-bindsym $mod+t sticky     toggle
-bindsym $mod+f fullscreen toggle
-bindsym $mod+b border     toggle
+bindsym $mod+t     sticky     toggle
+bindsym $mod+f     fullscreen toggle
+bindsym $mod+b     border     toggle
+bindsym $mod+slash bar mode   toggle
 
 bindsym $mod+a focus parent
 bindsym $mod+z focus child
@@ -47,33 +44,42 @@ bindsym $mod+c       move absolute position center
 bindsym $mod+Shift+c resize set 683 484, move absolute position center
 
 # workspace names
-set $ws0 🛪
+set $ws1 1:
+set $ws2 2:
+set $ws3 3:
+set $ws4 4:𐄜
+set $ws5 5:𐄝
+set $ws6 6:𐄞
+set $ws7 7:𐄟
+set $ws8 8:
+set $ws9 9:
+set $ws0 10:
 
 # switch to workspace
-bindsym $mod+1 workspace 1
-bindsym $mod+2 workspace 2
-bindsym $mod+3 workspace 3
-bindsym $mod+4 workspace 4
-bindsym $mod+5 workspace 5
-bindsym $mod+6 workspace 6
-bindsym $mod+7 workspace 7
-bindsym $mod+8 workspace 8
-bindsym $mod+9 workspace 9
-bindsym $mod+0 workspace $ws0
+bindsym $mod+1 workspace $ws1, exec --no-startup-id ~/.i3/st terminator
+bindsym $mod+2 workspace $ws2, exec --no-startup-id ~/.i3/st google-chrome-stable
+bindsym $mod+3 workspace $ws3, exec --no-startup-id ~/.i3/st thunar
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8, exec --no-startup-id ~/.i3/st WizNote
+bindsym $mod+9 workspace $ws9, exec --no-startup-id ~/.i3/st zeal
+bindsym $mod+0 workspace $ws0, exec --no-startup-id ~/.i3/st telegram-desktop
 
 workspace_auto_back_and_forth yes
 
 # move focused container to workspace
-bindsym $mod+Shift+1 move container to workspace 1
-bindsym $mod+Shift+2 move container to workspace 2
-bindsym $mod+Shift+3 move container to workspace 3
-bindsym $mod+Shift+4 move container to workspace 4
-bindsym $mod+Shift+5 move container to workspace 5
-bindsym $mod+Shift+6 move container to workspace 6
-bindsym $mod+Shift+7 move container to workspace 7
-bindsym $mod+Shift+8 move container to workspace 8
-bindsym $mod+Shift+9 move container to workspace 9
-bindsym $mod+Shift+0 move container to workspace $ws0
+bindsym $mod+Shift+1 move container to workspace $ws1, workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2, workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3, workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4, workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5, workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6, workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7, workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8, workspace $ws8
+bindsym $mod+Shift+9 move container to workspace $ws9, workspace $ws9
+bindsym $mod+Shift+0 move container to workspace $ws0, workspace $ws0
 
 bindsym $mod+Return exec i3-sensible-terminal
 
@@ -146,9 +152,10 @@ mode "$mode_system" {
     bindsym h exec --no-startup-id $locker && systemctl hibernate, mode "default"
     bindsym r exec --no-startup-id systemctl reboot,               mode "default"
     bindsym p exec --no-startup-id systemctl poweroff -i,          mode "default"
-    # back to normal: Enter or Escape
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
+
+    bindsym $mod+Shift+e mode "$default"
+    bindsym Return       mode "default"
+    bindsym Escape       mode "default"
 }
 bindsym $mod+Shift+e mode "$mode_system"
 bindsym $mod+semicolon exec --no-startup-id $Locker
@@ -180,16 +187,39 @@ mode "resize" {
     bindsym 9 resize set 1229 691, move absolute position center
     bindsym 0 resize set 1366 768, move absolute position center
 
+    bindsym $mod+r mode "default"
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
 bindsym $mod+r mode "resize"
+
+# Window Manipulation Mode
+set $current_window $(xdotool getwindowfocus)
+set $mode_winman Windows (b) brighten, (d) darken, (p) properties
+mode "$mode_winman" {
+    bindsym b exec --no-startup-id transset-df -i $current_window --dec 0.1
+    bindsym d exec --no-startup-id transset-df -i $current_window --inc 0.1
+    bindsym p exec --no-startup-id xprop -id $current_window | xclip -sel p, mode "default"
+
+    bindsym $mod+i mode "default"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+i mode "$mode_winman"
 
 # Escape Mode: disable all shortcut except $mod+Escape
 mode "escape" {
     bindsym $mod+Escape mode "default"
 }
 bindsym $mod+Escape mode "escape"
+
+###################################### UI #####################################
+
+font pango:monospace 11
+
+new_window pixel 1
+new_float normal 1
+hide_edge_borders both
 
 # Solarized
 set $base03  #002b36
@@ -220,6 +250,7 @@ bar {
     position       bottom
     font           pango:monospace 12
     height         24
+    strip_workspace_numbers yes
     colors {
         separator  $base00
         background $base03
@@ -230,6 +261,8 @@ bar {
         urgent_workspace   $magenta $magenta $base13
     }
 }
+
+################################### Special ###################################
 
 for_window [class="Gsimplecal"] move position 983 500
 for_window [class="Terminator"] border pixel 1
@@ -250,11 +283,14 @@ for_window [class="Pavucontrol"]                $set_float
 for_window [title="Wicd 网络管理器"]            $set_float, resize set 630 426, move position 720 310
 for_window [class="Gnome-alsamixer"]            $set_float
 for_window [class="Deepin-music-player"]        $set_float
+for_window [class="Android SDK Manager"]        $set_float
 for_window [title="多个页面无响应"]             $set_float
 for_window [title="网络操作管理器"]             $set_float
 for_window [title="Terminator首选项"]           $set_float
 for_window [title="chrome-extension:"]          $set_float
 for_window [title="任务管理器 - Google Chrome"] $set_float
+
+################################### Startup ###################################
 
 exec --no-startup-id ~/.i3/autostart.sh
 
@@ -262,12 +298,7 @@ exec --no-startup-id ~/.i3/disable-standby-fs.py
 exec --no-startup-id ~/.i3/focus-last.py
 bindsym Mod1+Tab exec --no-startup-id ~/.i3/focus-last.py --switch
 
-# exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace 1 --command "terminator -l i3"
-exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace 2 --command google-chrome-stable
-exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace 8 --command WizNote
-exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace 9 --command zeal
-exec --no-startup-id ~/.i3/app-on-ws-init.py --workspace $ws0 --command telegram-desktop
-
 exec --no-startup-id ~/.fehbg
-exec --no-startup-id terminator -l i3
+
+exec --no-startup-id terminator
 

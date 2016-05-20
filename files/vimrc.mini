@@ -10,8 +10,12 @@ scriptencoding utf-8
 if has('clipboard')
     if has('unnamedplus')  " When possible use + register for copy-paste
         set clipboard=unnamed,unnamedplus
-    else         " On mac and Windows, use * register for copy-paste
-        set clipboard=unnamed
+    else
+        if has('unnamedplus')  " When possible use + register for copy-paste
+            set clipboard=unnamed,unnamedplus
+        else         " On mac and Windows, use * register for copy-paste
+            set clipboard=unnamed
+        endif
     endif
 endif
 
@@ -42,6 +46,7 @@ set foldenable                  " Auto fold code
 
 set nowrap                      " Do not wrap long lines
 set autoindent                  " Indent at the same level of the previous line
+set autoread                    " Automatically read file when changed
 set shiftwidth=4                " Use indents of 4 spaces
 set expandtab                   " Tabs are spaces, not tabs
 set tabstop=4                   " An indentation every four columns
@@ -64,7 +69,7 @@ set tags=./tags;/,~/.vimtags
 " Make tags placed in .git/tags file available in all levels of a repository
 let gitroot = substitute(system('git rev-parse --show-toplevel'), '[\n\r]', '', 'g')
 if gitroot != ''
-    let &tags = &tags . ',' . gitroot . '/.git/tags'
+    let &tags = &tags.','.gitroot.'/.git/tags'
 endif
 
 " Add exclusions to mkview and loadview
@@ -73,7 +78,7 @@ let g:skipview_files = [
     \ '\[example pattern\]'
     \ ]
 
-let g:netrw_browsex_viewer =  "x-www-browser"
+let g:netrw_browsex_viewer = "gvfs-open"
 
 " ======================================================================== "
 "                               UI Settings                                "
@@ -94,7 +99,10 @@ set tabpagemax=15           " Only show 15 tabs
 " Custom invisibles
 set list
 set listchars=tab:›\ ,trail:•,extends:❯,precedes:❮,nbsp:.
-set showbreak=↪\ \ 
+let &showbreak='↪ '
+if has('linebreak')
+    set breakindent
+end
 
 if has('cmdline_info')
     set ruler   " Show the ruler
@@ -149,39 +157,38 @@ func! InitializeDirectories()
                 \ 'views': 'viewdir',
                 \ 'swap': 'directory',
                 \ }
-
     if has('persistent_undo')
         let dir_list['undo'] = 'undodir'
     endif
-
     if exists('g:consolidated_directory')
-        let common_dir = g:consolidated_directory . prefix
+        let common_dir = g:consolidated_directory.prefix
     else
-        let common_dir = parent . '/.' . prefix
+        let common_dir = parent.'/.'.prefix
     endif
-
     for [dirname, settingname] in items(dir_list)
-        let directory = common_dir . dirname . '/'
+        let directory = common_dir.dirname.'/'
         if exists("*mkdir")
             if !isdirectory(directory)
                 call mkdir(directory, "p")
             endif
         endif
         if !isdirectory(directory)
-            echo "Warning: Unable to create backup directory: " . directory
-            echo "Try: mkdir -p " . directory
+            echo "Warning: Unable to create backup directory: ".directory
+            echo "Try: mkdir -p ".directory
         else
             let directory = substitute(directory, " ", "\\\\ ", "g")
-            exec "set " . settingname . "=" . directory
+            exec "set ".settingname."=".directory
         endif
     endfor
-
-    let viminfo = common_dir . 'info'
-    exec "set viminfo+=n" . viminfo
-
+    if has('nvim')
+        let viminfo = common_dir.'ninfo'
+        exec "set shada+=n".viminfo
+    else
+        let viminfo = common_dir.'info'
+        exec "set viminfo+=n".viminfo
+    endif
 endfunc
-
-let g:consolidated_directory = $HOME . '/.vim/'
+let g:consolidated_directory = $HOME.'/.vim/'
 call InitializeDirectories()
 
 
@@ -211,7 +218,7 @@ func! s:RunShellCommand(cmdline)
 
     call setline(1, a:cmdline)
     call setline(2, substitute(a:cmdline, '.', '=', 'g'))
-    execute 'silent $read !' . escape(a:cmdline, '%#')
+    execute 'silent $read !'.escape(a:cmdline, '%#')
     setlocal nomodifiable
     1
 endfunc
@@ -223,52 +230,40 @@ com! -complete=file -nargs=+ Shell call s:RunShellCommand(<q-args>)
 "                               Autocommands                               "
 " ======================================================================== "
 
-" Most prefer to automatically switch to the current file directory when a new
-" buffer is opened.
-au BufEnter * if bufname("") !~ "^\[A-Za-z0-9\]*://" | lcd %:p:h | endif
-
 " Instead of reverting the cursor to the last position in the buffer, we
 " set it to the first line when editing a git commit message
 au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
 
-" http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
-" Restore cursor to file position in previous editing session
-func! ResCur()
-    if line("'\"") <= line("$")
-        normal! g`"
-        return 1
-    endif
-endfunc
-
-aug resCur
+aug ReloadVimrc
     au!
-    au BufWinEnter * call ResCur()
+    au BufWritePost .vimrc source %
+    au BufWritePost vimrc source %
 aug END
 
-" Set scripts to be executable from the shell
-func! s:chmod(file)
-    if getline(1) =~ "^#!.*/bin/"
-        silent !chmod +x a:file
-    endif
-endfunc
-" au BufWritePost * call s:chmod(<afile>)
-
 " Remove trailing whitespaces and ^M chars
-au FileType c,cpp,java,go,php,javascript,python,yml,perl,nasm
+au FileType c,cpp,elm,go,haskell,java,javascript,nasm,perl,php,python,ruby,sh,yml
     \ au BufWritePre <buffer> call StripTrailingWhitespace()
 
-au FileType txt set wrap
+au FileType txt,markdown set wrap
 
 au FileType haskell,puppet,ruby,yml setlocal expandtab shiftwidth=2 softtabstop=2
 " preceding line best in a plugin but here for now.
 " Workaround vim-commentary for Haskell
-au FileType haskell setlocal commentstring=--\ %s
+" au FileType haskell setlocal commentstring=--\ %s
 " Workaround broken color highlighting in Haskell
 au FileType haskell,rust setlocal nospell
 
-" Set filetypes
+au FileType python           let &makeprg='python "%"'
+au FileType c                let &makeprg='gcc "%" -o "%:r" -g -std=c11 && "%:p:r"'
+au FileType cpp              let &makeprg='g++ "%" -o "%:r" -g -std=c++1y && "%:p:r"'
+au FileType lua              let &makeprg='lua "%"'
+au FileType xdefaults        let &makeprg='xrdb %'
+au FileType haskell,lhaskell let &makeprg='runhaskell "%"'
+
+autocmd FileType haskell let &formatprg='pointfree --stdin'
+
+" Set filetype
 au BufNewFile,BufRead *.html.twig set filetype=html.twig
-au BufNewFile,BufRead *.coffee    set filetype=coffee
 au BufNewFile,BufRead *.asm       set filetype=nasm
 au BufNewFile,BufRead *.inc       set filetype=nasm
 au BufNewFile,BufRead *.zsh-theme set filetype=zsh
@@ -302,13 +297,10 @@ cmap Tabe tabe
 
 " The default leader is '\', but many people prefer ',' as it's in a standard
 " location.
-let mapleader = ','
+let mapleader = ' '
 let maplocalleader = '_'
 
-" Map space as leader.
-" see: http://redd.it/1vdrxg
-nmap <Space> <Leader>
-nmap <Space><Space> <Leader><Leader>
+nmap , <Leader><Leader>
 
 " map ; to :
 " see: http://vim.wikia.com/wiki/Map_semicolon_to_colon
@@ -330,8 +322,8 @@ vnoremap D y`>p`[v`]
 nnoremap Y y$
 
 " Map Q to replace
-nmap Q :%s///g<Left><Left><Left>
-vmap Q :s///g<Left><Left><Left>
+nmap Q :%s```g<Left><Left><Left>
+vmap Q :s```g<Left><Left><Left>
 
 " Allow using the repeat operator with a visual selection (!)
 " http://stackoverflow.com/a/8064607/127816
@@ -348,25 +340,16 @@ nnoremap gp `[v`]
 vnoremap < <gv
 vnoremap > >gv
 
-" The following two lines conflict with moving to top and
-" bottom of the screen
-map <S-H> gT
-map <S-L> gt
-
-map <silent> <F5> :!./%<CR><CR>
+noremap / ms/
+noremap ? ms?
 
 " Fullscreen mode for GVIM and Terminal, need 'wmctrl' in you PATH
-map <silent> <F11> :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
+map <silent> <F11> :call system("wmctrl -ir ".v:windowid." -b toggle,fullscreen")<CR>
 
-" Easier moving in tabs and windows
-" The lines conflict with the default digraph mapping of <C-K>
-map <C-J> <C-W>j
-map <C-K> <C-W>k
-map <C-L> <C-W>l
-map <C-H> <C-W>h
-
-inoremap <C-CR> <C-O>o
-inoremap <C-S-CR> <C-O>O
+" The following two lines conflict with moving to top and
+" bottom of the screen
+map <silent> <S-H> :bnext<CR>
+map <silent> <S-L> :bprevious<CR>
 
 " move line up and down
 nnoremap <A-j> :m .+1<CR>
@@ -376,54 +359,105 @@ inoremap <A-k> <Esc>:m .-2<CR>gi
 vnoremap <A-j> :m '>+1<CR>gv
 vnoremap <A-k> :m '<-2<CR>gv
 
-" Easier formatting
-nnoremap <silent> <leader>q gwip
+" Easier moving in tabs and windows
+" The lines conflict with the default digraph mapping of <C-K>
+nnoremap <C-J> <C-W>j
+nnoremap <C-K> <C-W>k
+nnoremap <C-L> <C-W>l
+nnoremap <C-H> <C-W>h
+if has('nvim')
+    nnoremap <BS> <C-W>h
+endif
 
-" Render selected text with Jinja2
-vmap <silent> <Leader>r :!envtpl<CR>
+noremap <C-Q> ZZ
+inoremap <C-Q> <C-O>ZZ
+
+inoremap <C-Z> <C-O><C-Z>
+
+inoremap <C-A> <Esc>I
+inoremap <C-E> <Esc>A
+
+inoremap <C-CR> <C-O>o
+inoremap <C-S-CR> <C-O>O
+
+" Easier formatting
+nnoremap <Leader>q gwip
 
 " Easier window operation
 map <Leader>w <C-W>
 
 " Adjust viewports to the same size
-map <Leader>= <C-w>=
+map <Leader>= <C-W>=
 
-" Most prefer to toggle search highlighting rather than clear the current
-" search results.
-" nmap <silent> <leader>/ :nohlsearch<CR>
-nmap <silent> <leader>/ :set invhlsearch<CR>
-
-" Code folding options
-nmap <leader>f0 :set foldlevel=0<CR>
-nmap <leader>f1 :set foldlevel=1<CR>
-nmap <leader>f2 :set foldlevel=2<CR>
-nmap <leader>f3 :set foldlevel=3<CR>
-nmap <leader>f4 :set foldlevel=4<CR>
-nmap <leader>f5 :set foldlevel=5<CR>
-nmap <leader>f6 :set foldlevel=6<CR>
-nmap <leader>f7 :set foldlevel=7<CR>
-nmap <leader>f8 :set foldlevel=8<CR>
-nmap <leader>f9 :set foldlevel=9<CR>
-
-" Copy the whole file
-map <Leader>cf :<C-U>%y+<CR>
+" Most prefer to toggle search highlighting rather than clear the current search results.
+" nmap <silent> <Leader>/ :nohlsearch<CR>
+nmap <silent> <Leader>/ :set invhlsearch<CR>
 
 " Find merge conflict markers
-map <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
+map <Leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
 
-" Display all lines with keyword under cursor and ask which one to jump to
-nmap <Leader>ff [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
+nmap <Leader>ff :execute "vimgrep /".@/."/g %"<CR>:copen<CR>
 
-" Source current file
-map <Leader>so :source %<CR>
+" q to close quickfix
+autocmd BufReadPost quickfix nnoremap q :bd<CR>
+
+function! HiInterestingWord(n)
+    " Save our location.
+    normal! mz
+    " Yank the current word into the z register.
+    normal! "zyiw
+    " Calculate an arbitrary match ID.  Hopefully nothing else is using it.
+    let mid = 86750 + a:n
+    " Clear existing matches, but don't worry if they don't exist.
+    silent! call matchdelete(mid)
+    " Construct a literal pattern that has to match at boundaries.
+    let pat = '\V\<' . escape(@z, '\') . '\>'
+    " Actually match the words.
+    call matchadd("InterestingWord" . a:n, pat, 1, mid)
+    " Move back to our original location.
+    normal! `z
+endfunction
+
+" Add highlighting
+nnoremap <silent> <Leader>h1 :call HiInterestingWord(1)<CR>
+nnoremap <silent> <Leader>h2 :call HiInterestingWord(2)<CR>
+nnoremap <silent> <Leader>h3 :call HiInterestingWord(3)<CR>
+nnoremap <silent> <Leader>h4 :call HiInterestingWord(4)<CR>
+nnoremap <silent> <Leader>d3 :call matchdelete(86753)<CR>
+nnoremap <silent> <Leader>d4 :call matchdelete(86754)<CR>
+nnoremap <silent> <Leader>d5 :call matchdelete(86755)<CR>
+nnoremap <silent> <Leader>d6 :call matchdelete(86756)<CR>
+nnoremap <silent> <Leader>hd :call clearmatches()<CR>
+
+hi def InterestingWord1 guifg=#000000 ctermfg=16 guibg=#ffa724 ctermbg=214
+hi def InterestingWord2 guifg=#000000 ctermfg=16 guibg=#aeee00 ctermbg=154
+hi def InterestingWord3 guifg=#000000 ctermfg=16 guibg=#8cffba ctermbg=121
+hi def InterestingWord4 guifg=#000000 ctermfg=16 guibg=#b88853 ctermbg=137
+hi def InterestingWord5 guifg=#000000 ctermfg=16 guibg=#ff9eb8 ctermbg=211
+hi def InterestingWord6 guifg=#000000 ctermfg=16 guibg=#ff2c4b ctermbg=195
+
+" Code folding options
+nmap <Leader>f0 :set foldlevel=0<CR>
+nmap <Leader>f1 :set foldlevel=1<CR>
+nmap <Leader>f2 :set foldlevel=2<CR>
+nmap <Leader>f3 :set foldlevel=3<CR>
+nmap <Leader>f4 :set foldlevel=4<CR>
+nmap <Leader>f5 :set foldlevel=5<CR>
+nmap <Leader>f6 :set foldlevel=6<CR>
+nmap <Leader>f7 :set foldlevel=7<CR>
+nmap <Leader>f8 :set foldlevel=8<CR>
+nmap <Leader>f9 :set foldlevel=9<CR>
+
+" Render selected text with Jinja2
+vmap <Leader>rd :!envtpl<CR>
 
 " Some helpers to edit mode
 " http://vimcasts.org/e/14
 cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
-map <leader>ew :e %%
-map <leader>es :sp %%
-map <leader>ev :vsp %%
-map <leader>et :tabe %%
+map <Leader>ew :e %%
+map <Leader>es :sp %%
+map <Leader>ev :vsp %%
+map <Leader>et :tabe %%
 
 " For tab
 map <Leader>tn :tabnew<CR>
@@ -433,6 +467,22 @@ map <Leader>tl :tablast<CR>
 map <Leader>tc :tabclose<CR>
 map <Leader>th :tabfirst<CR>
 map <Leader>tj :tabprevious<CR>
+
+map   <F5> :w<CR>:call SetExecutable()<CR>:!%:p<CR>
+map <S-F5> :w<CR>:call SetExecutable()<CR>:!%:p<space>
+
+imap   <F5> <Esc><F5>
+imap <S-F5> <Esc><S-F5>
+
+map      <F6> :w<CR>:<C-U>make!<CR>
+map    <S-F6> :w<CR>:<C-U>make!<space>
+map <Leader>b <F6>
+map <Leader>B <S-F6>
+
+imap    <F6> <Esc>
+imap  <S-F6> <Esc><S-F6>
+imap   <C-B> <Esc><Leader>b
+imap <C-S-B> <Esc><Leader>B
 
 " If the current buffer has never been saved, it will have no name, call the
 " file browser to save it, otherwise just save it. see:
@@ -446,14 +496,12 @@ com! -nargs=0 -bar Update
     \|     endif
     \| endif
 noremap <silent> <C-S> :<C-U>Update<CR>
-inoremap <C-S> <Esc>:Update<CR>
+inoremap <silent> <C-S> <C-O>:Update<CR>
 
 " Spell Check
 " see: http://vim.wikia.com/wiki/Toggle_spellcheck_with_function_keys
-
 let g:spell_lang_index = 0
 let g:spell_lang_list = ["nospell","en"]
-
 func! ToggleSpell()
     let g:spell_lang_index = g:spell_lang_index + 1
     if g:spell_lang_index >= len(g:spell_lang_list)
@@ -462,11 +510,10 @@ func! ToggleSpell()
     if g:spell_lang_index == 0
         setlocal nospell
     else
-        execute "setlocal spell spelllang=" . get(g:spell_lang_list, g:spell_lang_index)
+        execute "setlocal spell spelllang=".get(g:spell_lang_list, g:spell_lang_index)
     endif
     echo "spell checking language:" g:spell_lang_list[g:spell_lang_index]
 endfunc
-
 nmap <silent> <F7> :call ToggleSpell()<CR>
 imap <silent> <F7> <C-O>: call ToggleSpell()<CR>
 
@@ -479,7 +526,6 @@ func! ToggleHexView()
     endif
     let b:in_hex_view = !b:in_hex_view
 endfunc
-
 nmap <silent> <F8> :call ToggleHexView()<CR>
 
 " End/Start of line motion keys act relative to row/wrap width in the presence
@@ -491,12 +537,11 @@ func! WrapRelativeMotion(key, ...)
         let vis_sel = "gv"
     endif
     if &wrap
-        execute "normal!" vis_sel . "g" . a:key
+        execute "normal!" vis_sel."g".a:key
     else
-        execute "normal!" vis_sel . a:key
+        execute "normal!" vis_sel.a:key
     endif
 endfunc
-
 " Map g* keys in Normal, Operator-pending, and Visual+select
 noremap <silent> $       :call WrapRelativeMotion("$")<CR>
 noremap <silent> <End>   :call WrapRelativeMotion("$")<CR>

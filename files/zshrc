@@ -240,7 +240,7 @@ disable-proxy() {
 alarm() {
     speaker-test --frequency $1 --test sine &> /dev/null &
     local pid=$!
-    sleep $(( $2 / 1000))s
+    sleep $(( $2 / 100))s
     kill -9 $pid
 }
 
@@ -318,21 +318,21 @@ bindkey "\eh" toggle-help-command-line
 # http://askubuntu.com/a/22043/399470
 alias s='sudo '
 
-# enable <C-S> <C-Q> <C-J> in vim
-alias vim="stty stop '' start '' -ixon; vim"
+# use neovim
+alias vim='stty stop "" start "" -ixon; nvim'
 
 # shorten frequent commands
 alias c='cat'
+alias e='echo'
 alias h='history'
 alias g='git'
 alias q='exit'
 alias v='vim'
 alias cx='chmod +x'
-alias ec='echo'
 alias fk='eval $(thefuck $(fc -ln -1))' # thefuck <https://github.com/nvbn/thefuck>
 alias gg='git gui'
 alias rg='ranger'
-alias sv='s v'
+alias sv='stty stop "" start "" -ixon; sudo nvim'
 alias wh='which'
 
 # meaning aliases

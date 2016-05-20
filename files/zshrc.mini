@@ -116,7 +116,7 @@ top-commands() {
         | head $*
 }
 
-save-rm-rf() {
+reinstall-all-packages() {
     comm -23 <(pacman -Qeq) <(pacman -Qmq) | pacman -S -
     comm -23 <(pacman -Qdq) <(pacman -Qmq) | pacman -S --asdeps -
 }
@@ -125,12 +125,59 @@ bgit() {
     local color='\e[1;31m'
     local reset='\e[0m'
     local echo_cmd="echo -e '${color}[{}]$reset'"
-    local git_cmd="git --git-dir={}/.git --work-tree={} $*"
-    printf "%s\n" */ | cut -d'/' -f1 | xargs -I '{}' sh -c "$echo_cmd && $git_cmd"
+    local git_config="-c color.ui=always -c color.status=always -c color.branch=always -c color.diff=always"
+    local git_cmd="git $git_config --git-dir={}/.git --work-tree={} $*"
+    local cmd="$echo_cmd && $git_cmd"
+    printf "%s\n" */ | cut -d'/' -f1 | xargs -I '{}' sh -c $cmd
+}
+
+pgit() {
+    local color='\e[1;31m'
+    local reset='\e[0m'
+    local echo_cmd="echo -e '${color}[{}]$reset'"
+    local git_config="-c color.ui=always -c color.status=always -c color.branch=always -c color.diff=always"
+    local git_cmd="git $git_config --git-dir={}/.git --work-tree={} $*"
+    local cmd="$echo_cmd && $git_cmd"
+    printf "%s\n" */ | cut -d'/' -f1 | parallel $cmd
+}
+
+ptyrun () {
+    local ptyname=pty-$$
+    zmodload zsh/zpty
+    zpty $ptyname ${1+"$@"}
+    if [[ ! -t 1 ]]; then
+        setopt local_traps
+        trap '' INT
+    fi
+    zpty -r $ptyname
+    zpty -d $ptyname
+}
+ptyless () {
+    ptyrun $@ | less
 }
 
 fawk() {
     awk "{print \$${1}}"
+}
+
+# http://stackoverflow.com/a/3232082
+confirm() {
+    # echo a prompt string or use a default
+    echo -n "${1:-Are you sure? [y/N]} "
+    read -r response
+    case $response in
+        [yY][eE][sS]|[yY]) true  ;;
+        *)                 false ;;
+    esac
+}
+
+kill-match() {
+    local match=`pgrep -f $*`
+    echo "Find matches:"
+    echo $match | xargs ps
+    confirm "Do you want to kill them all? [y/N] " && (
+        echo $match | xargs sudo kill -9
+    )
 }
 
 vimrename() {
@@ -138,29 +185,377 @@ vimrename() {
     vim -c "cd $dir|Renamer"
 }
 
-exists() {
-    type $1 &> /dev/null
+who-open() {
+    xdg-mime query default `xdg-mime query filetype $1`
 }
+
+set-open() {
+    xdg-mime default $2 `xdg-mime query filetype $1`
+}
+
+color-table() {
+    echo -ne "\e[4m │"
+    for j ($(seq 30 37)) echo -ne "$j "
+    echo
+    for i ($(seq 0 7)) do
+        echo -n "\e[0m$i│"
+        for j ($(seq 30 37)) do
+            echo -ne "\e[$i;${j}maB "
+        done
+        echo
+    done
+}
+
+watchon() {
+    local cmd=$1
+    shift
+    ls $* | entr sh -c $cmd
+}
+
+for-subdir() {
+    for d (*/) (
+        cd $d
+        $*
+    )
+}
+
+prepend() {
+    cat - "$1" | sponge "$1"
+}
+
+bak() {
+    mv "$1" "$1.bak"
+}
+
+enable-proxy() {
+    export http_proxy=http://127.0.0.1:8087
+    export https_proxy=http://127.0.0.1:8087
+}
+
+disable-proxy() {
+    unset http_proxy
+    unset https_proxy
+}
+
+alarm() {
+    speaker-test --frequency $1 --test sine &> /dev/null &
+    local pid=$!
+    sleep $(( $2 / 100))s
+    kill -9 $pid
+}
+
+# ZSH
+
+autoload -U zmv
+
+# `Frozing' tty, so after any command terminal settings will be restored
+ttyctl -f
+
+setopt HIST_IGNORE_DUPS
+
+# make zsh know about hosts already accessed by SSH
+zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
+
+# Key bindings
+
+# Ctrl-Z: switch to foreground
+bindkey -s '^Z' '^q fg\n'
+
+# Ctrl-O: open ranger
+bindkey -s '^O' '^q ranger\n'
+
+bindkey -M menuselect 'h' vi-backward-char
+bindkey -M menuselect 'j' vi-down-line-or-history
+bindkey -M menuselect 'k' vi-up-line-or-history
+bindkey -M menuselect 'l' vi-forward-char
+
+bindkey -M menuselect 'a' vi-backward-char
+bindkey -M menuselect 's' vi-down-line-or-history
+bindkey -M menuselect 'w' vi-up-line-or-history
+bindkey -M menuselect 'd' vi-forward-char
+
+bindkey -M menuselect '/' accept-and-infer-next-history
+bindkey -M menuselect '.' undo
+bindkey -M menuselect ' ' accept-and-hold
+bindkey -M menuselect ';' history-incremental-search-forward
+
+toggle-sudo-command-line() {
+    [[ -z $BUFFER ]] && zle up-history
+    if [[ $BUFFER == s\ * ]]; then
+        LBUFFER="${LBUFFER#sudo }"
+    else
+        LBUFFER="s $LBUFFER"
+    fi
+}
+zle -N toggle-sudo-command-line
+bindkey "\e\e" toggle-sudo-command-line
+
+toggle-man-command-line() {
+    [[ -z $BUFFER ]] && zle up-history
+    if [[ $BUFFER == man\ * ]]; then
+        LBUFFER="${LBUFFER#man }"
+    else
+        LBUFFER="man $LBUFFER"
+    fi
+}
+zle -N toggle-man-command-line
+bindkey "\em" toggle-man-command-line
+
+toggle-help-command-line() {
+    [[ -z $BUFFER ]] && zle up-history
+    if [[ $BUFFER == *\ --help ]]; then
+        LBUFFER="${LBUFFER% --help}"
+    else
+        LBUFFER="$LBUFFER --help"
+    fi
+}
+zle -N toggle-help-command-line
+bindkey "\eh" toggle-help-command-line
 
 # Aliases
 
+# enable alias when use sudo
+# http://askubuntu.com/a/22043/399470
+alias s='sudo '
+
+# use neovim
+alias vim='stty stop "" start "" -ixon; nvim'
+
+# shorten frequent commands
+alias c='cat'
+alias e='echo'
+alias h='history'
+alias g='git'
+alias q='exit'
+alias v='vim'
+alias cx='chmod +x'
+alias fk='eval $(thefuck $(fc -ln -1))' # thefuck <https://github.com/nvbn/thefuck>
+alias gg='git gui'
 EDITOR=vim
 XOPEN=gvfs-open
 BROWSER=$XOPEN
+
+# meaning aliases
+alias info='info --vi-key'
+alias help='man'
+alias unexport='unset'
+alias open='$XOPEN'
+
+# commands with options
+alias grep='grep --color'
+alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS} '
+alias hgrep='fc -El 0 | grep'
+alias sortnr='sort -n -r'
+alias dud='du -d 1 -h'
+alias duf='du -sh *'
+alias fd='noglob find . -type d -name'
+alias ff='noglob find . -type f -name'
+
+# prompt before operating file
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+alias mmv='noglob zmv -W'
+
+# quick access to files
+alias srcls='$EDITOR /etc/apt/sources.list'
+alias pcmcf='$EDITOR /etc/pacman.conf'
+alias tmxcf='$EDITOR ~/.tmux.conf'
+alias vimrc='$EDITOR ~/.vimrc'
+alias zshrc='$EDITOR ~/.zshrc'
+alias i3cfg='$EDITOR ~/.i3/config'
+
+# l* -> ls
+alias    l='ls -lFh'    # size,show type,human readable
+alias   la='ls -lAFh'   # long list,show almost all,show type,human readable
+alias   lr='ls -tRFh'   # sorted by date,recursive,show type,human readable
+alias   lt='ls -ltFh'   # long list,sorted by date,show type,human readable
+alias   ll='ls -l'      # long list
+alias ldot='ls -ld .*'
+alias   lS='ls -1FSsh'
+alias lart='ls -1Fcart'
+alias  lrt='ls -1Fcrt'
+
+# m* -> make
+alias   m='make'
+alias  mr='make run'
+alias mcl='make clean'
+alias mrb='make clean && make'
+
+# cm* -> cmake
+_cm() {
+    root=$(pwd)
+    build_type=$1
+    shift
+    dir=build/$build_type
+    if [[ ! -e $dir ]]; then
+        mkdir -p $dir
+        (
+            cd $dir
+            cmake -DCMAKE_BUILD_TYPE=$build_type $root
+        )
+    fi
+    cmake --build $dir --target $*
+}
+
+alias   cm='_cm debug'
+alias  cmr='cm run'
+alias cmcl='cm clean'
+alias cmrb='cm clean && cm'
+
+alias   rcm='_cm release'
+alias  rcmr='rcm run'
+alias rcmcl='rcm clean'
+alias rcmrb='rcm clean && rcm'
+
+# py* -> python
+
+alias  py='python'
+alias py2='python2'
+alias py3='python3'
+
+alias   pyi='sudo -H pip install'
+alias  pyi2='sudo -H pip2 install'
+alias  pyi3='sudo -H pip3 install'
+alias  pyiu='pip install --user'
+alias pyiu2='pip2 install --user'
+alias pyiu3='pip3 install --user'
+alias   pyu='sudo -H pip uninstall'
+alias  pyu2='sudo -H pip2 uninstall'
+alias  pyu3='sudo -H pip3 uninstall'
+
+alias  pyftp='python -m pyftpdlib'
+alias pyhttp='python3 -m http.server'
+
+alias     pypf='python -m cProfile'
+alias    pypf2='python2 -m cProfile'
+alias    pypf3='python3 -m cProfile'
+alias   pytime='python -m timeit'
+alias  pytime2='python2 -m timeit'
+alias  pytime3='python3 -m timeit'
+alias  pytrace='python -m trace'
+alias pytrace2='python2 -m trace'
+alias pytrace3='python3 -m trace'
+alias    pypdb='python -m pdb'
+alias   pypdb2='python2 -m pdb'
+alias   pypdb3='python3 -m pdb'
+
+alias  ipy='ipython'
+alias ipy2='ipython2'
+alias ipy3='ipython3'
+alias  iqt='ipython qtconsole'
+alias iqt2='ipython2 qtconsole'
+alias iqt3='ipython3 qtconsole'
+alias   nb='ipython notebook'
+alias  nb2='ipython2 notebook'
+alias  nb3='ipython3 notebook'
+
+alias pti='ptipython'
+
+# rsync-* -> rsync
+alias rsync-copy="rsync -avz --progress -h"
+alias rsync-move="rsync -avz --progress -h --remove-source-files"
+alias rsync-update="rsync -avzu --progress -h"
+alias rsync-sync="rsync -avzu --delete --progress -h"
+alias cpv="rsync -poghb --backup-dir=/tmp/rsync -e /dev/null --progress --"
+
+# sc[u]-* -> systemctl
+user_commands=(
+  list-units is-active status show help list-unit-files
+  is-enabled list-jobs show-environment cat)
+
+sudo_commands=(
+  start stop reload restart try-restart isolate kill
+  reset-failed enable disable reenable preset mask unmask
+  link load cancel set-environment unset-environment
+  halt hybrid-sleep hibernate suspend poweroff
+  edit)
+
+for c ($user_commands) alias sc-$c="systemctl $c"
+for c ($sudo_commands) alias sc-$c="sudo systemctl $c"
+for c ($sudo_commands) alias scu-$c="systemctl --user $c"
+
+# sg* -> apt-*
+alias sga='sudo apt-get autoremove'
+alias sgc='sudo apt-get autoclean'
+alias sgd='sudo apt-get dist-upgrade'
+alias sgg='sudo apt-get upgrade'
+alias sgi='sudo apt-get install'
+alias sgp='sudo apt-get remove --purge'
+alias sgr='sudo apt-get remove'
+alias sgu='sudo apt-get update'
+alias sgs='apt-cache search'
+alias sgf='apt-file search'
+
+# ya* -> yaourt
+alias      y='yaourt'
+alias    yat='yaourt'
+alias    yaq='yaourt -Q'
+alias   yaqe='yaourt -Qe'
+alias   yaqi='yaourt -Qi'
+alias   yaqk='yaourt -Qk'
+alias   yaql='yaourt -Ql'
+alias   yaqm='yaourt -Qm'
+alias   yaqo='yaourt -Qo'
+alias   yaqs='yaourt -Qs'
+alias  yaqem='yaourt -Qem'
+alias  yaqii='yaourt -Qii'
+alias  yaqtd='yaourt -Qtd'
+alias    yar='yaourt -R'
+alias   yars='yaourt -Rs'
+alias  yarsn='yaourt -Rsn'
+alias    yas='yaourt -S'
+alias   yasi='yaourt -Si'
+alias   yass='yaourt -Ss'
+alias   yasy='yaourt -Sy'
+alias  yasii='yaourt -Sii'
+alias  yasyu='yaourt -Syu'
+alias  yasyy='yaourt -Syy'
+alias yasyua='yaourt -Syua'
+alias yasyyu='yaourt -Syyu'
+alias    yau='yaourt -U'
+alias    yac='yaourt -C'
+alias    yab='yaourt -B'
+alias    yag='yaourt -G'
+alias    yaa='yaourt --stats'
+
+# how* -> howdoi <https://github.com/gleitz/howdoi>
+alias howdoi='howdoi -c'
+alias    how='howdoi'
+alias   howc='howdoi c'
+alias  howcp='howdoi c++'
+alias howcss='howdoi css'
+alias  howjs='howdoi js'
+alias  howjv='howdoi java'
+alias  howml='howdoi html'
+alias  howpy='howdoi python'
+alias  howsh='howdoi shell'
+
+# k* -> k <https://github.com/rimraf/k>
+alias  k='k -h'
+alias ka='k -h -A'
+
+# fasd <https://github.com/clvv/fasd>
+export _FASD_VIMINFO="~/.vim/info"
+export _FASD_BACKENDS="native viminfo current"
+alias A='fasd -A'
+alias D='fasd -D'
+alias o='fasd -a -B recently-used -e $XOPEN'
 
 # open file depends on their SUFFIX
 if [ ${ZSH_VERSION//\./} -ge 420 ]; then
     # open browser on urls
     _browser_fts=(htm html de org net com at cx nl se dk dk php)
-    for ft in $_browser_fts ; do alias -s $ft=$XOPEN ; done
+    for ft ($_browser_fts) alias -s $ft=$XOPEN
 
     _editor_fts=(asc c cc cpp cxx h hh ini tex txt TXT)
-    for ft in $_editor_fts ; do alias -s $ft=$EDITOR ; done
+    for ft ($_editor_fts) alias -s $ft=$EDITOR
 
     _image_fts=(bmp gif jpg jpeg mng png tif tiff xpm)
     _media_fts=(ape avi flv mkv mov mp3 mpeg mpg ogg ogm rm wav webm)
     _doc_fts=(pdf doc docx xls xlsx ppt ps dvi chm djvu)
-    for ft in $_image_fts $_media_fts $_doc_fts ; do alias -s $ft=$XOPEN ; done
+    for ft ($_image_fts $_media_fts $_doc_fts) alias -s $ft=$XOPEN
 
     # list whats inside packed file
     alias -s zip="unzip -l"
@@ -175,158 +570,28 @@ alias -g G='| grep'
 alias -g H='| head'
 alias -g L="| less"
 alias -g M="| most"
-alias -g S='| sort'
+alias -g S='| sed'
 alias -g T='| tail'
 alias -g U='| uniq'
+alias -g W='| gawk'
 alias -g X='| xargs'
+alias -g GV='| grep -v'
+alias -g SS='| sort'
+alias -g TW='| pr -TW$COLUMNS'
 alias -g WC='| wc'
-alias -g LL="2>&1 | less"
 alias -g CA="2>&1 | cat -A"
+alias -g LL="2>&1 | less"
 alias -g NE="2> /dev/null"
 alias -g NUL="> /dev/null 2>&1"
 alias -g P="2>&1| pygmentize -l pytb"
 
-# l* -> ls
-alias l='ls -lFh'     # size,show type,human readable
-alias la='ls -lAFh'   # long list,show almost all,show type,human readable
-alias lr='ls -tRFh'   # sorted by date,recursive,show type,human readable
-alias lt='ls -ltFh'   # long list,sorted by date,show type,human readable
-alias ll='ls -l'      # long list
-alias ldot='ls -ld .*'
-alias lS='ls -1FSsh'
-alias lart='ls -1Fcart'
-alias lrt='ls -1Fcrt'
+# Others
 
-# k* -> k <https://github.com/rimraf/k>
-alias k='k -h'
-alias ka='k -h -A'
+eval `dircolors ~/.dircolors`
 
-# how* -> howdoi <https://github.com/gleitz/howdoi>
-alias howdoi='howdoi -c'
-alias how='howdoi'
-alias howc='howdoi c'
-alias howcp='howdoi c++'
-alias howcss='howdoi css'
-alias howjs='howdoi js'
-alias howjv='howdoi java'
-alias howml='howdoi html'
-alias howpy='howdoi python'
-alias howsh='howdoi shell'
-
-# py* -> python
-alias py='python'
-alias py2='python2'
-alias py3='python3'
-alias pyi='sudo -H pip install'
-alias pyi2='sudo -H pip2 install'
-alias pyi3='sudo -H pip3 install'
-alias pyiu='pip install --user'
-alias pyiu2='pip2 install --user'
-alias pyiu3='pip3 install --user'
-alias pyu='sudo -H pip uninstall'
-alias pyu2='sudo -H pip2 uninstall'
-alias pyu3='sudo -H pip3 uninstall'
-alias pyftp='python -m pyftpdlib'
-alias pyhttp='python -m SimpleHTTPServer'
-alias pypf='python -m cProfile'
-alias pypf2='python2 -m cProfile'
-alias pypf3='python3 -m cProfile'
-alias pytime='python -m timeit'
-alias pytime2='python2 -m timeit'
-alias pytime3='python3 -m timeit'
-alias pytrace='python -m trace'
-alias pytrace2='python2 -m trace'
-alias pytrace3='python3 -m trace'
-alias pypdb='python -m pdb'
-alias pypdb2='python2 -m pdb'
-alias pypdb3='python3 -m pdb'
-alias ipy='ipython'
-alias ipy2='ipython2'
-alias ipy3='ipython3'
-alias iqt='ipython qtconsole'
-alias iqt2='ipython2 qtconsole'
-alias iqt3='ipython3 qtconsole'
-alias nb='ipython notebook'
-alias nb2='ipython2 notebook'
-alias nb3='ipython3 notebook'
-
-# sg* -> apt-*
-alias sga='sudo apt-get autoremove'
-alias sgc='sudo apt-get autoclean'
-alias sgd='sudo apt-get dist-upgrade'
-alias sgg='sudo apt-get upgrade'
-alias sgi='sudo apt-get install'
-alias sgp='sudo apt-get remove --purge'
-alias sgr='sudo apt-get remove'
-alias sgu='sudo apt-get update'
-alias sgs='apt-cache search'
-alias sgf='apt-file search'
-
-# sp* -> pacman
-alias spd='sudo pacman -D'
-alias spt='sudo pacman -T'
-alias spq='sudo pacman -Q'
-alias spr='sudo pacman -R'
-alias sps='sudo pacman -S'
-alias spu='sudo pacman -U'
-
-# yt* -> yaourt
-alias ytq='yaourt -Q'
-alias ytr='yaourt -R'
-alias yts='yaourt -S'
-alias ytu='yaourt -U'
-alias ytc='yaourt -C'
-alias ytb='yaourt -B'
-alias ytg='yaourt -G'
-alias ytt='yaourt --stats'
-
-# quick access to files
-alias srcls='$EDITOR /etc/apt/sources.list'
-alias pcmcf='$EDITOR /etc/pacman.conf'
-alias tmxcf='$EDITOR ~/.tmux.conf'
-alias vimrc='$EDITOR ~/.vimrc'
-alias zshrc='$EDITOR ~/.zshrc'
-alias i3cfg='$EDITOR ~/.i3/config'
-
-# enable alias when use sudo
-# http://askubuntu.com/a/22043/399470
-alias s='sudo '
-
-# shorten frequent commands
-alias c='cat'
-alias ec='echo'
-alias fk='eval $(thefuck $(fc -ln -1))' # https://github.com/nvbn/thefuck
-alias gg='git gui'
-alias h='history'
-alias m='make'
-alias sv='s v'
-alias v='vim'
-
-# fasd
-export _FASD_VIMINFO="~/.vim/info"
-export _FASD_BACKENDS="native viminfo current"
-alias A='fasd -A'
-alias D='fasd -D'
-alias o='fasd -a -B recently-used -e $XOPEN'
-
-# meaning aliases
-alias help='man'
-alias unexport='unset'
-
-# commands with options
-alias grep='grep --color'
-alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS} '
-alias hgrep="fc -El 0 | grep"
-alias sortnr='sort -n -r'
-alias dud='du -d 1 -h'
-alias duf='du -sh *'
-alias fd='noglob find . -type d -name'
-alias ff='noglob find . -type f -name'
-
-# prompt before operating file
-alias rm='rm -i'
-alias cp='cp -i'
-alias mv='mv -i'
-
-alias mmv='noglob zmv -W'
+if [[ $(tty|grep -o '/dev/tty') = /dev/tty ]] && exists fbterm; then
+    # exec fbterm
+elif [[ ! $TERM =~ screen ]] && exists tmux; then
+    # TERM=screen-256color exec tmux
+fi
 

@@ -94,7 +94,7 @@ Plugin 'iamcco/dict.vim'
 Plugin 'qpkorr/vim-renamer'
 Plugin 'lilydjwg/fcitx.vim'
 Plugin 'gioele/vim-autoswap'
-Plugin 'vim-scripts/sudo.vim'
+Plugin 'sudo.vim'
 
 " Textobjs
 Plugin 'wellle/targets.vim'
@@ -186,7 +186,7 @@ Plugin 'fatih/vim-go'
 "" HTML
 Plugin 'tpope/vim-haml'
 Plugin 'mattn/emmet-vim'
-Plugin 'amirh/HTML-AutoCloseTag'
+Plugin 'alvan/vim-closetag'
 
 "" CSS
 Plugin 'groenewege/vim-less'
@@ -253,10 +253,14 @@ syntax on                   " Syntax highlighting
 scriptencoding utf-8
 
 if has('clipboard')
-    if has('unnamedplus')  " When possible use + register for copy-paste
+    if has('nvim')
         set clipboard=unnamed,unnamedplus
-    else         " On mac and Windows, use * register for copy-paste
-        set clipboard=unnamed
+    else
+        if has('unnamedplus')  " When possible use + register for copy-paste
+            set clipboard=unnamed,unnamedplus
+        else         " On mac and Windows, use * register for copy-paste
+            set clipboard=unnamed
+        endif
     endif
 endif
 
@@ -430,8 +434,13 @@ func! InitializeDirectories()
             exec "set ".settingname."=".directory
         endif
     endfor
-    let viminfo = common_dir.'info'
-    exec "set viminfo+=n".viminfo
+    if has('nvim')
+        let viminfo = common_dir.'ninfo'
+        exec "set shada+=n".viminfo
+    else
+        let viminfo = common_dir.'info'
+        exec "set viminfo+=n".viminfo
+    endif
 endfunc
 let g:consolidated_directory = $HOME.'/.vim/'
 call InitializeDirectories()
@@ -610,6 +619,9 @@ nnoremap <C-J> <C-W>j
 nnoremap <C-K> <C-W>k
 nnoremap <C-L> <C-W>l
 nnoremap <C-H> <C-W>h
+if has('nvim')
+    nnoremap <BS> <C-W>h
+endif
 
 noremap <C-Q> ZZ
 inoremap <C-Q> <C-O>ZZ
@@ -844,6 +856,9 @@ if s:has_bundle('vim-airline')
     endif
     let g:airline#extensions#whitespace#trailing_format = 'trail[%s]'
     let g:airline#extensions#whitespace#mixed_indent_format = 'mixed[%s]'
+    let g:airline#extensions#ycm#enabled = 1
+    let g:airline#extensions#ycm#error_symbol = 'E:'
+    let g:airline#extensions#ycm#warning_symbol = 'W:'
 endif
 
 if s:has_bundle('vim-indent-guides')
@@ -1436,6 +1451,10 @@ if s:has_bundle('vim-go')
     let g:go_fmt_command = "goimports"
     let g:go_fmt_fail_silently = 1
 
+    let g:go_list_type = "quickfix"
+
+    let g:go_def_mapping_enabled = 0
+
     au FileType go nmap <Leader>r <Plug>(go-run)
     au FileType go nmap <Leader>b <Plug>(go-build)
     au FileType go nmap <Leader>t <Plug>(go-test)
@@ -1457,7 +1476,9 @@ endif
 if s:has_bundle('emmet-vim')
     let g:user_emmet_install_global = 0
     let g:user_emmet_install_global = 0
+    let g:user_emmet_expandabbr_key='<Tab><Tab>'
     autocmd FileType html,css EmmetInstall
+    autocmd FileType gohtmltmpl EmmetInstall
 endif
 
 if s:has_bundle('vim-json')
@@ -1465,10 +1486,8 @@ if s:has_bundle('vim-json')
     let g:vim_json_syntax_conceal = 0
 endif
 
-if s:has_bundle('HTML-AutoCloseTag')
-    " Make it so AutoCloseTag works for xml and xhtml files as well
-    au FileType xhtml,xml ru ftplugin/html/autoclosetag.vim
-    nmap <Leader>ac <Plug>ToggleAutoCloseMappings
+if s:has_bundle('vim-closetag')
+    let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.tmpl"
 endif
 
 if s:has_bundle('vim2hs')
