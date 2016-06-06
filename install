@@ -8,13 +8,13 @@ if [ -z $XDG_CONFIG_HOME ]; then
 fi
 
 link() {
-    # link $src <- $dst_prefix$basename
-    # if $src exists, backup it to $backup
     src=$1
     dst_prefix=$2
     basename=$(basename $src)
     target=${dst_prefix}${basename}
     backup=${target}.bak
+    # link $src <- $dst_prefix$basename
+    # if $src exists, backup it to $backup
     printf "[Linking] %-15s\t" $basename
     if [ -h $target ]; then
         if [ "$(readlink $target)" != "$src" ]; then

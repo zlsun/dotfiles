@@ -289,7 +289,7 @@ set scrolljump=5                " Lines to scroll when cursor leaves screen
 set scrolloff=3                 " Minimum lines to keep above and below cursor
 set foldenable                  " Auto fold code
 
-set nowrap                      " Do not wrap long lines
+set wrap                        " Wrap long lines
 set autoindent                  " Indent at the same level of the previous line
 set autoread                    " Automatically read file when changed
 set shiftwidth=4                " Use indents of 4 spaces
@@ -507,20 +507,20 @@ au FileType haskell,puppet,ruby,yml setlocal expandtab shiftwidth=2 softtabstop=
 " Workaround broken color highlighting in Haskell
 au FileType haskell,rust setlocal nospell
 
-au FileType python           let &makeprg='python "%"'
-au FileType c                let &makeprg='gcc "%" -o "%:r" -g -std=c11 && "%:p:r"'
-au FileType cpp              let &makeprg='g++ "%" -o "%:r" -g -std=c++1y && "%:p:r"'
-au FileType lua              let &makeprg='lua "%"'
-au FileType xdefaults        let &makeprg='xrdb %'
-au FileType haskell,lhaskell let &makeprg='runhaskell "%"'
+au FileType python           let &l:makeprg='python "%"'
+au FileType c                let &l:makeprg='gcc "%" -o "%:r" -g -std=c11 && "%:p:r"'
+au FileType cpp              let &l:makeprg='g++ "%" -o "%:r" -g -std=c++1y && "%:p:r"'
+au FileType lua              let &l:makeprg='lua "%"'
+au FileType xdefaults        let &l:makeprg='xrdb %'
+au FileType haskell,lhaskell let &l:makeprg='runhaskell "%"'
 
-autocmd FileType haskell let &formatprg='pointfree --stdin'
+au FileType haskell let &l:formatprg='pointfree --stdin'
 
 " Set filetype
-au BufNewFile,BufRead *.html.twig set filetype=html.twig
-au BufNewFile,BufRead *.asm       set filetype=nasm
-au BufNewFile,BufRead *.inc       set filetype=nasm
-au BufNewFile,BufRead *.zsh-theme set filetype=zsh
+au BufNewFile,BufRead *.html.twig setlocal filetype=html.twig
+au BufNewFile,BufRead *.asm       setlocal filetype=nasm
+au BufNewFile,BufRead *.inc       setlocal filetype=nasm
+au BufNewFile,BufRead *.zsh-theme setlocal filetype=zsh
 
 " ======================================================================== "
 "                               Key mappings                               "
@@ -623,8 +623,8 @@ if has('nvim')
     nnoremap <BS> <C-W>h
 endif
 
-noremap <C-Q> ZZ
-inoremap <C-Q> <C-O>ZZ
+noremap <C-Q> ZQ
+inoremap <C-Q> <C-O>ZQ
 
 inoremap <C-Z> <C-O><C-Z>
 
@@ -1164,6 +1164,7 @@ elseif s:completer == 'youcompleteme' && s:has_bundle('YouCompleteMe')
 
     let g:ycm_collect_identifiers_from_tags_files = 1 " enable completion from tags
     let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
+    let g:ycm_confirm_extra_conf = 0
     let g:ycm_seed_identifiers_with_syntax = 1
     let g:ycm_semantic_triggers = {
         \   'css': ['re!^\s{2-4}', 're!:\s+'],
@@ -1178,9 +1179,9 @@ elseif s:completer == 'youcompleteme' && s:has_bundle('YouCompleteMe')
     let g:UltiSnipsJumpBackwardTrigger = '<C-K>'
     let g:UltiSnipsSnippetDirectories = [$HOME.'/.vim/UltiSnips']
 
-    au Filetype c,cpp,python,go map <C-]>      :YcmCompleter GoTo<CR>
-    au Filetype python          map <C-]><C-]> :YcmCompleter GoToReferences<CR>
-    au Filetype c,cpp,python    map K          :YcmCompleter GetDoc<CR>
+    au Filetype c,cpp,python,go map <buffer> <C-]>      :YcmCompleter GoTo<CR>
+    au Filetype python          map <buffer> <C-]><C-]> :YcmCompleter GoToReferences<CR>
+    au Filetype c,cpp,python    map <buffer> K          :YcmCompleter GetDoc<CR>
 
     " Enable omni completion.
     au FileType css           setlocal omnifunc=csscomplete#CompleteCSS
@@ -1418,26 +1419,6 @@ else
     au FileType xml           setlocal omnifunc=xmlcomplete#CompleteTags
     au FileType ruby          setlocal omnifunc=rubycomplete#Complete
     au FileType haskell       setlocal omnifunc=necoghc#omnifunc
-endif
-
-if s:has_bundle('python-mode')
-    " Disable if python support not present
-    if !has('python')
-        let g:pymode = 0
-    endif
-
-    let g:pymode_doc_bind = 'K'
-    let g:pymode_lint_checkers = ['pylint', 'pep8', 'mccabe']
-    let g:pymode_lint_ignore = "E731"
-    " let g:pymode_lint_cwindow = 0
-    let g:pymode_lint_options_pep8 =
-        \ {'max_line_length': 100}
-    let g:pymode_trim_whitespaces = 0
-    let g:pymode_options = 0
-    let g:pymode_rope = 0
-    let g:pymode_rope_completion = 0
-    let g:pymode_rope_goto_definition_bind = "<C-]>"
-    let g:pymode_virtualenv = 1
 endif
 
 if s:has_bundle('vim-go')

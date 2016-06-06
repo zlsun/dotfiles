@@ -7,7 +7,7 @@ floating_modifier $mod
 bindsym --release button2 kill
 
 bindsym $mod+Shift+q kill
-# bindsym $mod+Shift+c reload
+bindsym $mod+Ctrl+r  reload
 bindsym $mod+Shift+r restart
 
 bindsym $mod+w layout tabbed
@@ -50,22 +50,22 @@ set $ws3 3:
 set $ws4 4:𐄜
 set $ws5 5:𐄝
 set $ws6 6:𐄞
-set $ws7 7:𐄟
+set $ws7 7:♪
 set $ws8 8:
 set $ws9 9:
 set $ws0 10:
 
 # switch to workspace
-bindsym $mod+1 workspace $ws1, exec --no-startup-id ~/.i3/st terminator
-bindsym $mod+2 workspace $ws2, exec --no-startup-id ~/.i3/st google-chrome-stable
-bindsym $mod+3 workspace $ws3, exec --no-startup-id ~/.i3/st thunar
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
 bindsym $mod+4 workspace $ws4
 bindsym $mod+5 workspace $ws5
 bindsym $mod+6 workspace $ws6
 bindsym $mod+7 workspace $ws7
-bindsym $mod+8 workspace $ws8, exec --no-startup-id ~/.i3/st WizNote
-bindsym $mod+9 workspace $ws9, exec --no-startup-id ~/.i3/st zeal
-bindsym $mod+0 workspace $ws0, exec --no-startup-id ~/.i3/st telegram-desktop
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace $ws9
+bindsym $mod+0 workspace $ws0
 
 workspace_auto_back_and_forth yes
 
@@ -88,7 +88,7 @@ bindsym $mod+equal move scratchpad
 bindsym $mod+minus scratchpad show
 
 # Rofi
-bindsym $mod+d       exec --no-startup-id rofi -show run
+bindsym $mod+d       exec --no-startup-id PATH=$PATH:~/.bin/:~/.local/bin rofi -show run
 bindsym $mod+Tab     exec --no-startup-id rofi -show window -auto-select
 bindsym $mod+q       exec --no-startup-id SHELL=/bin/sh j4-dmenu-desktop --dmenu="rofi -dmenu -i -p ''"
 bindsym $mod+grave   exec --no-startup-id ~/.bin/rofi-fileman
@@ -131,14 +131,15 @@ bindsym $mod+Right            exec --no-startup-id xbacklight -inc 10
 
 # Screenshot
 set $tmp_png        '/tmp/scrot.png'
-set $formated_png   '/tmp/%Y-%m-%d_%H%M%S_$wx$h.png'
+set $fmt_png        '/tmp/%Y-%m-%d_%H%M%S_$wx$h.png'
+set $to_clipboard   '~/.bin/img2clip $f'
 set $to_screenshots 'mv $f ~/Pictures/Screenshots/'
-bindsym --release            Print exec --no-startup-id scrot $tmp_png
-bindsym --release       Ctrl+Print exec --no-startup-id scrot $tmp_png -s
-bindsym --release       Mod1+Print exec --no-startup-id scrot $tmp_png -s -d 5
-bindsym --release      Shift+Print exec --no-startup-id scrot $formated_png         -e $to_screenshots
-bindsym --release Ctrl+Shift+Print exec --no-startup-id scrot $formated_png      -s -e $to_screenshots
-bindsym --release Mod1+Shift+Print exec --no-startup-id scrot $formated_png -d 5 -s -e $to_screenshots
+bindsym --release            Print exec --no-startup-id scrot $tmp_png         -e $to_clipboard
+bindsym --release       Ctrl+Print exec --no-startup-id scrot $tmp_png      -s -e $to_clipboard
+bindsym --release       Mod1+Print exec --no-startup-id scrot $tmp_png -d 5 -s -e $to_clipboard
+bindsym --release      Shift+Print exec --no-startup-id scrot $fmt_png         -e $to_screenshots
+bindsym --release Ctrl+Shift+Print exec --no-startup-id scrot $fmt_png      -s -e $to_screenshots
+bindsym --release Mod1+Shift+Print exec --no-startup-id scrot $fmt_png -d 5 -s -e $to_screenshots
 
 bindsym --release     $mod+Shift+a exec --no-startup-id deepin-screenshot
 
@@ -246,6 +247,7 @@ client.unfocused        $base02  $base02  $base11 $base01
 client.urgent           $magenta $magenta $base13 $red
 
 bar {
+    i3bar_command  i3bar
     status_command i3blocks
     position       bottom
     font           pango:monospace 12
@@ -277,7 +279,7 @@ for_window [class="Git-gui"]                    $set_float
 for_window [class="Toplevel"]                   $set_float
 for_window [class="FeelUOwn"]                   $set_float, border toggle
 for_window [class="Stardict"]                   $set_float
-for_window [class="Goldendict"]                 $set_float
+for_window [class="GoldenDict"]                 $set_float
 for_window [class="Youdao Dict"]                $set_float, border toggle
 for_window [class="Pavucontrol"]                $set_float
 for_window [title="Wicd 网络管理器"]            $set_float, resize set 630 426, move position 720 310
@@ -292,13 +294,25 @@ for_window [title="任务管理器 - Google Chrome"] $set_float
 
 ################################### Startup ###################################
 
+exec --no-startup-id ~/.fehbg
+exec --no-startup-id terminator
+
 exec --no-startup-id ~/.i3/autostart.sh
 
-exec --no-startup-id ~/.i3/disable-standby-fs.py
-exec --no-startup-id ~/.i3/focus-last.py
+exec --no-startup-id xfce4-clipman
+bindsym $mod+y exec --no-startup-id xfce4-popup-clipman
+
+exec_always --no-startup-id ~/.i3/disable-standby-fs.py
+
+exec_always --no-startup-id sh -c "kill `pgrep -f focus-last.py`"
+exec_always --no-startup-id ~/.i3/focus-last.py
 bindsym Mod1+Tab exec --no-startup-id ~/.i3/focus-last.py --switch
 
-exec --no-startup-id ~/.fehbg
-
-exec --no-startup-id terminator
+exec_always --no-startup-id ~/.i3/app-on-ws-init.py --workspace $ws1 --command terminator
+exec_always --no-startup-id ~/.i3/app-on-ws-init.py --workspace $ws2 --command google-chrome-stable
+exec_always --no-startup-id ~/.i3/app-on-ws-init.py --workspace $ws3 --command thunar
+exec_always --no-startup-id ~/.i3/app-on-ws-init.py --workspace $ws7 --command netease-cloud-music
+exec_always --no-startup-id ~/.i3/app-on-ws-init.py --workspace $ws8 --command WizNote
+exec_always --no-startup-id ~/.i3/app-on-ws-init.py --workspace $ws9 --command zeal
+exec_always --no-startup-id ~/.i3/app-on-ws-init.py --workspace $ws0 --command telegram-desktop
 

@@ -1,0 +1,3 @@
+registry=http://registry.npm.taobao.org
+strict-ssl=false
+prefix=${HOME}/.local

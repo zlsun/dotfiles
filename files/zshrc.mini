@@ -99,6 +99,10 @@ bindkey -M menuselect ';' history-incremental-search-forward
 
 # Functions
 
+exists() {
+    type $1 &> /dev/null
+}
+
 find-duplicate() {
     local dir=${1:-.}
     find $dir -type f -print0                   \
@@ -121,24 +125,26 @@ reinstall-all-packages() {
     comm -23 <(pacman -Qdq) <(pacman -Qmq) | pacman -S --asdeps -
 }
 
-bgit() {
+_bpgit_build_cmd() {
     local color='\e[1;31m'
     local reset='\e[0m'
-    local echo_cmd="echo -e '${color}[{}]$reset'"
+    local echo_cmd="echo -e '${color}[{}]${reset}'"
     local git_config="-c color.ui=always -c color.status=always -c color.branch=always -c color.diff=always"
     local git_cmd="git $git_config --git-dir={}/.git --work-tree={} $*"
     local cmd="$echo_cmd && $git_cmd"
-    printf "%s\n" */ | cut -d'/' -f1 | xargs -I '{}' sh -c $cmd
+    echo "$cmd"
+}
+
+_bpgit_ls() {
+    ls -d *(/)
+}
+
+bgit() {
+    _bpgit_ls | xargs -I{} sh -c "$(_bpgit_build_cmd $*)"
 }
 
 pgit() {
-    local color='\e[1;31m'
-    local reset='\e[0m'
-    local echo_cmd="echo -e '${color}[{}]$reset'"
-    local git_config="-c color.ui=always -c color.status=always -c color.branch=always -c color.diff=always"
-    local git_cmd="git $git_config --git-dir={}/.git --work-tree={} $*"
-    local cmd="$echo_cmd && $git_cmd"
-    printf "%s\n" */ | cut -d'/' -f1 | parallel $cmd
+    _bpgit_ls | parallel "$(_bpgit_build_cmd $*)"
 }
 
 ptyrun () {
@@ -173,9 +179,9 @@ confirm() {
 
 kill-match() {
     local match=`pgrep -f $*`
-    echo "Find matches:"
+    echo 'Find matches:'
     echo $match | xargs ps
-    confirm "Do you want to kill them all? [y/N] " && (
+    confirm 'Do you want to kill them all? [y/N] ' && (
         echo $match | xargs sudo kill -9
     )
 }
@@ -314,12 +320,15 @@ bindkey "\eh" toggle-help-command-line
 
 # Aliases
 
+EDITOR=vim
+XOPEN=gvfs-open
+BROWSER=$XOPEN
+
 # enable alias when use sudo
 # http://askubuntu.com/a/22043/399470
 alias s='sudo '
 
-# use neovim
-alias vim='stty stop "" start "" -ixon; nvim'
+alias vim='stty stop "" start "" -ixon; vim'
 
 # shorten frequent commands
 alias c='cat'
@@ -331,9 +340,9 @@ alias v='vim'
 alias cx='chmod +x'
 alias fk='eval $(thefuck $(fc -ln -1))' # thefuck <https://github.com/nvbn/thefuck>
 alias gg='git gui'
-EDITOR=vim
-XOPEN=gvfs-open
-BROWSER=$XOPEN
+alias rg='ranger'
+alias sv='stty stop "" start "" -ixon; sudo vim'
+alias wh='which'
 
 # meaning aliases
 alias info='info --vi-key'
@@ -390,8 +399,7 @@ _cm() {
     shift
     dir=build/$build_type
     if [[ ! -e $dir ]]; then
-        mkdir -p $dir
-        (
+        mkdir -p $dir && (
             cd $dir
             cmake -DCMAKE_BUILD_TYPE=$build_type $root
         )
@@ -454,11 +462,11 @@ alias  nb3='ipython3 notebook'
 alias pti='ptipython'
 
 # rsync-* -> rsync
-alias rsync-copy="rsync -avz --progress -h"
-alias rsync-move="rsync -avz --progress -h --remove-source-files"
-alias rsync-update="rsync -avzu --progress -h"
-alias rsync-sync="rsync -avzu --delete --progress -h"
-alias cpv="rsync -poghb --backup-dir=/tmp/rsync -e /dev/null --progress --"
+alias rsync-copy='rsync -avz --progress -h'
+alias rsync-move='rsync -avz --progress -h --remove-source-files'
+alias rsync-update='rsync -avzu --progress -h'
+alias rsync-sync='rsync -avzu --delete --progress -h'
+alias cpv='rsync -poghb --backup-dir=/tmp/rsync -e /dev/null --progress --'
 
 # sc[u]-* -> systemctl
 user_commands=(
@@ -537,8 +545,8 @@ alias  k='k -h'
 alias ka='k -h -A'
 
 # fasd <https://github.com/clvv/fasd>
-export _FASD_VIMINFO="~/.vim/info"
-export _FASD_BACKENDS="native viminfo current"
+export _FASD_VIMINFO='~/.vim/info'
+export _FASD_BACKENDS='native viminfo current'
 alias A='fasd -A'
 alias D='fasd -D'
 alias o='fasd -a -B recently-used -e $XOPEN'
@@ -558,18 +566,18 @@ if [ ${ZSH_VERSION//\./} -ge 420 ]; then
     for ft ($_image_fts $_media_fts $_doc_fts) alias -s $ft=$XOPEN
 
     # list whats inside packed file
-    alias -s zip="unzip -l"
-    alias -s rar="unrar l"
-    alias -s tar="tar tf"
-    alias -s tar.gz="echo "
-    alias -s ace="unace l"
+    alias -s zip='unzip -l'
+    alias -s rar='unrar l'
+    alias -s tar='tar tf'
+    alias -s tar.gz='echo '
+    alias -s ace='unace l'
 fi
 
 # command line tail shortcuts
 alias -g G='| grep'
 alias -g H='| head'
-alias -g L="| less"
-alias -g M="| most"
+alias -g L='| less'
+alias -g M='| most'
 alias -g S='| sed'
 alias -g T='| tail'
 alias -g U='| uniq'
@@ -579,11 +587,11 @@ alias -g GV='| grep -v'
 alias -g SS='| sort'
 alias -g TW='| pr -TW$COLUMNS'
 alias -g WC='| wc'
-alias -g CA="2>&1 | cat -A"
-alias -g LL="2>&1 | less"
-alias -g NE="2> /dev/null"
-alias -g NUL="> /dev/null 2>&1"
-alias -g P="2>&1| pygmentize -l pytb"
+alias -g CA='2>&1 | cat -A'
+alias -g LL='2>&1 | less'
+alias -g NE='2> /dev/null'
+alias -g NUL='> /dev/null 2>&1'
+alias -g P='2>&1| pygmentize -l pytb'
 
 # Others
 

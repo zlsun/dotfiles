@@ -31,6 +31,7 @@
     df = diff
     dc = diff --cached
     dh = diff HEAD
+    dl = diff HEAD^
     ds = diff --stat
     fc = fetch -v
     lg = log
@@ -45,6 +46,7 @@
     ps = push -v
     pf = push -v -f
     pu = push -v -u
+    pp = push -v --all
     rb = rebase
     rc = rm --cached
     rd = rm --dry-run

@@ -6,6 +6,15 @@ files/i3/*
 !files/i3/config
 !files/i3/*.py
 
+files/ghc/*
+!files/ghc/ghci.conf
+
+files/pip/*
+!files/pip/pip.conf
+
+files/spacemacs.d/*
+!files/spacemacs.d/init.el
+
 config/*/*
 !config/clerk/config
 !config/dunst/dunstrc
