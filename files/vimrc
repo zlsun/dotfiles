@@ -522,6 +522,20 @@ au BufNewFile,BufRead *.asm       setlocal filetype=nasm
 au BufNewFile,BufRead *.inc       setlocal filetype=nasm
 au BufNewFile,BufRead *.zsh-theme setlocal filetype=zsh
 
+" q to close quickfix
+au BufReadPost quickfix map <buffer> q :bd<CR>
+
+" Help mode
+au FileType help map <buffer> q :bd<CR>
+au FileType help map <buffer> i <C-d>
+au FileType help map <buffer> o <C-u>
+au FileType help map <buffer> u <C-o>
+au FileType help map <buffer> p <C-]>
+au FileType help map <buffer> <Backspace> <C-o>
+au FileType help map <buffer> <Return> <C-]>
+au FileType help map <buffer> <Tab> /\|\zs\S\{-}\|<CR>:set nohlsearch<CR>
+au FileType help map <buffer> <S-Tab> ?\|\zs\S\{-}\|<CR>:set nohlsearch<CR>
+
 " ======================================================================== "
 "                               Key mappings                               "
 " ======================================================================== "
@@ -652,8 +666,28 @@ map <Leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
 
 nmap <Leader>ff :execute "vimgrep /".@/."/g %"<CR>:copen<CR>
 
-" q to close quickfix
-autocmd BufReadPost quickfix nnoremap q :bd<CR>
+func! Zeal(keyword)
+    let ft = &filetype
+    let langs = {
+        \ 'cpp': 'cpp',
+        \ 'kotlin': 'kotlin',
+        \ 'python': 'python',
+        \ 'ruby': 'ruby',
+        \ 'lua': 'lua',
+        \ 'vue': 'vue',
+        \ 'cmake': 'cmake',
+        \ 'bash': 'bash',
+        \ 'zsh': 'bash',
+        \ 'shell': 'bash'
+        \ }
+    if has_key(langs, ft)
+        execute "!zeal \"".langs[ft].":".a:keyword."\"&"
+    else
+        execute "!zeal \"".a:keyword."\"&"
+    endif
+endfunc
+nmap <Leader>k :call Zeal(expand('<cword>'))<CR><CR>
+vmap <Leader>k :<C-U>call Zeal(getline("'<")[getpos("'<")[2]-1:getpos("'>")[2]-1])<CR><CR>
 
 function! HiInterestingWord(n)
     " Save our location.

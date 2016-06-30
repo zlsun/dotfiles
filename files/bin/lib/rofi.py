@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 
-import subprocess
-
 try:
     from .log import log
-except:
+except SystemError:
     from log import log
 
 __all__ = [
@@ -35,11 +33,11 @@ class SeperatorStyle:
 
 
 def parse_options(opts):
-    for c in '\n ':
-        opts = opts.replace(c, '')
+    for whitespace in '\n ':
+        opts = opts.replace(whitespace, '')
     opts = opts.replace('-', '_')
     lst = opts.split(',')
-    return list(filter(bool, lst))
+    return [o for o in lst if o]
 
 
 class Rofi:
@@ -115,7 +113,8 @@ class Rofi:
                     return
         object.__delattr__(self, name)
 
-    def _option_to_str(self, option):
+    @staticmethod
+    def _option_to_str(option):
         lst = []
         for k, v in option.items():
             k = k.replace('_', '-')
@@ -128,7 +127,7 @@ class Rofi:
                 if v:
                     lst.append('-{} "{}"'.format(k, ','.join(map(str, v))))
             else:
-                if v != None:
+                if v is not None:
                     lst.append('-{} "{}"'.format(k, v))
         return ' '.join(lst)
 
@@ -153,7 +152,7 @@ class Rofi:
 
     def __call__(self, inps, prompt=None, msg=None, **option):
         log('call:')
-        if prompt != None:
+        if prompt is not None:
             option['prompt'] = prompt
         if msg:
             option['msg'] = msg
@@ -166,10 +165,11 @@ class Rofi:
         log('  cmd:', cmd)
         if not isinstance(inps, str) and hasattr(inps, '__iter__'):
             inps = option.get('sep', '\n').join(map(str, inps))
-        log('  inps:', repr(inps))
-        with subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE) as proc:
+        # log('  inps:', repr(inps))
+        from subprocess import Popen, PIPE
+        with Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE) as proc:
             inps = inps.encode('u8')
-            outs, errs = proc.communicate(inps)
+            outs, _ = proc.communicate(inps)
         outs = outs.decode('u8')[:-1]
         code = proc.returncode
         return outs, code
@@ -185,29 +185,29 @@ class Rofi:
             return int(idx), sel, code
 
     def menu(self, menu, texts, prompt=None, **options):
-        SEP = '---------'
+        sep = '---------'
         action = {v: k for k, v in texts.items()}
-        lst = [SEP if i == '|' else texts[i]
+        lst = [sep if i == '|' else texts[i]
                for i in menu.replace('|', ',|,').split(',')]
         while 1:
             sel, code = self(lst, prompt, **options)
             if code != Code.SELECT:
                 return None
-            if sel == SEP:
+            if sel == sep:
                 continue
             if sel not in action:
                 continue
             return action[sel]
 
-    def yesno(self, prompt=None, type='ny', **options):
+    def yesno(self, prompt=None, choice='ny', **options):
         texts = {
             'y': 'Yes',
             'n': 'No',
             'c': 'Cancel'
         }
-        menu = ','.join(type)
+        menu = ','.join(choice)
         act = self.menu(menu, texts, prompt, **options)
-        if act == None:
+        if act is None:
             return None
         elif act == 'y':
             return True
@@ -242,7 +242,7 @@ class Item:
 
     def __init__(self):
         self.idx = -1
-        self.state = NORMAL
+        self.state = Item.NORMAL
 
 
 class View:
@@ -330,7 +330,7 @@ class View:
 
     def show(self, lst=None, **options):
         self._dispatch('show')
-        lst = lst if lst != None else self.get_list()
+        lst = lst if lst is not None else self.get_list()
         options.update(self._get_key_option())
         return self.rofi.index(lst, **options)
 

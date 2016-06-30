@@ -55,6 +55,14 @@ set $ws8 8:
 set $ws9 9:
 set $ws0 10:
 
+set $ws11 11
+set $ws12 12
+set $ws13 13
+
+workspace $ws11 output VGA1
+workspace $ws12 output VGA1
+workspace $ws13 output VGA1
+
 # switch to workspace
 bindsym $mod+1 workspace $ws1
 bindsym $mod+2 workspace $ws2
@@ -66,6 +74,10 @@ bindsym $mod+7 workspace $ws7
 bindsym $mod+8 workspace $ws8
 bindsym $mod+9 workspace $ws9
 bindsym $mod+0 workspace $ws0
+
+bindsym $mod+Ctrl+1 workspace $ws11
+bindsym $mod+Ctrl+2 workspace $ws12
+bindsym $mod+Ctrl+3 workspace $ws13
 
 workspace_auto_back_and_forth yes
 
@@ -81,6 +93,10 @@ bindsym $mod+Shift+8 move container to workspace $ws8, workspace $ws8
 bindsym $mod+Shift+9 move container to workspace $ws9, workspace $ws9
 bindsym $mod+Shift+0 move container to workspace $ws0, workspace $ws0
 
+bindsym $mod+Ctrl+Shift+1 move container to workspace $ws11, workspace $ws11
+bindsym $mod+Ctrl+Shift+2 move container to workspace $ws12, workspace $ws12
+bindsym $mod+Ctrl+Shift+3 move container to workspace $ws13, workspace $ws13
+
 bindsym $mod+Return exec i3-sensible-terminal
 
 # scratchpad
@@ -90,7 +106,7 @@ bindsym $mod+minus scratchpad show
 # Rofi
 bindsym $mod+d       exec --no-startup-id PATH=$PATH:~/.bin/:~/.local/bin rofi -show run
 bindsym $mod+Tab     exec --no-startup-id rofi -show window -auto-select
-bindsym $mod+q       exec --no-startup-id SHELL=/bin/sh j4-dmenu-desktop --dmenu="rofi -dmenu -i -p ''"
+bindsym $mod+q       exec --no-startup-id SHELL=/bin/bash j4-dmenu-desktop --dmenu="rofi -dmenu -i -p ''"
 bindsym $mod+grave   exec --no-startup-id ~/.bin/rofi-fileman
 bindsym $mod+u       exec --no-startup-id ~/.bin/rofi-unicode
 bindsym $mod+p       exec --no-startup-id ~/.bin/rofi-monitor-layout
@@ -130,17 +146,19 @@ bindsym $mod+Left             exec --no-startup-id xbacklight -dec 10
 bindsym $mod+Right            exec --no-startup-id xbacklight -inc 10
 
 # Screenshot
-set $tmp_png        '/tmp/scrot.png'
-set $fmt_png        '/tmp/%Y-%m-%d_%H%M%S_$wx$h.png'
-set $to_clipboard   '~/.bin/img2clip $f'
-set $to_screenshots 'mv $f ~/Pictures/Screenshots/'
-bindsym --release            Print exec --no-startup-id scrot $tmp_png         -e $to_clipboard
-bindsym --release       Ctrl+Print exec --no-startup-id scrot $tmp_png      -s -e $to_clipboard
-bindsym --release       Mod1+Print exec --no-startup-id scrot $tmp_png -d 5 -s -e $to_clipboard
-bindsym --release      Shift+Print exec --no-startup-id scrot $fmt_png         -e $to_screenshots
-bindsym --release Ctrl+Shift+Print exec --no-startup-id scrot $fmt_png      -s -e $to_screenshots
-bindsym --release Mod1+Shift+Print exec --no-startup-id scrot $fmt_png -d 5 -s -e $to_screenshots
+set $shoter         maim -b 2
+set $tmp_png        /tmp/screenshot.png
+set $to_clipboard   ~/.bin/img2clip /tmp/screenshot.png
+set $to_screenshots mv /tmp/screenshot.png ~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png
+set $notify         notify-send 'Screenshot!'
+bindsym --release            Print exec --no-startup-id $shoter $tmp_png         && $to_clipboard   && $notify
+bindsym --release       Ctrl+Print exec --no-startup-id $shoter $tmp_png      -s && $to_clipboard   && $notify
+bindsym --release       $mod+Print exec --no-startup-id $shoter $tmp_png -d 5 -s && $to_clipboard   && $notify
+bindsym --release      Shift+Print exec --no-startup-id $shoter $tmp_png         && $to_screenshots && $notify
+bindsym --release Ctrl+Shift+Print exec --no-startup-id $shoter $tmp_png      -s && $to_screenshots && $notify
+bindsym --release $mod+Shift+Print exec --no-startup-id $shoter $tmp_png -d 5 -s && $to_screenshots && $notify
 
+bindsym --release      $mod+Ctrl+a exec --no-startup-id $shoter $tmp_png      -s && $to_clipboard   && $notify
 bindsym --release     $mod+Shift+a exec --no-startup-id deepin-screenshot
 
 # System Mode: shutdown, reboot, lock screen
@@ -269,28 +287,28 @@ bar {
 for_window [class="Gsimplecal"] move position 983 500
 for_window [class="Terminator"] border pixel 1
 
-set $set_float floating enable, border normal 1
+set $float floating enable, border normal 1
 
-for_window [window_role="pop-up"]               $set_float
-for_window [window_role="bubble"]               $set_float
-for_window [window_role="task_dialog"]          $set_float
-for_window [class="Gitk"]                       $set_float
-for_window [class="Git-gui"]                    $set_float
-for_window [class="Toplevel"]                   $set_float
-for_window [class="FeelUOwn"]                   $set_float, border toggle
-for_window [class="Stardict"]                   $set_float
-for_window [class="GoldenDict"]                 $set_float
-for_window [class="Youdao Dict"]                $set_float, border toggle
-for_window [class="Pavucontrol"]                $set_float
-for_window [title="Wicd 网络管理器"]            $set_float, resize set 630 426, move position 720 310
-for_window [class="Gnome-alsamixer"]            $set_float
-for_window [class="Deepin-music-player"]        $set_float
-for_window [class="Android SDK Manager"]        $set_float
-for_window [title="多个页面无响应"]             $set_float
-for_window [title="网络操作管理器"]             $set_float
-for_window [title="Terminator首选项"]           $set_float
-for_window [title="chrome-extension:"]          $set_float
-for_window [title="任务管理器 - Google Chrome"] $set_float
+for_window [window_role="pop-up"]               $float
+for_window [window_role="bubble"]               $float
+for_window [window_role="task_dialog"]          $float
+for_window [class="Gitk"]                       $float
+for_window [class="Git-gui"]                    $float
+for_window [class="Toplevel"]                   $float
+for_window [class="FeelUOwn"]                   $float, border toggle
+for_window [class="Stardict"]                   $float
+for_window [class="GoldenDict"]                 $float
+for_window [class="Youdao Dict"]                $float, border toggle
+for_window [class="Pavucontrol"]                $float
+for_window [title="Wicd 网络管理器"]            $float, resize set 630 426, move position 720 310
+for_window [class="Gnome-alsamixer"]            $float
+for_window [class="Deepin-music-player"]        $float
+for_window [class="Android SDK Manager"]        $float
+for_window [title="多个页面无响应"]             $float
+for_window [title="网络操作管理器"]             $float
+for_window [title="Terminator首选项"]           $float
+for_window [title="chrome-extension:"]          $float
+for_window [title="任务管理器 - Google Chrome"] $float
 
 ################################### Startup ###################################
 
@@ -299,10 +317,13 @@ exec --no-startup-id terminator
 
 exec --no-startup-id ~/.i3/autostart.sh
 
+exec_always --no-startup-id ~/.i3/disable-standby-fs.py
+
 exec --no-startup-id xfce4-clipman
 bindsym $mod+y exec --no-startup-id xfce4-popup-clipman
 
-exec_always --no-startup-id ~/.i3/disable-standby-fs.py
+bindsym $mod+n       exec --no-startup-id ~/.i3/focus-next-visible.py
+bindsym $mod+Shift+n exec --no-startup-id ~/.i3/focus-next-visible.py reverse
 
 exec_always --no-startup-id sh -c "kill `pgrep -f focus-last.py`"
 exec_always --no-startup-id ~/.i3/focus-last.py

@@ -8,7 +8,10 @@ export JRE_HOME=$JAVA_HOME/jre
 export CLASSPATH=$CLASSPATH:.:$JAVA_HOME/lib:$JRE_HOME/lib
 export PATH=$JAVA_HOME:$JAVA_HOME/bin:$JAVA_HOME/lib:$JRE_HOME/bin:$PATH
 
-export _JAVA_OPTIONS='-Dawt.useSytemAAFontSettings=on'
+export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on'
+
+# Matlab
+export PATH=$DEV_HOME/matlab/bin:$PATH
 
 # Android SDK
 export ANDROID_SDK_ROOT=$DEV_HOME/android/sdk

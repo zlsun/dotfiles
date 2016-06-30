@@ -6,7 +6,7 @@ from path import Path
 
 try:
     from .log import log
-except:
+except SystemError:
     from log import log
 
 __all__ = ['config']

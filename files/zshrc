@@ -246,6 +246,25 @@ alarm() {
     kill -9 $pid
 }
 
+_profilepy() {
+    local py=$1
+    shift
+    local dir=/tmp/profilepy/
+    local id=$(date +'%Y-%m-%d-%H-%M-%S')
+    local profile=$dir/$id.profile
+    local dot=$dir/$id.dot
+    local png=$dir/$id.png
+    mkdir -p $dir && (
+        $py -m cProfile -o $profile $*
+        gprof2dot -f pstats $profile -o $dot
+        dot -Tpng $dot -o $png
+        $XOPEN $png
+    )
+}
+alias profilepy='_profilepy python'
+alias profilepy2='_profilepy python2'
+alias profilepy3='_profilepy python3'
+
 # ZSH
 
 autoload -U zmv
@@ -570,7 +589,6 @@ fi
 alias -g G='| grep'
 alias -g H='| head'
 alias -g L='| less'
-alias -g M='| most'
 alias -g S='| sed'
 alias -g T='| tail'
 alias -g U='| uniq'
