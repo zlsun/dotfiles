@@ -614,3 +614,6 @@ elif [[ ! $TERM =~ screen ]] && exists tmux; then
     # TERM=screen-256color exec tmux
 fi
 
+if [[ -f ~/.zshrc.local ]]; then
+    . ~/.zshrc.local
+fi

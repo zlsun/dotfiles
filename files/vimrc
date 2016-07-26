@@ -183,6 +183,9 @@ Plugin 'mjbrownie/vim-htmldjango_omnicomplete'
 "" Go
 Plugin 'fatih/vim-go'
 
+"" Rust
+Plugin 'rust-lang/rust.vim'
+
 "" HTML
 Plugin 'tpope/vim-haml'
 Plugin 'mattn/emmet-vim'
@@ -360,7 +363,7 @@ if has('statusline')
     " Broken down into easily includeable segments
     set statusline=%<%f\                     " Filename
     set statusline+=%w%h%m%r                 " Options
-    set statusline+=\ [%{&ff}/%Y]            " Filetype
+    set statusline+=\ [%{&ff}/%Y]            " FileType
     set statusline+=\ [%{getcwd()}]          " Current dir
     set statusline+=%=%-14.(%l,%c%V%)\ %p%%  " Right aligned file nav info
 endif
@@ -507,10 +510,11 @@ au FileType haskell,puppet,ruby,yml setlocal expandtab shiftwidth=2 softtabstop=
 " Workaround broken color highlighting in Haskell
 au FileType haskell,rust setlocal nospell
 
-au FileType python           let &l:makeprg='python "%"'
 au FileType c                let &l:makeprg='gcc "%" -o "%:r" -g -std=c11 && "%:p:r"'
 au FileType cpp              let &l:makeprg='g++ "%" -o "%:r" -g -std=c++1y && "%:p:r"'
 au FileType lua              let &l:makeprg='lua "%"'
+au FileType rust             let &l:makeprg='cargo run -q'
+au FileType python           let &l:makeprg='python "%"'
 au FileType xdefaults        let &l:makeprg='xrdb %'
 au FileType haskell,lhaskell let &l:makeprg='runhaskell "%"'
 
@@ -1177,7 +1181,7 @@ if exists("+omnifunc")
     inoremap <expr> <Up>   pumvisible() ? "\<C-p>" : "\<Up>"
     inoremap <expr> <C-d>  pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<C-d>"
     inoremap <expr> <C-u>  pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<C-u>"
-    au Filetype *
+    au FileType *
                 \  if &omnifunc == ""
                 \|     setlocal omnifunc=syntaxcomplete#Complete
                 \| endif
@@ -1213,9 +1217,9 @@ elseif s:completer == 'youcompleteme' && s:has_bundle('YouCompleteMe')
     let g:UltiSnipsJumpBackwardTrigger = '<C-K>'
     let g:UltiSnipsSnippetDirectories = [$HOME.'/.vim/UltiSnips']
 
-    au Filetype c,cpp,python,go map <buffer> <C-]>      :YcmCompleter GoTo<CR>
-    au Filetype python          map <buffer> <C-]><C-]> :YcmCompleter GoToReferences<CR>
-    au Filetype c,cpp,python    map <buffer> K          :YcmCompleter GetDoc<CR>
+    au FileType c,cpp,python,go map <buffer> <C-]>      :YcmCompleter GoTo<CR>
+    au FileType python          map <buffer> <C-]><C-]> :YcmCompleter GoToReferences<CR>
+    au FileType c,cpp,python    map <buffer> K          :YcmCompleter GetDoc<CR>
 
     " Enable omni completion.
     au FileType css           setlocal omnifunc=csscomplete#CompleteCSS
