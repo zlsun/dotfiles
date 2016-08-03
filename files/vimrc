@@ -171,8 +171,11 @@ endif
 
 " Languages
 
+Plugin 'sheerun/vim-polyglot'
+
 "" Markdown
-Plugin 'tpope/vim-markdown'
+" Plugin 'plasticboy/vim-markdown'
+" Plugin 'tpope/vim-markdown'
 Plugin 'suan/vim-instant-markdown'
 
 "" Python
@@ -184,27 +187,27 @@ Plugin 'mjbrownie/vim-htmldjango_omnicomplete'
 Plugin 'fatih/vim-go'
 
 "" Rust
-Plugin 'rust-lang/rust.vim'
+" Plugin 'rust-lang/rust.vim'
 
 "" HTML
-Plugin 'tpope/vim-haml'
+" Plugin 'tpope/vim-haml'
 Plugin 'mattn/emmet-vim'
 Plugin 'alvan/vim-closetag'
 
 "" CSS
-Plugin 'groenewege/vim-less'
+" Plugin 'groenewege/vim-less'
 Plugin 'hail2u/vim-css3-syntax'
 
 "" JavaScript
-Plugin 'elzr/vim-json'
-Plugin 'briancollins/vim-jst'
-Plugin 'pangloss/vim-javascript'
-Plugin 'kchmck/vim-coffee-script'
+" Plugin 'elzr/vim-json'
+" Plugin 'briancollins/vim-jst'
+" Plugin 'pangloss/vim-javascript'
+" Plugin 'kchmck/vim-coffee-script'
 
 "" Vue.js
 Plugin 'posva/vim-vue'
+" Plugin 'wavded/vim-stylus'
 Plugin 'digitaltoad/vim-jade'
-Plugin 'wavded/vim-stylus'
 
 "" Haskell
 Plugin 'dag/vim2hs'
@@ -217,7 +220,7 @@ Plugin 'eagletmt/ghcmod-vim'
 Plugin 'lukerandall/haskellmode-vim'
 
 "" Kotlin
-Plugin 'udalov/kotlin-vim'
+" Plugin 'udalov/kotlin-vim'
 
 "" elm
 " Plugin 'lambdatoast/elm.vim'
@@ -225,7 +228,8 @@ Plugin 'ElmCast/elm-vim'
 
 "" Configuration files
 Plugin 'PotatoesMaster/i3-vim-syntax'
-Plugin 'Matt-Deacalion/vim-systemd-syntax'
+" Plugin 'kurayma/vim-systemd-syntax'
+" Plugin 'Matt-Deacalion/vim-systemd-syntax'
 
 call vundle#end()
 
@@ -498,7 +502,7 @@ aug ReloadVimrc
 aug END
 
 " Remove trailing whitespaces and ^M chars
-au FileType c,cpp,elm,go,haskell,java,javascript,nasm,perl,php,python,ruby,sh,yml
+au FileType c,cpp,elm,go,haskell,java,javascript,nasm,perl,php,python,ruby,rust,sh,yml
     \ au BufWritePre <buffer> call StripTrailingWhitespace()
 
 au FileType txt,markdown set wrap
