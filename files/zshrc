@@ -407,9 +407,15 @@ alias mrb='make clean && make'
 # cm* -> cmake
 _cm() {
     root=$(pwd)
+    while [[ ! -e ${root}/CMakeLists.txt ]]; do
+        root=$(dirname $root)
+        if [[ $root = "/" ]]; then
+            return -1
+        fi
+    done
     build_type=$1
     shift
-    dir=build/$build_type
+    dir=$root/build/$build_type
     if [[ ! -e $dir ]]; then
         mkdir -p $dir && (
             cd $dir
@@ -418,13 +424,26 @@ _cm() {
     fi
     cmake --build $dir --target $*
 }
+_cm_exe() {
+    root=$(pwd)
+    while [[ ! -e ${root}/CMakeLists.txt ]]; do
+        root=$(dirname $root)
+        if [[ $root = "/" ]]; then
+            return -1
+        fi
+    done
+    cd $root/build/$1/bin/$(dirname $2)
+    ./$(basename $2)
+}
 
 alias   cm='_cm debug'
+alias  cme='_cm_exe debug'
 alias  cmr='cm run'
 alias cmcl='cm clean'
 alias cmrb='cm clean && cm'
 
 alias   rcm='_cm release'
+alias  rcme='_cm_exe release'
 alias  rcmr='rcm run'
 alias rcmcl='rcm clean'
 alias rcmrb='rcm clean && rcm'
