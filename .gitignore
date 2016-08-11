@@ -15,6 +15,9 @@ files/pip/*
 files/spacemacs.d/*
 !files/spacemacs.d/init.el
 
+files/ptpython/*
+!files/ptpython/config.py
+
 config/*/*
 !config/clerk/config
 !config/dunst/dunstrc
