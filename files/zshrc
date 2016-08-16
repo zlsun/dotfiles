@@ -113,7 +113,7 @@ top-commands() {
         | cut -d ';' -f 2- 2>/dev/null                      \
         | awk '{a[$1]++}END{for(i in a){print a[i] " " i}}' \
         | sort -rn                                          \
-        | head $*
+        | head "$@"
 }
 
 reinstall-all-packages() {
@@ -126,7 +126,7 @@ _bpgit_build_cmd() {
     local reset='\e[0m'
     local echo_cmd="echo -e '${color}[{}]${reset}'"
     local git_config="-c color.ui=always -c color.status=always -c color.branch=always -c color.diff=always"
-    local git_cmd="git $git_config --git-dir={}/.git --work-tree={} $*"
+    local git_cmd="git $git_config --git-dir={}/.git --work-tree={} \"$@\""
     local cmd="$echo_cmd && $git_cmd"
     echo "$cmd"
 }
@@ -136,11 +136,11 @@ _bpgit_ls() {
 }
 
 bgit() {
-    _bpgit_ls | xargs -I{} sh -c "$(_bpgit_build_cmd $*)"
+    _bpgit_ls | xargs -I{} bash -c "$(_bpgit_build_cmd "$@")"
 }
 
 pgit() {
-    _bpgit_ls | parallel "$(_bpgit_build_cmd $*)"
+    _bpgit_ls | parallel "$(_bpgit_build_cmd "$@")"
 }
 
 ptyrun () {
@@ -155,7 +155,7 @@ ptyrun () {
     zpty -d $ptyname
 }
 ptyless () {
-    ptyrun $@ | less
+    ptyrun "$@" | less
 }
 
 fawk() {
@@ -174,7 +174,7 @@ confirm() {
 }
 
 kill-match() {
-    local match=`pgrep -f $*`
+    local match=`pgrep -f "$@"`
     echo 'Find matches:'
     echo $match | xargs ps
     confirm 'Do you want to kill them all? [y/N] ' && (
@@ -211,13 +211,13 @@ color-table() {
 watchon() {
     local cmd=$1
     shift
-    ls $* | entr sh -c $cmd
+    ls "$@" | entr sh -c $cmd
 }
 
 for-subdir() {
     for d (*/) (
         cd $d
-        $*
+        "$@"
     )
 }
 
@@ -255,7 +255,7 @@ _profilepy() {
     local dot=$dir/$id.dot
     local png=$dir/$id.png
     mkdir -p $dir && (
-        $py -m cProfile -o $profile $*
+        $py -m cProfile -o $profile "$@"
         gprof2dot -f pstats $profile -o $dot
         dot -Tpng $dot -o $png
         $XOPEN $png
@@ -422,7 +422,7 @@ _cm() {
             cmake -DCMAKE_BUILD_TYPE=$build_type $root
         )
     fi
-    cmake --build $dir --target $*
+    cmake --build $dir --target "$@"
 }
 _cm_exe() {
     root=$(pwd)
