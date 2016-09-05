@@ -86,7 +86,7 @@ def main():
             Config.last_input = ''
         v.close()
 
-    # v.run()
+    v.run()
 
 if __name__ == "__main__":
     main()

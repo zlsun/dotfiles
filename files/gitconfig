@@ -42,6 +42,7 @@
     mg = merge
     pl = pull -v
     pa = pull -v --all
+    pb = pull -v --rebase
     pr = pull -v --recurse-submodules
     ps = push -v
     pf = push -v -f

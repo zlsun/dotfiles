@@ -502,7 +502,7 @@ aug ReloadVimrc
 aug END
 
 " Remove trailing whitespaces and ^M chars
-au FileType c,cpp,elm,go,haskell,java,javascript,nasm,perl,php,python,ruby,rust,sh,yml
+au FileType c,cpp,elm,glsl,go,haskell,java,javascript,nasm,perl,php,python,ruby,rust,sh,yml
     \ au BufWritePre <buffer> call StripTrailingWhitespace()
 
 au FileType txt,markdown set wrap
