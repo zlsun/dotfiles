@@ -411,6 +411,24 @@ alias mcl='make clean'
 alias mrb='make clean && make'
 
 # cm* -> cmake
+_cm_ensure_CMakeCache() {
+    dir=$1
+    if [[ ! -e $dir/CMakeCache.txt ]]; then
+        mkdir -p $dir && (
+            cd $dir
+            cmake -DCMAKE_BUILD_TYPE=$build_type $root
+        )
+    fi
+}
+_cm_ensure_CTestTestfile() {
+    dir=$1
+    if [[ ! -e $dir/CTestTestfile.cmake ]]; then
+        mkdir -p $dir && (
+            cd $dir
+            make test
+        )
+    fi
+}
 _cm() {
     root=$(pwd)
     while [[ ! -e ${root}/CMakeLists.txt ]]; do
@@ -421,14 +439,24 @@ _cm() {
     done
     build_type=$1
     shift
-    dir=$root/build/$build_type
-    if [[ ! -e $dir/CMakeCache.txt ]]; then
-        mkdir -p $dir && (
-            cd $dir
-            cmake -DCMAKE_BUILD_TYPE=$build_type $root
-        )
-    fi
+    dir="$root/build/$build_type"
+    _cm_ensure_CMakeCache "$dir"
     cmake --build $dir --target "$@"
+}
+_cm_test() {
+    root=$(pwd)
+    while [[ ! -e ${root}/CMakeLists.txt ]]; do
+        root=$(dirname $root)
+        if [[ $root = "/" ]]; then
+            return -1
+        fi
+    done
+    build_type=$1
+    shift
+    dir="$root/build/$build_type"
+    _cm_ensure_CMakeCache "$dir"
+    _cm_ensure_CTestTestfile "$dir"
+    (cd "$dir" && ctest -C $build_type -R "$@")
 }
 _cm_exe() {
     root=$(pwd)
@@ -443,12 +471,14 @@ _cm_exe() {
 }
 
 alias   cm='_cm debug'
+alias  cmt='_cm_test debug'
 alias  cme='_cm_exe debug'
 alias  cmr='cm run'
 alias cmcl='cm clean'
 alias cmrb='cm clean && cm'
 
 alias   rcm='_cm release'
+alias  rcmt='_cm_test release'
 alias  rcme='_cm_exe release'
 alias  rcmr='rcm run'
 alias rcmcl='rcm clean'
@@ -460,15 +490,12 @@ alias  py='python'
 alias py2='python2'
 alias py3='python3'
 
-alias   pyi='sudo -H pip install'
-alias  pyi2='sudo -H pip2 install'
-alias  pyi3='sudo -H pip3 install'
-alias  pyiu='pip install --user'
-alias pyiu2='pip2 install --user'
-alias pyiu3='pip3 install --user'
-alias   pyu='sudo -H pip uninstall'
-alias  pyu2='sudo -H pip2 uninstall'
-alias  pyu3='sudo -H pip3 uninstall'
+alias   pyi='pip install --user'
+alias  pyi2='pip2 install --user'
+alias  pyi3='pip3 install --user'
+alias   pyu='pip uninstall'
+alias  pyu2='pip2 uninstall'
+alias  pyu3='pip3 uninstall'
 
 alias  pyftp='python -m pyftpdlib'
 alias pyhttp='python3 -m http.server'
@@ -497,6 +524,12 @@ alias  nb2='ipython2 notebook'
 alias  nb3='ipython3 notebook'
 
 alias pti='ptipython'
+
+# npm* -> *npm *
+alias npm='cnpm'
+alias npmi='npm install -g'
+alias npmu='npm uninstall -g'
+alias npml='npm list -g'
 
 # rsync-* -> rsync
 alias rsync-copy='rsync -avz --progress -h'

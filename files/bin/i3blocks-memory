@@ -26,10 +26,10 @@ awk -v type=$TYPE '
 	mem_free=$2
 }
 /^Buffers:/ {
-	mem_free+=$2
+	# mem_free+=$2
 }
 /^Cached:/ {
-	mem_free+=$2
+	# mem_free+=$2
 }
 /^SwapTotal:/ {
 	swap_total=$2
@@ -50,7 +50,7 @@ END {
 	pct=used/total*100
 
 	# full text
-	printf("'$FORMAT'\n", used, total, pct)
+	printf("%.1fG\n", free)
 
 	# short text
 	printf("%.f%%\n", pct)

@@ -67,7 +67,7 @@ export PAGER=less
 export XOPEN=gvfs-open
 export BROWSER=$XOPEN
 
-export LESS='-FX'
+export LESS='-RFX'
 export QUOTING_STYLE=literal
 
 # ssh

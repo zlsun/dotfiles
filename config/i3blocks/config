@@ -61,7 +61,7 @@ interval=5
 [disk]
 label=🖬
 instance=/
-interval=30
+interval=60
 # separator=false
 
 # Memory usage
@@ -70,7 +70,7 @@ interval=30
 [memory]
 command=~/.bin/i3blocks-memory "%.1fG"
 label=
-interval=30
+interval=10
 # separator=false
 
 # [memory]

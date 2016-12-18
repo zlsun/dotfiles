@@ -1,3 +1,5 @@
-registry=http://registry.npm.taobao.org
+registry=http://registry.npm.taobao.org/
 strict-ssl=false
-prefix=${HOME}/.local
+prefix=/home/zlsun/.local
+proxy=http://127.0.0.1:8087/
+https-proxy=http://127.0.0.1:8087

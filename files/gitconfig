@@ -72,5 +72,5 @@
 [http]
     sslVerify = false
 [core]
-    pager = less -FX
+    pager = less -RFX
 	quotepath = false

@@ -106,7 +106,7 @@ bindsym $mod+minus scratchpad show
 # Rofi
 bindsym $mod+d       exec --no-startup-id PATH=$PATH:~/.bin/:~/.local/bin rofi -show run
 bindsym $mod+Tab     exec --no-startup-id rofi -show window -auto-select
-bindsym $mod+q       exec --no-startup-id SHELL=/bin/bash j4-dmenu-desktop --dmenu="rofi -dmenu -i -p ''"
+bindsym $mod+q       exec --no-startup-id LANG=en_US.UTF-8 SHELL=/bin/bash j4-dmenu-desktop --dmenu="rofi -dmenu -i -p ''"
 bindsym $mod+grave   exec --no-startup-id ~/.bin/rofi-fileman
 bindsym $mod+u       exec --no-startup-id ~/.bin/rofi-unicode
 bindsym $mod+p       exec --no-startup-id ~/.bin/rofi-monitor-layout
@@ -146,19 +146,20 @@ bindsym $mod+Left             exec --no-startup-id xbacklight -dec 10
 bindsym $mod+Right            exec --no-startup-id xbacklight -inc 10
 
 # Screenshot
-set $shoter         maim -b 2
-set $tmp_png        /tmp/screenshot.png
-set $to_clipboard   ~/.bin/img2clip /tmp/screenshot.png
-set $to_screenshots mv /tmp/screenshot.png ~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png
-set $notify         notify-send 'Screenshot!'
-bindsym --release            Print exec --no-startup-id $shoter $tmp_png         && $to_clipboard   && $notify
-bindsym --release       Ctrl+Print exec --no-startup-id $shoter $tmp_png      -s && $to_clipboard   && $notify
-bindsym --release       $mod+Print exec --no-startup-id $shoter $tmp_png -d 5 -s && $to_clipboard   && $notify
-bindsym --release      Shift+Print exec --no-startup-id $shoter $tmp_png         && $to_screenshots && $notify
-bindsym --release Ctrl+Shift+Print exec --no-startup-id $shoter $tmp_png      -s && $to_screenshots && $notify
-bindsym --release $mod+Shift+Print exec --no-startup-id $shoter $tmp_png -d 5 -s && $to_screenshots && $notify
+set $shoter           maim -b 2
+set $tmp_png          /tmp/screenshot.png
+set $to_clipboard     ~/.bin/img2clip /tmp/screenshot.png
+set $to_pictures      mv /tmp/screenshot.png ~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png
+set $notify_clipboard notify-send "截图已保存至剪贴板!"
+set $notify_pictures  notify-send "截图已保存为$(date +%Y-%m-%d_%H-%M-%S).png"
+bindsym --release            Print exec --no-startup-id $shoter $tmp_png         && $to_clipboard && $notify_clipboard
+bindsym --release       Ctrl+Print exec --no-startup-id $shoter $tmp_png      -s && $to_clipboard && $notify_clipboard
+bindsym --release       $mod+Print exec --no-startup-id $shoter $tmp_png -d 5 -s && $to_clipboard && $notify_clipboard
+bindsym --release      Shift+Print exec --no-startup-id $shoter $tmp_png         && $to_pictures  && $notify_pictures
+bindsym --release Ctrl+Shift+Print exec --no-startup-id $shoter $tmp_png      -s && $to_pictures  && $notify_pictures
+bindsym --release $mod+Shift+Print exec --no-startup-id $shoter $tmp_png -d 5 -s && $to_pictures  && $notify_pictures
 
-bindsym --release      $mod+Ctrl+a exec --no-startup-id $shoter $tmp_png      -s && $to_clipboard   && $notify
+bindsym --release      $mod+Ctrl+a exec --no-startup-id $shoter $tmp_png      -s && $to_clipboard && $notify_clipboard
 bindsym --release     $mod+Shift+a exec --no-startup-id deepin-screenshot
 
 # System Mode: shutdown, reboot, lock screen
@@ -214,11 +215,11 @@ bindsym $mod+r mode "resize"
 
 # Window Manipulation Mode
 set $current_window $(xdotool getwindowfocus)
-set $mode_winman Windows (b) brighten, (d) darken, (p) properties
+set $mode_winman Windows (-) lighter, (=) deeper, (p) properties
 mode "$mode_winman" {
-    bindsym b exec --no-startup-id transset-df -i $current_window --dec 0.1
-    bindsym d exec --no-startup-id transset-df -i $current_window --inc 0.1
-    bindsym p exec --no-startup-id xprop -id $current_window | xclip -sel p, mode "default"
+    bindsym minus exec --no-startup-id transset-df -i $current_window --dec 0.1
+    bindsym equal exec --no-startup-id transset-df -i $current_window --inc 0.1
+    bindsym p     exec --no-startup-id xprop -id $current_window | xclip -sel c, mode "default"
 
     bindsym $mod+i mode "default"
     bindsym Return mode "default"

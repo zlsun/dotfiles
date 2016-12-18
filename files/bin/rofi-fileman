@@ -32,15 +32,15 @@ class Config:
     key_bindings = {
         'show_bookmarks': 'SuperL+b',
         'up_folder': 'SuperL+BackSpace',
-        'toggle_mark': 'Control+m',
+        'toggle_mark': 'Alt+m',
         'toggle_hidden': 'Alt+h',
-        'toggle_bookmark': 'Alt+b',
+        'toggle_bookmark': 'Alt+o',
         'exec_item': 'Control+Return',
         'quit': 'SuperL+grave',
         'delete': 'Delete',
-        'touch': 'Alt+f',
-        'mkdir': 'Alt+n',
-        'show_context_menu': 'Shift+Return',
+        'touch': 'SuperL+f',
+        'mkdir': 'SuperL+n',
+        'show_context_menu': 'SuperL+Return',
     }
     applications_folders = [
         '/usr/share/applications/',
