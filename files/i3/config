@@ -14,11 +14,10 @@ bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 bindsym $mod+s layout stacking
 
-bindsym $mod+g split h
-bindsym $mod+v split v
+bindsym $mod+g split horizontal
+bindsym $mod+v split vertical
 
 bindsym $mod+t     sticky     toggle
-bindsym $mod+f     fullscreen toggle
 bindsym $mod+b     border     toggle
 bindsym $mod+slash bar mode   toggle
 
@@ -28,6 +27,9 @@ bindsym $mod+x [urgent=latest] focus
 
 bindsym $mod+space       focus mode_toggle
 bindsym $mod+Shift+space floating toggle
+
+bindsym $mod+f       fullscreen toggle
+bindsym $mod+shift+f fullscreen disable, sticky enable, floating enable, resize set 546 307, move position mouse
 
 # change focus
 bindsym $mod+h focus left
@@ -106,7 +108,7 @@ bindsym $mod+minus scratchpad show
 # Rofi
 bindsym $mod+d       exec --no-startup-id PATH=$PATH:~/.bin/:~/.local/bin rofi -show run
 bindsym $mod+Tab     exec --no-startup-id rofi -show window -auto-select
-bindsym $mod+q       exec --no-startup-id LANG=en_US.UTF-8 SHELL=/bin/bash j4-dmenu-desktop --dmenu="rofi -dmenu -i -p ''"
+bindsym $mod+q       exec --no-startup-id rofi -show drun
 bindsym $mod+grave   exec --no-startup-id ~/.bin/rofi-fileman
 bindsym $mod+u       exec --no-startup-id ~/.bin/rofi-unicode
 bindsym $mod+p       exec --no-startup-id ~/.bin/rofi-monitor-layout
@@ -195,17 +197,17 @@ mode "resize" {
     bindsym Ctrl+k  resize shrink height  1 px or  1 ppt
     bindsym Ctrl+l  resize grow   width   1 px or  1 ppt
 
-    bindsym m resize set    1   1, move absolute position center
-    bindsym 1 resize set  136  76, move absolute position center
-    bindsym 2 resize set  273 153, move absolute position center
-    bindsym 3 resize set  409 230, move absolute position center
-    bindsym 4 resize set  546 307, move absolute position center
-    bindsym 5 resize set  683 384, move absolute position center
-    bindsym 6 resize set  819 460, move absolute position center
-    bindsym 7 resize set  956 537, move absolute position center
-    bindsym 8 resize set 1092 614, move absolute position center
-    bindsym 9 resize set 1229 691, move absolute position center
-    bindsym 0 resize set 1366 768, move absolute position center
+    bindsym m resize set    1   1, move position center
+    bindsym 1 resize set  136  76, move position center
+    bindsym 2 resize set  273 153, move position center
+    bindsym 3 resize set  409 230, move position center
+    bindsym 4 resize set  546 307, move position center
+    bindsym 5 resize set  683 384, move position center
+    bindsym 6 resize set  819 460, move position center
+    bindsym 7 resize set  956 537, move position center
+    bindsym 8 resize set 1092 614, move position center
+    bindsym 9 resize set 1229 691, move position center
+    bindsym 0 resize set 1366 768, move position center
 
     bindsym $mod+r mode "default"
     bindsym Return mode "default"
