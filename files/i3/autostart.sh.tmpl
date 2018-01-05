@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+kill-match() {
+    pgrep -f $* | xargs sudo kill -9
+}
+
+compton -b --config ~/.config/compton/config
+
+fcitx &
+sogou-autostart &
+
+kill-match polkit-gnome-authentication-agent-1
+/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
+
+/usr/lib/kdeconnectd &
+
+# xfce4-power-manager &
+
+wicd-client --tray &
+
+# sudo ip link set enp4s0f2 up
+
+# if ! pgrep create_ap &> /dev/null; then
+#     for pid in $(create_ap --list-running | egrep "^[0-9]+" | cut -d' ' -f1); do
+#         sudo create_ap --stop $pid
+#     done
+#     sudo create_ap wlp9s0 enp4s0f2 WiFiName password &
+# fi
+

@@ -5,6 +5,7 @@ __pycache__/
 files/i3/*
 !files/i3/config
 !files/i3/*.py
+!files/i3/*.tmpl
 
 files/ghc/*
 !files/ghc/ghci.conf
