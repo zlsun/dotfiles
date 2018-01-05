@@ -2,3 +2,5 @@
 # Swap Caps-Lock and Escape
 setxkbmap -option caps:swapescape
 
+export $(dbus-launch)
+

@@ -346,7 +346,7 @@ bindkey "\eh" toggle-help-command-line
 alias s='sudo '
 
 # use neovim
-alias vim='stty -ixon -inlcr; nvim'
+alias vim='stty -ixon -ixoff -inlcr; nvim'
 
 # shorten frequent commands
 alias c='cat'
@@ -359,7 +359,7 @@ alias cx='chmod +x'
 alias fk='eval $(thefuck $(fc -ln -1))' # thefuck <https://github.com/nvbn/thefuck>
 alias gg='git gui'
 alias rg='ranger'
-alias sv='stty -ixon -inlcr; sudo nvim'
+alias sv='stty -ixon -ixoff -inlcr; sudo nvim'
 alias wh='which'
 
 # meaning aliases

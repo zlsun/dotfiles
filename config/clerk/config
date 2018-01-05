@@ -31,16 +31,16 @@ help_separator_color="#5F5F5F"
 
 # custom keybindings
 # global
-albumlist="Alt+F1"
-tracklist="Alt+F2"
-queue="Alt+F3"
-toggle="Alt+F6"
-prev="Alt+F5"
-next="Alt+F8"
-stop="Alt+F7"
-seek="Alt+f"
-nextalbum="Alt+Shift+F8"
-prevalbum="Alt+Shift+F5"
+albumlist="Control+F1"
+tracklist="Control+F2"
+queue="Control+F3"
+toggle="Control+backslash"
+prev="Control+braceleft"
+next="Control+braceright"
+stop="Control+slash"
+seek="Control+Alt+e"
+nextalbum="Control+Alt+F8"
+prevalbum="Control+Alt+F5"
 
 # main menu
 help="Alt+h"

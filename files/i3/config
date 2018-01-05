@@ -168,12 +168,12 @@ bindsym --release     $mod+Shift+a exec --no-startup-id deepin-screenshot
 set $locker i3lock -d -e -c 000000 && sleep 1
 set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (p) Poweroff
 mode "$mode_system" {
-    bindsym l exec --no-startup-id $locker,                        mode "default"
-    bindsym e exec --no-startup-id i3-msg exit,                    mode "default"
-    bindsym s exec --no-startup-id $locker && systemctl suspend,   mode "default"
-    bindsym h exec --no-startup-id $locker && systemctl hibernate, mode "default"
-    bindsym r exec --no-startup-id systemctl reboot,               mode "default"
-    bindsym p exec --no-startup-id systemctl poweroff -i,          mode "default"
+    bindsym l exec --no-startup-id $locker,                             mode "default"
+    bindsym e exec --no-startup-id i3-msg exit,                         mode "default"
+    bindsym s exec --no-startup-id $locker && sudo systemctl suspend,   mode "default"
+    bindsym h exec --no-startup-id $locker && sudo systemctl hibernate, mode "default"
+    bindsym r exec --no-startup-id sudo systemctl reboot,               mode "default"
+    bindsym p exec --no-startup-id sudo systemctl poweroff -i,          mode "default"
 
     bindsym $mod+Shift+e mode "$default"
     bindsym Return       mode "default"
@@ -217,7 +217,7 @@ bindsym $mod+r mode "resize"
 
 # Window Manipulation Mode
 set $current_window $(xdotool getwindowfocus)
-set $mode_winman Windows (-) lighter, (=) deeper, (p) properties
+set $mode_winman Windows (-) more transparent, (=) more opaque, (p) copy properties
 mode "$mode_winman" {
     bindsym minus exec --no-startup-id transset-df -i $current_window --dec 0.1
     bindsym equal exec --no-startup-id transset-df -i $current_window --inc 0.1

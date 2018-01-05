@@ -913,8 +913,8 @@ if s:has_bundle('vim-indent-guides')
 endif
 
 if s:has_bundle('vim-signature')
-    let g:SignatureMarkTextHLDynamic = 1
-    let g:SignatureMarkerTextHLDynamic = 1
+    " let g:SignatureMarkTextHLDynamic = 1
+    " let g:SignatureMarkerTextHLDynamic = 1
 endif
 
 if s:has_bundle('nerdtree')
